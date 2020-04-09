@@ -1,0 +1,19 @@
+{
+  "name": "etsoo-react",
+  "version": "1.0.1",
+  "description": "ETSOO React TypeScript components NPM package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ETSOO/etsoo-react.git"
+  },
+  "author": "Garry Xiao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ETSOO/etsoo-react/issues"
+  },
+  "homepage": "https://github.com/ETSOO/etsoo-react#readme"
+}
