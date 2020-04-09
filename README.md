@@ -1,2 +1,2 @@
 # etsoo-react
-ETSOO React components NPM
+ETSOO React components NPM package
