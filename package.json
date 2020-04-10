@@ -3,6 +3,7 @@
   "version": "1.0.2",
   "description": "ETSOO React TypeScript components NPM package",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest"
