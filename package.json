@@ -8,6 +8,9 @@
     "build": "tsc",
     "test": "jest"
   },
+  "jest": {
+    "testMatch": [ "<rootDir>/tests/**/*.js" ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ETSOO/etsoo-react.git"
