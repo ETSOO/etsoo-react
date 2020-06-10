@@ -5,12 +5,12 @@ export interface IAppData {
     /**
      * Application name
      */
-    name: string,
+    name: string
 
     /**
      * Application version
      */
-    version: string,
+    version: string
 
     /**
      * Application path

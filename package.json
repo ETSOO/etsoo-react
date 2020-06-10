@@ -1,6 +1,6 @@
 {
   "name": "etsoo-react",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "ETSOO React TypeScript components NPM package",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -9,7 +9,9 @@
     "test": "jest"
   },
   "jest": {
-    "testMatch": [ "<rootDir>/tests/**/*.js" ]
+    "testMatch": [
+      "<rootDir>/tests/**/*.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -24,9 +26,22 @@
   "devDependencies": {
     "@types/react": "^16.9.33",
     "@types/react-dom": "^16.9.6",
-    "jest": "^25.3.0",
+    "@types/react-router-dom": "^5.1.4",
+    "@types/react-window": "^1.8.2",
+    "@types/react-window-infinite-loader": "^1.0.3",
+    "@types/yup": "^0.28.0",
+    "jest": "^25.3.0"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.9.12",
+    "@material-ui/icons": "^4.9.1",
+    "axios": "^0.19.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "typescript": "^3.8.3"
+    "react-router-dom": "^5.1.2",
+    "react-window": "^1.8.5",
+    "react-window-infinite-loader": "^1.0.5",
+    "typescript": "^3.9.2",
+    "yup": "^0.28.5"
   }
 }

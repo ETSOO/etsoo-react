@@ -1,11 +1,9 @@
-declare enum AuthCodeType {
-    Numeric = 1,
-    Alpha = 2,
-    AlphaNumeric = 3
+import React from 'react';
+import { StandardTextFieldProps } from '@material-ui/core';
+/**
+ * Auth code properties
+ */
+export interface AuthCodeProps extends StandardTextFieldProps {
+    api: string;
 }
-declare type AuthCodeProps = {
-    length?: number;
-    type?: AuthCodeType;
-};
-export declare function AuthCode(props: AuthCodeProps): JSX.Element;
-export {};
+export declare const AuthCode: React.FunctionComponent<AuthCodeProps>;
