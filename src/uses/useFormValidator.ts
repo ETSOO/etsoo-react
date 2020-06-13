@@ -123,7 +123,7 @@ export const useFormValidator = (schemas: Yup.ObjectSchema<object>, defaultField
     const delayChange = (field: string, value: object) => {
         clearSeed()
 
-        changeSeed = setTimeout(() => {
+        changeSeed = window.setTimeout(() => {
             commitObjectChange(field, value)
         }, milliseconds)
     }

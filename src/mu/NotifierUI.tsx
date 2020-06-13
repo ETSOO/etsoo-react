@@ -1,5 +1,5 @@
 import React from 'react'
-import { Backdrop, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, makeStyles, createStyles, Theme, Typography } from '@material-ui/core'
+import { Backdrop, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, makeStyles, Theme, Typography } from '@material-ui/core'
 import ErrorIcon from '@material-ui/icons/Error'
 import InfoIcon from '@material-ui/icons/Info'
 import HelpIcon from '@material-ui/icons/Help'
@@ -9,23 +9,23 @@ import { ApiSettings } from '../api/IApiSettings'
 import { LanguageLabel } from '../states/LanguageState'
 
 // Style
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    backdrop: {
-        zIndex: theme.zIndex.modal + 1,
-        color: '#fff'
-    },
-    errorTitle: {
-        display: 'flex',
-        flexWrap: 'nowrap',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        '& h2': {
-            paddingLeft: theme.spacing(1)
+const useStyles = makeStyles((theme) => (
+    {
+        backdrop: {
+            zIndex: theme.zIndex.modal + 1,
+            color: '#fff'
+        },
+        errorTitle: {
+            display: 'flex',
+            flexWrap: 'nowrap',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            '& h2': {
+                paddingLeft: theme.spacing(1)
+            }
         }
     }
-  })
-)
+))
 
 /**
  * Notifier context and provider

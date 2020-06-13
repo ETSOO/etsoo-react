@@ -50,8 +50,9 @@ export class ApiSingleton {
             // 401 unauthorized
             if(error.response.status == 401) {
                 callback = () => {
-                    // Redirect to login page
-                    window.location.href = '/login'
+                    // Redirect to login page, homepage of React project set to '.' or './' should be configured here as undefined
+                    const loginUrl = (this.settings.homepage || '') + '/login'
+                    window.location.href = loginUrl
                 }
             }
         } else if(error.request) {

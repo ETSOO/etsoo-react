@@ -15,14 +15,9 @@ export interface InfiniteListSharedProps {
     height?: number
 
     /**
-     * Inital scroll offset, scrollTop or scrollLeft
+     * Threshold at which to pre-fetch data; defaults to 15
      */
-    initialScrollOffset?: number
-
-    /**
-     * On scroll callback
-     */
-    onScroll?: (props: ListOnScrollProps) => any
+    threshold?: number
 
     /**
      * Width px

@@ -1,9 +1,10 @@
 import React from "react"
-import { InfiniteList, ListItemRendererProps, InfinitListMethods } from "../apps/InfiniteList"
+import { InfiniteList, ListItemRendererProps, InfinitListMethods, InfiniteListScrollProps } from "../apps/InfiniteList"
 import { ISearchItem, ISearchLayoutItem, ISearchResult, searchLayoutAlign } from "../views/ISearchResult"
-import { makeStyles, CircularProgress, Theme, TableCell, useTheme, Checkbox } from "@material-ui/core"
+import { makeStyles, CircularProgress, Theme, TableCell, useTheme, Checkbox, TableSortLabel } from "@material-ui/core"
 import { Utils } from "../api/Utils"
 import { InfiniteListSharedProps } from "../apps/InfiniteListSharedProps"
+import { DataType } from "../api/DataType"
 
 /**
  * Infinite table props
@@ -46,14 +47,43 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
     itemRenderer?(props: ListItemRendererProps, className: string): React.ReactElement
 
     /**
-     * Row height
+     * Item renderer row class, cancel default row style
      */
-    rowHeight: number
+    itemRendererClass?: string
 
     /**
      * Load items callback
+     * @param page Current page
+     * @param records Records to load
+     * @param orderIndex Order field index
      */
-    loadItems(page: number, records: number): Promise<ISearchResult<ISearchItem>>
+    loadItems(page: number, records: number, orderIndex?: number): Promise<ISearchResult<ISearchItem>>
+
+    /**
+     * Item click handler
+     * @param event Click event
+     * @param item Current item
+     */
+    onItemClick?(event: React.MouseEvent, item: ISearchItem | undefined): void
+
+    /**
+     * On scroll callback
+     * @param props Scroll properties
+     */
+    onScroll?(props: InfiniteListScrollProps): void
+
+    /**
+     * Order field index
+     */
+    orderIndex?: number
+
+    /**
+     * On scroll change callback
+     * @param scroller Scroll HTML element
+     * @param vertical Vertical scroll
+     * @param zero Is zero scroll offset
+     */
+    onScrollChange?(scroller: HTMLElement, vertical: boolean, zero: boolean): void
 
     /**
      * Padding, Material space unit
@@ -63,12 +93,28 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
     /**
      * Records to read onetime
      */
-    records: number
+    records?: number
+
+    /**
+     * Row height
+     */
+    rowHeight: number
 
     /**
      * Selectable
      */
     selectable?: boolean
+
+    /**
+     * Sortable
+     */
+    sortable?: boolean
+}
+
+/**
+ * Infinite table public methods
+ */
+export interface InfiniteTableMethods extends InfinitListMethods {
 }
 
 // Table styles
@@ -88,7 +134,8 @@ const useStyles = makeStyles((theme) => ({
         flex: 1,
         whiteSpace: 'nowrap',
         overflow: 'hidden',
-        textOverflow: 'ellipsis'
+        textOverflow: 'ellipsis',
+        height: '100%'
     },
 
     tableCheckbox: {
@@ -109,6 +156,10 @@ const useStyles = makeStyles((theme) => ({
         borderRightWidth: 1,
         borderRightColor: '#aaa',
         borderRightStyle: 'solid'
+    },
+
+    tableRowClick: {
+        cursor: 'pointer'
     },
 
     tableRowOne: {
@@ -171,7 +222,7 @@ export function InfiniteTableGetRowClass(columns: ISearchLayoutItem[], selectabl
 /**
  * Infinite MUI table
  */
-export function InfiniteTable({ innerClassName, footerRenderer, headerRenderer, height, hideHeader, itemRenderer, padding, rowHeight, selectable, ...rest }: InfiniteTableProps) {
+export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTableProps>(({ innerClassName, footerRenderer, headerRenderer, height, hideHeader, itemRenderer, itemRendererClass, onItemClick, orderIndex, padding, rowHeight, selectable, sortable, ...rest }, ref) => {
     // Avoid unnecessary load
     if(height == null || height < 1)
         return <></>
@@ -188,16 +239,83 @@ export function InfiniteTable({ innerClassName, footerRenderer, headerRenderer, 
     // Style
     const classes = useStyles()
 
+    // Cached order index
+    const cacheOrderIndexKey = 'orderIndex'
+    const cachedOrderIndex = Utils.cacheSessionDataParse<number>(Utils.getLocationKey(cacheOrderIndexKey))
+
+    // Local order index
+    const [localOrderIndex, updateLocalOrderIndex] = React.useState(cachedOrderIndex == undefined || isNaN(cachedOrderIndex) ? orderIndex : cachedOrderIndex)
+
     // Ref to the list
-    const ref = React.useRef<InfinitListMethods>(null)
+    let listRef = React.useRef<InfinitListMethods>(null)
 
     // Cached column style
     let columnClass: string | null = null
 
     // Select all handler
     const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if(ref.current) {
-            ref.current.selectAll(event.target.checked)
+
+    }
+
+    // Public methods through ref
+    React.useImperativeHandle(ref, () => ({
+        ...listRef.current!
+    }))
+
+    // Select item handler
+    const onSelectItem = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.checked)
+    }
+
+    // Item click handler
+    const itemClickHandler = onItemClick ? (event:React.MouseEvent<HTMLDivElement>) => {
+        // Avoid input & button click
+        if(event.target instanceof HTMLButtonElement || event.target instanceof HTMLInputElement)
+            return
+
+        // Index
+        const index = Utils.parseNumber(event.currentTarget.dataset['index'])
+
+        // Index item
+        const item = listRef.current ? listRef.current.getItem(index) : undefined
+
+        // Item click callback
+        onItemClick(event, item)
+    } : undefined
+
+    // Field sort
+    const createSortHandler = (field: string, type: DataType, index: number) => (event: React.MouseEvent<any>) => {
+        // Calucate real order index
+        let cIndex: number
+        if(localOrderIndex == null || index != Math.abs(localOrderIndex) || index == -localOrderIndex)
+            cIndex = index
+        else
+            cIndex = -index
+
+        // Sort data and cache
+        listRef.current?.sort(field, type, cIndex)
+
+        // Cache order index
+        Utils.cacheSessionString(cIndex.toString(), Utils.getLocationKey(cacheOrderIndexKey))
+
+        // Rerenderer
+        updateLocalOrderIndex(cIndex)
+    }
+
+    // Create field sort
+    const createSort = (index: number) => {
+        // Is the sort field active
+        const active = localOrderIndex != null && index == Math.abs(localOrderIndex)
+
+        // Direction
+        let direction: 'asc' | 'desc' | undefined = undefined
+        if(localOrderIndex) {
+            direction = active ? ( localOrderIndex! > 0 ? 'asc' : 'desc' ) : 'asc'
+        }
+
+        return {
+            active,
+            direction
         }
     }
 
@@ -206,14 +324,6 @@ export function InfiniteTable({ innerClassName, footerRenderer, headerRenderer, 
         if(p.data) {
             // Row classes
             const classNames = [classes.tableRow]
-
-            // Alternative row style
-            if(p.index % 2 == 0)
-                classNames.push(classes.tableRowOne)
-
-            // Cache column style
-            if(columnClass == null && p.layouts)
-                columnClass = InfiniteTableGetRowClass(p.layouts, selectable)
 
             // Rows
             let rows: React.ReactElement
@@ -224,30 +334,93 @@ export function InfiniteTable({ innerClassName, footerRenderer, headerRenderer, 
                 >
                     <CircularProgress size={20} />
                 </TableCell>
-            } else if(hasHeader && p.index === 0) {
-                classNames.push(classes.tableHeader)
-                if(headerRenderer) {
-                    rows = headerRenderer(p, classes.tableCell)
-                } else if(p.layouts) {
-                    classNames.push(columnClass!)
+            } else {
+                // Alternative row style
+                if(p.index % 2 == 0)
+                    classNames.push(classes.tableRowOne)
 
+                // Cache column style
+                if(columnClass == null && p.layouts)
+                    columnClass = InfiniteTableGetRowClass(p.layouts, selectable)
+
+                // Rows
+                if(hasHeader && p.index === 0) {
+                    classNames.push(classes.tableHeader)
+
+                    if(headerRenderer) {
+                        rows = headerRenderer(p, classes.tableCell)
+                    } else if(p.layouts) {
+                        classNames.push(columnClass!)
+
+                        rows = <>{selectable && (
+                            <TableCell
+                                component="div"
+                                className={Utils.mergeClasses(classes.tableCell, classes.tableCheckbox)}
+                            >
+                                <Checkbox
+                                    onChange={onSelectAll}
+                                />
+                            </TableCell>
+                        )}{p.layouts.map((c, columnIndex) => (
+                            <TableCell
+                                component="div"
+                                key={'head' + c.field}
+                                className={classes.tableCell}
+                                align={searchLayoutAlign(c.align)}
+                            >
+                                { sortable && c.sort != null ? (<TableSortLabel
+                                    {...createSort(c.sort)}
+                                    className={classes.tableRowClick}
+                                    onClick={createSortHandler(c.field, c.type, c.sort)}
+                                >
+                                    {c.label || c.field}
+                                </TableSortLabel>) : (
+                                    <>{c.label || c.field}</>
+                                ) }
+                            </TableCell>
+                        ))}</>
+                    } else {
+                        rows = <TableCell
+                            component="div"
+                            className={classes.tableCell}
+                        >
+                            {p.index}
+                        </TableCell>
+                    }
+                } else if(hasFooter && p.end) {
+                    classNames.push(classes.tableFooter)
+                    rows = footerRenderer!(p, classes.tableCell)
+                } else if(itemRenderer) {
+                    rows = itemRenderer(p, classes.tableCell)
+                } else if(p.layouts) {
+                    // Support item click
+                    if(onItemClick)
+                        classNames.push(classes.tableRowClick)
+
+                    classNames.push(columnClass!)
                     rows = <>{selectable && (
                         <TableCell
                             component="div"
                             className={Utils.mergeClasses(classes.tableCell, classes.tableCheckbox)}
                         >
-                            <Checkbox
-                                onChange={onSelectAll}
-                            />
-                        </TableCell>
+                        <Checkbox
+                            inputProps={
+                                {
+                                    'data-selectable': p.index
+                                } as any
+                            }
+                            checked={p.data.selected}
+                            onChange={onSelectItem}
+                        />
+                    </TableCell>
                     )}{p.layouts.map((c) => (
                         <TableCell
                             component="div"
-                            key={'head' + c.field}
+                            key={c.field}
                             className={classes.tableCell}
                             align={searchLayoutAlign(c.align)}
                         >
-                            {c.label || c.field}
+                            {p.data![c.field]}
                         </TableCell>
                     ))}</>
                 } else {
@@ -258,43 +431,9 @@ export function InfiniteTable({ innerClassName, footerRenderer, headerRenderer, 
                         {p.index}
                     </TableCell>
                 }
-            } else if(hasFooter && p.end) {
-                classNames.push(classes.tableFooter)
-                rows = footerRenderer!(p, classes.tableCell)
-            } else if(itemRenderer) {
-                rows = itemRenderer(p, classes.tableCell)
-            } else if(p.layouts) {
-                classNames.push(columnClass!)
-                rows = <>{selectable && (
-                    <TableCell
-                        component="div"
-                        className={Utils.mergeClasses(classes.tableCell, classes.tableCheckbox)}
-                    >
-                    <Checkbox
-                        checked={p.data.selected}
-                    />
-                </TableCell>
-                )}{p.layouts.map((c) => (
-                    <TableCell
-                        component="div"
-                        key={c.field}
-                        className={classes.tableCell}
-                        align={searchLayoutAlign(c.align)}
-                    >
-                        {p.data![c.field]}
-                    </TableCell>
-                ))}</>
-            } else {
-                rows = <TableCell
-                    component="div"
-                    className={classes.tableCell}
-                >
-                    {p.index}
-                </TableCell>
             }
-
             return (
-                <div style={p.style} className={Utils.mergeClasses(...classNames)}>
+                <div style={p.style} className={ itemRendererClass ? itemRendererClass : Utils.mergeClasses(...classNames)} data-index={p.index} onClick={itemClickHandler}>
                     {rows}
                 </div>
             )
@@ -304,6 +443,6 @@ export function InfiniteTable({ innerClassName, footerRenderer, headerRenderer, 
     }
 
     return (
-        <InfiniteList ref={ref} height={height} innerClassName={Utils.mergeClasses(classes.table, innerClassName)} itemRenderer={tableItemRenderer} hasFooter={hasFooter} hasHeader={hasHeader} itemSize={rowHeight} padding={paddingPX} {...rest}/>
+        <InfiniteList ref={listRef} height={height} innerClassName={Utils.mergeClasses(classes.table, innerClassName)} itemRenderer={tableItemRenderer} hasFooter={hasFooter} hasHeader={hasHeader} itemSize={rowHeight} orderIndex={localOrderIndex} padding={paddingPX} {...rest}/>
     )
-}
+})

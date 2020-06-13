@@ -1,4 +1,53 @@
 import { ILanguageItem } from "./IApiSettings"
+import { ISearchItem } from "../views/ISearchResult"
+import { DataType } from "./DataType"
+
+/**
+ * Cache session data
+ * @param data Data
+ * @param key Key
+ */
+const cacheSessionData = (data: object, key: string) => {
+    cacheSessionString(JSON.stringify(data), key)
+}
+
+/**
+ * Get cache session data
+ * @param key Key
+ */
+const cacheSessionDataGet = (key: string) => {
+    // Is supported
+    if(window.sessionStorage) {
+        return window.sessionStorage.getItem(key)
+    } else {
+        return undefined
+    }
+}
+
+/**
+ * Cache session data parse to specific type
+ * @param key Key
+ */
+const cacheSessionDataParse = <T>(key: string) => {
+    // Data
+    const data = cacheSessionDataGet(key)
+
+    // Parse data type
+    if(data)
+        return JSON.parse(data) as T
+}
+
+/**
+ * Cache session data
+ * @param data Data
+ * @param key Key
+ */
+const cacheSessionString = (data: string, key: string) => {
+    // Is supported
+    if(window.sessionStorage) {
+        window.sessionStorage.setItem(key, data)
+    }
+}
 
 /**
  * Current detected language
@@ -63,6 +112,22 @@ const getCurrentLanguage = (items: ILanguageItem[], language: string) => {
 }
 
 /**
+ * Get an unique key combined with current URL
+ * @param key Key
+ */
+const getLocationKey = (key: string) => {
+    return window.location.href + ':' + key
+}
+
+/**
+ * Join items as a string
+ * @param items Items
+ */
+const joinItems = (...items: (string | undefined)[]) => {
+    return items.filter(item => item != null).join(', ')
+}
+
+/**
  * Merge class names
  * @param classNames Class names
  */
@@ -102,15 +167,61 @@ const snakeNameToWord = (name: string, firstOnly: boolean = false) => {
 }
 
 /**
+ * Sort items
+ * @param items Items
+ * @param field Field
+ * @param type Data type
+ * @param ascending Is ascending
+ */
+const sortItems = (items: (ISearchItem | undefined)[], field: string, type: DataType, ascending: boolean) => {
+    items.sort((item1, item2) => {
+        // Null item
+        if(item1 == null || item2 == null || item1.viewFlag == -1 || item1.viewFlag == -2 || item2.viewFlag == -1 || item2.viewFlag == -2)
+            return 0
+
+        const v1 = item1[field]
+        const v2 = item2[field]
+
+        // Null value
+        if(v1 == null) {
+            return ascending ? -1 : 1
+        } else if(v2 == null) {
+            return ascending ? 1 : -1
+        }
+
+        if(type == DataType.Date || type == DataType.Money || type == DataType.Number) {
+            const n1: number = type == DataType.Date ? Date.parse(v1) : v1
+            const n2: number = type == DataType.Date ? Date.parse(v2) : v2
+            if(n1 > n2) {
+                return ascending ? 1 : -1
+            } else if(n1 < n2) {
+                return ascending ? -1 : 1
+            } else {
+                return 0
+            }
+        } else {
+            return ascending ? (v1 as string).localeCompare(v2 as string) : (v2 as string).localeCompare(v1 as string)
+        }
+    })
+}
+
+/**
  * Utils
  */
 export const Utils = {
+    cacheSessionData,
+    cacheSessionDataGet,
+    cacheSessionDataParse,
+    cacheSessionString,
     detectedLanguage,
     dimensionEqual,
     formatUpperLetter,
     formDataToObject,
     getCurrentLanguage,
+    getLocationKey,
+    joinItems,
     mergeClasses,
     parseNumber,
-    snakeNameToWord
+    snakeNameToWord,
+    sortItems
 }

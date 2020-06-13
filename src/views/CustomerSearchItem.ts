@@ -47,7 +47,7 @@ export interface CustomerSearchPersonItem extends CustomerSearchAddressItem {
     /**
      * Birth date
      */
-    readonly birth_date?: Date
+    readonly birthday?: Date
 
     /**
      * Gender

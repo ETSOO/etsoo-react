@@ -26,6 +26,6 @@ export interface PrivateRouteRedirectState {
  */
 export const PrivateRoute: React.FunctionComponent<PrivateRouteProp> = ({authorized, ...rest}) => {
     return (
-        authorized ? <Route {...rest}/> : <Redirect to={{pathname: '/login', state: {referrer: rest.location} as PrivateRouteRedirectState}}/>
+        authorized ? <Route {...rest}/> : <Redirect to={{pathname: `/login`, state: {referrer: rest.location} as PrivateRouteRedirectState}}/>
     )
 }

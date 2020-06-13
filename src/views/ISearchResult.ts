@@ -22,9 +22,9 @@ export interface ISearchLayoutItem {
     label?: string
 
     /**
-     * Sortable
+     * Sort field index
      */
-    sortable?: boolean
+    sort?: number
 
     /**
      * Data type
@@ -55,6 +55,16 @@ export interface ISearchItem {
      * Loaded or not
      */
     loading?: boolean
+
+    /**
+     * View flag value
+     */
+    viewFlag?: number
+
+    /**
+     * Selected
+     */
+    selected?: boolean
 
     /**
      * Key index

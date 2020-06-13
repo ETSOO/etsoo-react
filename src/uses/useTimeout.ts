@@ -19,7 +19,7 @@ export const useTimeout = (action: Function, milliseconds: number) => {
 
     // Merge into the life cycle
     React.useEffect(() => {
-        seed = setTimeout(() => {
+        seed = window.setTimeout(() => {
             action.call(null)
         }, milliseconds)
 

@@ -65,6 +65,7 @@ export interface InfiniteListBaseProps extends InfiniteListSharedProps {
 
     /**
      * On scroll callback
+     * @param props Scroll properties
      */
     onScroll?: (props: ListOnScrollProps) => any
 
@@ -72,11 +73,6 @@ export interface InfiniteListBaseProps extends InfiniteListSharedProps {
      * Callback to document.createElement to create the outer container element
      */
     outerElementType?: ReactElementType
-
-    /**
-     * Threshold at which to pre-fetch data; defaults to 15
-     */
-    threshold?: number
 }
 
 /**

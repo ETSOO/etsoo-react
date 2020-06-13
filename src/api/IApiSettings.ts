@@ -62,6 +62,11 @@ export interface IApiSettings {
     readonly endpoint: string
 
     /**
+     * App root url
+     */
+    readonly homepage: string
+
+    /**
      * Limited organization id
      */
     readonly org?: number
@@ -82,12 +87,17 @@ export interface IApiSettings {
     readonly supportedLanguages: ILanguageItem[]
 
     /**
+     * Search input element
+     */
+    searchInput?: HTMLInputElement
+
+    /**
      * User token
      */
     token?: string
 
     /**
-     * Web url
+     * Cloud web url
      */
     readonly webUrl: string
 }
@@ -122,6 +132,14 @@ const setup = (settings: IApiSettings) => {
 }
 
 /**
+ * Set search input element
+ * @param input Search input
+ */
+const setSearchInput = (input: HTMLInputElement) => {
+    apiSettings.searchInput = input
+}
+
+/**
  * API settings utils
  */
 export const ApiSettings = {
@@ -136,6 +154,8 @@ export const ApiSettings = {
     lanugageProvider: () => {
         return lanugageProvider
     },
+
+    setSearchInput,
 
     setup
 }
