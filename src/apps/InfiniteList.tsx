@@ -334,13 +334,11 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
 
         reset() {
             // Reset state
-            state.data = undefined
+            // Hold layouts, data and records
             state.items = []
-            state.layouts = undefined
             state.loading = false
             state.loaded = false
             state.page = 0
-            state.records = undefined
             state.scrollLast = undefined
             state.scrollLeft = undefined
             state.scrollTop = undefined
@@ -423,7 +421,7 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
         const items = state.items
 
         // Insert a loading item
-        items.push({loading: true})
+        items.push({loading: true, viewFlag: -1})
 
         // Update item count
         //updateItemCount(items.length + 1)
@@ -460,6 +458,15 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
                 if(loadedLen > 0)
                     items.push(...loadedItems)
 
+                // Add footer
+                if(loaded) {
+                    // Update total records
+                    state.records = state.items.length - (props.hasHeader ? 1 : 0)
+
+                    if(props.hasFooter)
+                        items.push({loading: false, viewFlag: -2})
+                }
+
                 // Update item count
                 updateItemCount(items.length + (loaded ? 0 : 1))
 
@@ -488,7 +495,7 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
         // Renderer properties
         const newProps: ListItemRendererProps = {
             data: data,
-            end: (lp.index + 1 == itemCount),
+            end: (lp.index + 1 === state.items.length),
             index: lp.index,
             isScrolling: lp.isScrolling,
             layouts: state.layouts,

@@ -14,15 +14,17 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * Footer renderer
      * @param props Properties
      * @param className Style class name
+     * @param parentClasses Parent style classes
      */
-    footerRenderer?(props: ListItemRendererProps, className: string): React.ReactElement
+    footerRenderer?(props: ListItemRendererProps, className: string, parentClasses: string[]): React.ReactElement
     
     /**
      * Header renderer
      * @param props Properties
      * @param className Style class name
+     * @param parentClasses Parent style classes
      */
-    headerRenderer?(props: ListItemRendererProps, className: string): React.ReactElement
+    headerRenderer?(props: ListItemRendererProps, className: string, parentClasses: string[]): React.ReactElement
 
     /**
      * Is hide header
@@ -43,13 +45,9 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * Item renderer
      * @param props Properties
      * @param className Style class name
+     * @param parentClasses Parent style classes
      */
-    itemRenderer?(props: ListItemRendererProps, className: string): React.ReactElement
-
-    /**
-     * Item renderer row class, cancel default row style
-     */
-    itemRendererClass?: string
+    itemRenderer?(props: ListItemRendererProps, className: string, parentClasses: string[]): React.ReactElement
 
     /**
      * Load items callback
@@ -222,7 +220,7 @@ export function InfiniteTableGetRowClass(columns: ISearchLayoutItem[], selectabl
 /**
  * Infinite MUI table
  */
-export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTableProps>(({ innerClassName, footerRenderer, headerRenderer, height, hideHeader, itemRenderer, itemRendererClass, onItemClick, orderIndex, padding, rowHeight, selectable, sortable, ...rest }, ref) => {
+export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTableProps>(({ innerClassName, footerRenderer, headerRenderer, height, hideHeader, itemRenderer, onItemClick, orderIndex, padding, rowHeight, selectable, sortable, ...rest }, ref) => {
     // Avoid unnecessary load
     if(height == null || height < 1)
         return <></>
@@ -348,7 +346,7 @@ export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTabl
                     classNames.push(classes.tableHeader)
 
                     if(headerRenderer) {
-                        rows = headerRenderer(p, classes.tableCell)
+                        rows = headerRenderer(p, classes.tableCell, classNames)
                     } else if(p.layouts) {
                         classNames.push(columnClass!)
 
@@ -384,14 +382,14 @@ export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTabl
                             component="div"
                             className={classes.tableCell}
                         >
-                            {p.index}
+                            <CircularProgress size={20} />
                         </TableCell>
                     }
                 } else if(hasFooter && p.end) {
                     classNames.push(classes.tableFooter)
-                    rows = footerRenderer!(p, classes.tableCell)
+                    rows = footerRenderer!(p, classes.tableCell, classNames)
                 } else if(itemRenderer) {
-                    rows = itemRenderer(p, classes.tableCell)
+                    rows = itemRenderer(p, classes.tableCell, classNames)
                 } else if(p.layouts) {
                     // Support item click
                     if(onItemClick)
@@ -424,16 +422,16 @@ export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTabl
                         </TableCell>
                     ))}</>
                 } else {
+                    console.log(p)
                     rows = <TableCell
                         component="div"
                         className={classes.tableCell}
                     >
-                        {p.index}
                     </TableCell>
                 }
             }
             return (
-                <div style={p.style} className={ itemRendererClass ? itemRendererClass : Utils.mergeClasses(...classNames)} data-index={p.index} onClick={itemClickHandler}>
+                <div style={p.style} className={Utils.mergeClasses(...classNames)} data-index={p.index} onClick={itemClickHandler}>
                     {rows}
                 </div>
             )
