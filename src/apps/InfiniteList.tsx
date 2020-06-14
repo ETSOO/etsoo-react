@@ -349,6 +349,12 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
             // Reset session storage cache
             Utils.cacheSessionData(state, Utils.getLocationKey(uniqueKey))
 
+            // Restore the scroll bar
+            const scrollBar = domRef.current?.parentElement
+            if(scrollBar) {
+                scrollBar.scrollTo({ left: 0, top: 0 })
+            }
+
             // Clear the cached items
             loaderRef.current?.resetloadMoreItemsCache(true)
         },
