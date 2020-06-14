@@ -421,7 +421,9 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
         const items = state.items
 
         // Insert a loading item
-        items.push({loading: true, viewFlag: -1})
+        // Make sure the current item is not a loading item
+        if(items.length == 0 || !items[items.length - 1]?.loading)
+            items.push({loading: true, viewFlag: -1})
 
         // Update item count
         //updateItemCount(items.length + 1)
@@ -440,9 +442,12 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
                 // Start index
                 if(page == 1) {
                     // Update other data
-                    state.data = results.data
-                    state.layouts = results.layouts
-                    state.records = results.records
+                    if(results.data)
+                        state.data = results.data
+                    if(results.layouts)
+                        state.layouts = results.layouts
+                    if(results.records != null)
+                        state.records = results.records
                 }
 
                 // Loaded items

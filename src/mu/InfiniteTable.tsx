@@ -166,28 +166,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-
-// Custom styles
-interface ICustomStyle {
-    /**
-     * Selectable
-     */
-    selectable?: boolean
-
-    /**
-     * Template columns
-     */
-    templateColumns: string
-}
-
-// custom styles
-const customStyles = makeStyles<Theme, ICustomStyle>((theme) => ({
-    tableColumnRow: {
-        display: 'grid',
-        gridTemplateColumns: (paras) => paras.templateColumns
-    }
-}))
-
 /**
  * Get table row class
  * @param columns Columns
@@ -211,10 +189,10 @@ export function InfiniteTableGetRowClass(columns: ISearchLayoutItem[], selectabl
     if(selectable)
         styles.unshift('min-content')
 
-    // Join as style
-    const templateColumns = styles.join(' ')
-
-    return customStyles({ templateColumns }).tableColumnRow
+    return {
+        display: 'grid',
+        gridTemplateColumns: styles.join(' ')
+    }
 }
 
 /**
@@ -248,7 +226,7 @@ export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTabl
     let listRef = React.useRef<InfinitListMethods>(null)
 
     // Cached column style
-    let columnClass: string | null = null
+    let columnClass: { display: string, gridTemplateColumns: string } | undefined = undefined
 
     // Select all handler
     const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -348,7 +326,7 @@ export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTabl
                     if(headerRenderer) {
                         rows = headerRenderer(p, classes.tableCell, classNames)
                     } else if(p.layouts) {
-                        classNames.push(columnClass!)
+                        Object.assign(p.style, columnClass)
 
                         rows = <>{selectable && (
                             <TableCell
@@ -395,7 +373,7 @@ export const InfiniteTable = React.forwardRef<InfiniteTableMethods, InfiniteTabl
                     if(onItemClick)
                         classNames.push(classes.tableRowClick)
 
-                    classNames.push(columnClass!)
+                    Object.assign(p.style, columnClass)
                     rows = <>{selectable && (
                         <TableCell
                             component="div"
