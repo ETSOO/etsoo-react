@@ -98,7 +98,7 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
      * Item renderer
      * @param props 
      */
-    itemRenderer(props: ListItemRendererProps): React.ReactElement<ListItemRendererProps>
+    itemRenderer(props: ListItemRendererProps): React.ReactElement
 
     /**
      * Item size (height)
