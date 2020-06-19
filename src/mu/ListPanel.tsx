@@ -1,5 +1,5 @@
 import React from "react"
-import { PaperProps, makeStyles, Theme, Typography, Divider, List, ListItem } from "@material-ui/core"
+import { PaperProps, makeStyles, Typography, Divider, List, ListItem } from "@material-ui/core"
 import { Utils } from "../api/Utils"
 
 /**

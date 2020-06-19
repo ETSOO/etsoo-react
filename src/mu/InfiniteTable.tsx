@@ -107,6 +107,11 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * Sortable
      */
     sortable?: boolean
+
+    /**
+     * Try cache
+     */
+    tryCache?: boolean
 }
 
 /**

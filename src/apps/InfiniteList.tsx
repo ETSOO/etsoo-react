@@ -141,6 +141,11 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
      * Records to read onetime
      */
     records?: number
+
+    /**
+     * Try cache
+     */
+    tryCache?: boolean
 }
 
 /**
@@ -308,7 +313,7 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
     const domRef = React.useRef<HTMLDivElement>(null)
 
     // State without update
-    let defaultState = Utils.cacheSessionDataParse<InfiniteListState>(Utils.getLocationKey(uniqueKey))
+    let defaultState = props.tryCache ? Utils.cacheSessionDataParse<InfiniteListState>(Utils.getLocationKey(uniqueKey)) : undefined
     if(!defaultState)
         defaultState = new InfiniteListState()
 

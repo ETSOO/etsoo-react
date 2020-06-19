@@ -1,20 +1,9 @@
 import React from 'react'
-import { makeStyles, Fab, Theme } from '@material-ui/core'
+import { makeStyles, Fab, Theme, Menu, MenuItem } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop'
-
-interface ICustomStyle {
-    /**
-     * Bottom position (px)
-     */
-    bottom?: number,
-
-    /**
-     * Right position (px)
-     */
-    right?: number
-}
+import { IClickAction } from '../api/IClickAction'
+import { SearchPageMoreFab } from './SearchPageMoreFab'
 
 /**
  * Search page fabs methods
@@ -30,7 +19,17 @@ export interface SearchPageFabsMethods {
 /**
  * Search page fabs properties
  */
-export interface SearchPageFabsProps extends ICustomStyle {
+export interface SearchPageFabsProps {
+    /**
+     * Bottom position
+     */
+    bottom?: number
+
+    /**
+     * More actions
+     */
+    moreActions?: IClickAction[]
+
     /**
      * Add button click handler
      */
@@ -42,13 +41,13 @@ export interface SearchPageFabsProps extends ICustomStyle {
     onGoTopClick?: React.MouseEventHandler
 
     /**
-     * More button click handler
+     * Right position
      */
-    onMoreClick?: React.MouseEventHandler
+    right?: number
 }
 
 // Styles
-const useStyles = makeStyles<Theme, ICustomStyle>((theme) => ({
+const useStyles = makeStyles<Theme, {bottom?: number, right?: number}>((theme) => ({
     fabs: {
         position: 'absolute',
         justifyItems: 'center',
@@ -57,6 +56,10 @@ const useStyles = makeStyles<Theme, ICustomStyle>((theme) => ({
         display: 'flex',
         alignItems: 'center',
         alignContent: 'center',
+        opacity: 0.8,
+        '&:hover': {
+            opacity: 1
+        },
         [theme.breakpoints.up('md')]: {
             flexDirection: 'row',
             '&>*': {
@@ -75,7 +78,7 @@ const useStyles = makeStyles<Theme, ICustomStyle>((theme) => ({
 /**
  * Search page fabs of 'Go top', 'Add', and 'More' functions
  */
-export const SearchPageFabs = React.forwardRef<SearchPageFabsMethods, SearchPageFabsProps>(({ bottom, onAddClick, onGoTopClick, onMoreClick, right }, ref) => {
+export const SearchPageFabs = React.forwardRef<SearchPageFabsMethods, SearchPageFabsProps>(({ bottom, moreActions, onAddClick, onGoTopClick, right }, ref) => {
     // Style
     const classes = useStyles({ bottom, right })
 
@@ -112,11 +115,12 @@ export const SearchPageFabs = React.forwardRef<SearchPageFabsMethods, SearchPage
     }
 
     // More
-    if(onMoreClick) {
+    if(moreActions && moreActions.length > 0) {
         fabs.push(
-            <Fab color="secondary" size="medium" onClick={onMoreClick} key="more">
-                <MoreHorizIcon />
-            </Fab>
+            <SearchPageMoreFab
+                key="more"
+                actions={moreActions}
+            />
         )
     }
 

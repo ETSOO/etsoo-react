@@ -206,6 +206,26 @@ const sortItems = (items: (ISearchItem | undefined)[], field: string, type: Data
 }
 
 /**
+ * Cache kind
+ */
+export enum CacheKind {
+    /**
+     * Router pop action only
+     */
+    PopOnly = 1,
+
+    /**
+     * Cache in a minute
+     */
+    InMinute = 2,
+
+    /**
+     * During the session
+     */
+    Session = 4
+}
+
+/**
  * Utils
  */
 export const Utils = {

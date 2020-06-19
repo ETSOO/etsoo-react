@@ -88,3 +88,36 @@ export interface IRawResult {
      */
     readonly errors?: IResultErrors
 }
+
+/**
+ * Result error
+ */
+export class ResultError extends Error {
+    /**
+     * Format the result to a meaningful string
+     * @param result Result
+     */
+    public static format(result: IResult<IResultData>) {
+        return `${result.message || 'Error'} (${result.errorCode}${result.field ? ', ' + result.field : ''})`
+    }
+
+    /**
+     * Related result
+     */
+    public result: IResult<IResultData>
+
+    /**
+     * Constructor
+     * @param result Result
+     */
+    constructor(result: IResult<IResultData>) {
+        // Super
+        super(ResultError.format(result))
+
+        // Hold the result
+        this.result = result
+
+        // Set the prototype explicitly
+        Object.setPrototypeOf(this, ResultError.prototype);
+    }
+}

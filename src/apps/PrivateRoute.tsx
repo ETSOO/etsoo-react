@@ -24,7 +24,7 @@ export interface PrivateRouteRedirectState {
  * Configue a strict route with '/login' to redirect to application's actual login page
  * In login page, useLocation() to get the Location object, and Location.state as PrivateRouteRedirectState to access referrer
  */
-export const PrivateRoute: React.FunctionComponent<PrivateRouteProp> = ({authorized, ...rest}) => {
+export function PrivateRoute({authorized, ...rest}: PrivateRouteProp){
     return (
         authorized ? <Route {...rest}/> : <Redirect to={{pathname: `/login`, state: {referrer: rest.location} as PrivateRouteRedirectState}}/>
     )

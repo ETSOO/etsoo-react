@@ -27,7 +27,7 @@ export class CustomerController extends EntityController
      * @param model Search condition
      * @param field Field
      */
-    formatSearchModel(model: CustomerSearchModel | null, field: string) {
+    formatSearchModel(model: CustomerSearchModel | undefined, field: string) {
         if(model == null)
             return { field }
         else {
@@ -40,7 +40,7 @@ export class CustomerController extends EntityController
      * Search data
      * @param model Search condition data model
      */
-    async search<D extends CustomerSearchItem>(model: CustomerSearchModel | null = null) {
+    async search<D extends CustomerSearchItem>(model: CustomerSearchModel | undefined = undefined) {
         return await super.searchBase<ISearchResult<D>, CustomerSearchModel>(model)
     }
 
@@ -48,7 +48,7 @@ export class CustomerController extends EntityController
      * Search address items
      * @param model Search condition data model
      */
-    async searchAddressItems(model: CustomerSearchModel | null = null) {
+    async searchAddressItems(model: CustomerSearchModel | undefined = undefined) {
         return this.search<CustomerSearchAddressItem>(this.formatSearchModel(model, 'address'))
     }
 
@@ -56,7 +56,7 @@ export class CustomerController extends EntityController
      * Search person items
      * @param model Search condition data model
      */
-    async searchPersonItems(model: CustomerSearchModel | null = null) {
+    async searchPersonItems(model: CustomerSearchModel | undefined = undefined) {
         return this.search<CustomerSearchPersonItem>(this.formatSearchModel(model, 'person'))
     }
 
@@ -64,7 +64,7 @@ export class CustomerController extends EntityController
      * Search person logo items
      * @param model Search condition data model
      */
-    async searchPersonLogoItems(model: CustomerSearchModel | null = null) {
+    async searchPersonLogoItems(model: CustomerSearchModel | undefined = undefined) {
         return this.search<CustomerSearchPersonLogoItem>(this.formatSearchModel(model, 'personlogo'))
     }
 }

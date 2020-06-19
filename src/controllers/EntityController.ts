@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios'
 import { IApiUser } from "../api/IApiUser"
 import { IApiEntity } from '../api/IApiEntity'
-import { IResult, IRawResult, IResultData } from '../api/IResult'
+import { IResult, IRawResult, IResultData, ResultError } from '../api/IResult'
 import { TiplistModel } from '../models/TiplistModel'
 import { IListItem } from '../views/IListItem'
 import { IViewModel } from '../views/IView'
@@ -75,19 +75,41 @@ export abstract class EntityController {
     }
 
     /**
+     * Format search result data, if error found, report it
+     * @param data Raw search result data
+     */
+    protected formatSearchResult<D>(data: any) {
+        // error_code is the flag property of the error result
+        if('error_code' in data) {
+            throw new ResultError(this.formatResultBase(data))
+        }
+
+        return data as D
+    }
+
+    /**
+     * Data report
+     * @param id Field of data
+     * @param parameters Parameters
+     */
+    async report<D>(id: string, parameters: string | undefined = undefined) {
+        return this.formatSearchResult<D>((await this.api.get(`report/${id}`, { params: { p: parameters} })).data)
+    }
+
+    /**
      * Search source data
      * @param conditions Search conditions
      */
-    async searchBase<D, M extends TiplistModel>(conditions: M | null = null) {
-        return (await this.api.get('', { params: conditions })).data as D
+    async searchBase<D, M extends TiplistModel>(conditions: M | undefined = undefined) {
+        return this.formatSearchResult<D>((await this.api.get('', { params: conditions })).data)
     }
 
     /**
      * Get tiplist data
      * @param model Data model
      */
-    async tiplist<M extends TiplistModel>(model: M | null = null) {
-        return (await this.api.get('tiplist', { params: model })).data as IListItem[]
+    async tiplist<M extends TiplistModel>(model: M | undefined = undefined) {
+        return this.formatSearchResult<IListItem[]>((await this.api.get('tiplist', { params: model })).data)
     }
 
     /**
@@ -95,7 +117,7 @@ export abstract class EntityController {
      * @param id Entity id
      * @param field Data region
      */
-    async viewBase(id: number, field:string | null = null) {
+    async viewBase(id: number, field:string | undefined = undefined) {
         return (await this.api.get(`${id}${field == null ? '' : '/' + field}`)).data
     }
 
@@ -104,8 +126,8 @@ export abstract class EntityController {
      * @param id Entity id
      * @param field Data region
      */
-    async view<D extends IViewModel>(id: number, field:string | null = null) {
-        return (await this.viewBase(id, field)) as D
+    async view<D extends IViewModel>(id: number, field:string | undefined = undefined) {
+        return this.formatSearchResult<D>(await this.viewBase(id, field))
     }
 
     /**
@@ -113,7 +135,7 @@ export abstract class EntityController {
      * @param id Entity id
      * @param field Data region
      */
-    async viewF<V>(factory: IViewFactory<V>, id: number, field:string | null = null) {
-        return factory((await this.viewBase(id, field)) as IViewModel)
+    async viewF<V>(factory: IViewFactory<V>, id: number, field:string | undefined = undefined) {
+        return factory(this.formatSearchResult<IViewModel>(await this.viewBase(id, field)))
     }
 }
