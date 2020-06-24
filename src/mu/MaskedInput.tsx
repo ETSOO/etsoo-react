@@ -14,7 +14,7 @@ export type MaskedInputProps = TextFieldProps & Props
 export function MaskedInput({fullWidth, InputLabelProps, label, ...rest}: MaskedInputProps) {
     return (
         <InputMask {...rest as Props}>
-            <TextField fullWidth={fullWidth} InputLabelProps={InputLabelProps} label={label} />
+            {() => <TextField fullWidth={fullWidth} InputLabelProps={InputLabelProps} label={label} />}
         </InputMask>
     )
 }

@@ -1,6 +1,6 @@
 {
   "name": "etsoo-react",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "ETSOO React TypeScript components NPM package",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
