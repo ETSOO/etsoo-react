@@ -267,7 +267,7 @@ export interface InfinitListMethods {
 }
 
 // Format items
-const formatItems = (items: (ISearchItem | undefined)[], hasHeader?: boolean) => {
+const formatItems = (items: (ISearchItem | undefined)[], hasHeader?: boolean, hasFooter: boolean | undefined = undefined) => {
     // Header
     if(hasHeader) {
         // Insert header item
@@ -277,6 +277,13 @@ const formatItems = (items: (ISearchItem | undefined)[], hasHeader?: boolean) =>
         // No header, remove the first header item
         if(items[0]!.viewFlag === -1)
             items.shift()
+    }
+
+    if(hasFooter) {
+        // No push action here to avoid calculation of total records failed
+    } else if (items.length > 0) {
+        if(items[items.length - 1]!.viewFlag === -2)
+            items.pop()
     }
 }
 
@@ -320,7 +327,7 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
     const[state] = React.useState(defaultState)
 
     // Header
-    formatItems(state.items, props.hasHeader)
+    formatItems(state.items, props.hasHeader, props.hasFooter)
 
     // Item count with update, start with 1 for lazy loading later
     const[itemCount, updateItemCount] = React.useState(state.items.length + (state.loaded ? 0 : 1))
@@ -477,8 +484,7 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
                 // Add footer
                 if(loaded) {
                     // Update total records
-                    state.records = state.items.length - (props.hasHeader ? 1 : 0)
-
+                    state.records = items.length - (props.hasHeader ? 1 : 0)
                     if(props.hasFooter)
                         items.push({loading: false, viewFlag: -2})
                 }

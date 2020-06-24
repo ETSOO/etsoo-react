@@ -49,8 +49,6 @@ const useStyles = makeStyles((theme) => ({
     title: {
         fontWeight: 'bold',
         flexGrow: 1
-    },
-    list: {
     }
 }))
 
@@ -70,9 +68,7 @@ export function ListPanel({ className, footerElement, items, itemRenderer, moreE
 
         <Divider/>
 
-        <div className={classes.list}>
-            { items.map((item, index) => itemRenderer(item, index) ) }
-        </div>
+        { items.map((item, index) => itemRenderer(item, index) ) }
 
         <Divider/>
 

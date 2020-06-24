@@ -183,7 +183,7 @@ export function SearchPage({ className, hasFooter, height, moreActions, itemRend
     }
 
     // Footer renderer
-    const footerRenderer = hasFooter && md ? undefined : (props: ListItemRendererProps, className: string, parentClasses: string[]) => {
+    const footerRenderer = (hasFooter !== false && !md) ? (props: ListItemRendererProps, className: string, parentClasses: string[]) => {
         if(md) {
             parentClasses.splice(0)
             parentClasses.push(classes.tableRow)
@@ -239,7 +239,7 @@ export function SearchPage({ className, hasFooter, height, moreActions, itemRend
                 )
             }
         }
-    }
+    } : undefined
 
     // Search seed
     let searchSeed: number
@@ -271,7 +271,7 @@ export function SearchPage({ className, hasFooter, height, moreActions, itemRend
 
         if(input) {
             // Get the cached keywords
-            input.value = Utils.cacheSessionDataGet(Utils.getLocationKey('keyword')) || ''
+            input.value = tryCache ? (Utils.cacheSessionDataGet(Utils.getLocationKey('keyword')) || '') : ''
 
             // Add the event handler
             input.addEventListener('input', onInput)

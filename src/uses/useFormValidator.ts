@@ -170,7 +170,7 @@ export const useFormValidator = (schemas: Yup.ObjectSchema<object>, defaultField
     }
 
     /**
-     * Input or Textarea blur handler, with all form data to validate
+     * Input or Textarea change handler, with all form data to validate
      * @param event Focus event
      */
     const changeFormHandler = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
