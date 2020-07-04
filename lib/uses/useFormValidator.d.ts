@@ -8,7 +8,7 @@ import { IDynamicData } from "../api/IDynamicData";
  * @param defaultField Default field to report any error without correct field
  * @param milliseconds Merge change update interval
  */
-export declare const useFormValidator: (schemas: Yup.ObjectSchema<object>, defaultField: string, milliseconds?: number) => {
+export declare const useFormValidator: (schemas: Yup.ObjectSchema<any>, defaultField: string, milliseconds?: number) => {
     blurHandler: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>, refs?: string[] | null) => void;
     blurFormHandler: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     changeHandler: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, refs?: string[] | null) => void;
