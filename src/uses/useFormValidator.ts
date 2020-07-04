@@ -32,7 +32,7 @@ interface FormValidatorStateFields {
  * @param defaultField Default field to report any error without correct field
  * @param milliseconds Merge change update interval
  */
-export const useFormValidator = (schemas: Yup.ObjectSchema<object>, defaultField:string, milliseconds: number = 200) => {
+export const useFormValidator = (schemas: Yup.ObjectSchema<any>, defaultField:string, milliseconds: number = 200) => {
     // useState init
     const defaultState: FormValidatorStateFields = {}
     const [state, updateState] = React.useState<FormValidatorStateFields>(defaultState)

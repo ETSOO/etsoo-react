@@ -1,4 +1,5 @@
 # Build and Release Folders
+# Should keep lib/ for release to NPM
 bin-debug/
 bin-release/
 [Oo]bj/
