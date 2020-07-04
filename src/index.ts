@@ -28,7 +28,9 @@ export * from './controllers/ApiSingleton';
 export * from './controllers/CustomerController'
 export * from './controllers/CustomerLoginController'
 export * from './controllers/EntityController'
+export * from './controllers/ExtendAddress'
 export * from './controllers/IApiConfigs'
+export * from './controllers/IEntityController'
 export * from './controllers/LoginController'
 export * from './controllers/UserController'
 export * from './controllers/UserLoginController'
@@ -42,6 +44,7 @@ export * from './models/SearchModel'
 export * from './models/TiplistModel'
 
 // mu - Material-UI
+export * from './mu/CountryList'
 export * from './mu/InfiniteTable'
 export * from './mu/LanguageChooser'
 export * from './mu/ListPanel'

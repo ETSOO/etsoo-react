@@ -12,6 +12,11 @@ import { IDynamicData } from "../api/IDynamicData"
  */
 export interface StepperFormItemProps {
     /**
+     * Current form data
+     */
+    formData: IDynamicData
+
+    /**
      * Child form ready callback
      * @param methods Methods
      */
@@ -89,6 +94,12 @@ export interface StepperFormProps {
      * Steps
      */
     steps: StepperFormItem[]
+
+    /**
+     * Submit handler
+     * @param data Form data
+     */
+    submitHandler(data: IDynamicData): void
 }
 
 // Styles
@@ -109,7 +120,7 @@ const useStyles = makeStyles<Theme, {padding?: number}>((theme) => ({
  * Stepper form
  * @param props Properties
  */
-export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: StepperFormProps) {
+export function StepperForm({buttons, maxWidth, padding, promptForExit, steps, submitHandler}: StepperFormProps) {
     // Styles
     const classes = useStyles({padding})
     const theme = useTheme()
@@ -125,6 +136,14 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: 
         updateActiveStep(step)
     }
 
+    // Complted steps
+    const [completedSteps] = React.useState(new Set<number>())
+
+    // Check specific step is completed
+    const isStepCompleted = (step: number) => {
+        return completedSteps.has(step)
+    }
+
     // Notifier
     const notifierUpdate = React.useContext(NotifierContext)
 
@@ -133,6 +152,9 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: 
 
     // Prompt
     const [prompt, updatePrompt] = React.useState(true)
+
+    // Form data
+    const [formData] = React.useState<IDynamicData>({})
 
     // Prompt for leave
     // return true for navigating
@@ -171,6 +193,25 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: 
         currentMethods = methods
     }
 
+    // Update step data
+    const updateStep = (data: IDynamicData | null) => {
+        if(data) {
+            // Passed validataion and get the form data
+            Object.assign(formData, data)
+
+            // Set completed flag
+            if(!completedSteps.has(activeStep))
+                completedSteps.add(activeStep)
+
+            return true
+        } else {
+            // Remove possible completed flag
+            completedSteps.delete(activeStep)
+
+            return false
+        }
+    }
+
     /**
      * Create button elements
      */
@@ -181,10 +222,8 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: 
                 case StepperFormAction.Next:
                     if(currentMethods) {
                         currentMethods.collectData().then(data => {
-                            if(data) {
-                                // Passed validataion and get the form data
-                                console.log(data)
-
+                            // Update step data
+                            if(updateStep(data)) {
                                 // Next page
                                 updateActiveStep(activeStep + 1)
                             }
@@ -197,10 +236,19 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: 
                 default:
                     if(currentMethods) {
                         currentMethods.collectData().then(data => {
-                            if(data) {
-                                // Passed validataion and get the form data
-                                // Collect all data and trigger the submit handler
+                            // Update step data
+                            if(updateStep(data)) {
+                                // Check completion
+                                for(let index = 0; index < steps.length; index++) {
+                                    if(!completedSteps.has(index)) {
+                                        updateActiveStep(index)
+                                        // Break totally
+                                        return
+                                    }
+                                }
 
+                                // Submit data
+                                submitHandler(formData)
                             }
                         })
                     }
@@ -223,7 +271,7 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: 
                             <Step key={step.label} completed={false}>
                                 <StepButton
                                     onClick={handleStepClick(index)}
-                                    completed={false}
+                                    completed={isStepCompleted(index)}
                                 >
                                     {step.label}
                                 </StepButton>
@@ -258,7 +306,7 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps}: 
                     steps.map((step, index) => {
                         const active = (index === activeStep)
                         return <div key={index} hidden={!active} className={classes.formContainer}>
-                            {React.createElement(step.form, { formReady: (active ? formReady : undefined) })}
+                            {React.createElement(step.form, { formData, formReady: (active ? formReady : undefined) })}
                         </div>
                     })
                 }

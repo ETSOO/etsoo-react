@@ -9,30 +9,47 @@ import { IViewFactory } from '../views/IViewFactory'
 import { ApiSingleton } from './ApiSingleton'
 import { Notifier } from '../mu/Notifier'
 import { IApiConfigs } from './IApiConfigs'
+import { IEntityController } from './IEntityController'
 
 /**
  * Entity API controller
  */
-export abstract class EntityController {
+export abstract class EntityController implements IEntityController {
+    #api: AxiosInstance
+
     /**
      * API
      */
-    protected api: AxiosInstance
+    public get api() {
+        return this.#api
+    }
+
+    #entity: IApiEntity
 
     /**
      * Current entity description
      */
-    protected entity: IApiEntity
+    public get entity() {
+        return this.#entity
+    }
+
+    #singleton: ApiSingleton
 
     /**
      * API Singleton
      */
-    public singleton: ApiSingleton
+    public get singleton() {
+        return this.#singleton
+    }
+
+    #user: IApiUser
 
     /**
      * Current user
      */
-    private user: IApiUser
+    public get user() {
+        return this.#user
+    }
 
     /**
      * Constructor
@@ -42,16 +59,16 @@ export abstract class EntityController {
      */
     protected constructor(user: IApiUser, entity: IApiEntity, configs: IApiConfigs) {
         // API Singleton
-        this.singleton = ApiSingleton.getInstance(new Notifier())
+        this.#singleton = ApiSingleton.getInstance(new Notifier())
 
         // Init
-        this.user = user
-        this.entity = entity
+        this.#user = user
+        this.#entity = entity
 
         // API configuration
         if(configs.baseUrl == null)
             configs.baseUrl = this.singleton.settings.endpoint + '/' + entity.identity
-        this.api = this.singleton.createApi(configs)
+        this.#api = this.singleton.createApi(configs)
     }
 
     /**

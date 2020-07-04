@@ -7,9 +7,6 @@ import { InfiniteListSharedProps } from './InfiniteListSharedProps'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { DataType } from '../api/DataType'
 
-// Unique key for cache
-const uniqueKey = 'infinitelist'
-
 /**
  * List item renderer properties
  */
@@ -85,6 +82,11 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
     horizontal?: boolean
 
     /**
+     * Id of the component
+     */
+    id?: string
+
+    /**
      * Inner container class name
      */
     innerClassName?: string
@@ -112,6 +114,11 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
      * @param orderIndex Order field index
      */
     loadItems(page: number, records: number, orderIndex?: number): Promise<ISearchResult<ISearchItem>>
+
+    /**
+     * Name of the component
+     */
+    name?: string
 
     /**
      * On scroll callback
@@ -318,6 +325,9 @@ export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListPro
 
     // Dom reference
     const domRef = React.useRef<HTMLDivElement>(null)
+
+    // Unique key for cache
+    const uniqueKey = 'infinitelist' + (props.id || props.name || '')
 
     // State without update
     let defaultState = props.tryCache ? Utils.cacheSessionDataParse<InfiniteListState>(Utils.getLocationKey(uniqueKey)) : undefined

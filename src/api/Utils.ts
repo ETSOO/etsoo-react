@@ -3,6 +3,22 @@ import { ISearchItem } from "../views/ISearchResult"
 import { DataType } from "./DataType"
 
 /**
+ * Apply mixins, official suggested method
+ * https://www.typescriptlang.org/docs/handbook/mixins.html#understanding-the-sample
+ * @param derivedCtor Mixin target class
+ * @param baseCtors Mixin base classes
+ */
+const applyMixins = (derivedCtor: any, baseCtors: any[]) => {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+             if (name !== 'constructor') {
+                derivedCtor.prototype[name] = baseCtor.prototype[name]
+            }
+        })
+    })
+}
+
+/**
  * Cache session data
  * @param data Data
  * @param key Key
@@ -229,6 +245,7 @@ export enum CacheKind {
  * Utils
  */
 export const Utils = {
+    applyMixins,
     cacheSessionData,
     cacheSessionDataGet,
     cacheSessionDataParse,

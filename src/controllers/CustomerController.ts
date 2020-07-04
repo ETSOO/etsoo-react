@@ -5,11 +5,12 @@ import { IApiConfigs } from "./IApiConfigs"
 import { CustomerSearchModel } from "../models/CustomerSearchModel"
 import { CustomerSearchItem, CustomerSearchPersonItem, CustomerSearchAddressItem, CustomerSearchPersonLogoItem } from "../views/CustomerSearchItem"
 import { ISearchResult } from "../views/ISearchResult"
+import { ExtendAddress } from "./ExtendAddress"
 
 /**
  * Customer API controller
  */
-export class CustomerController extends EntityController
+class CustomerControllerBase extends EntityController
 {
     /**
      * Constructor
@@ -68,3 +69,5 @@ export class CustomerController extends EntityController
         return this.search<CustomerSearchPersonLogoItem>(this.formatSearchModel(model, 'personlogo'))
     }
 }
+
+export const CustomerController = ExtendAddress(CustomerControllerBase)
