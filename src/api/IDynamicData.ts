@@ -5,3 +5,16 @@
 export interface IDynamicData {
     [key: string]: any
 }
+
+/**
+ * Add model data
+ */
+export interface IAddData extends IDynamicData {
+}
+
+/**
+ * Edit model data
+ */
+export interface IEditData extends IAddData {
+    id: number | string
+}

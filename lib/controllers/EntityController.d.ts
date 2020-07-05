@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { IApiUser } from "../api/IApiUser";
 import { IApiEntity } from '../api/IApiEntity';
-import { IResult, IRawResult, IResultData, IAddData, IEditData, IdResultData } from '../api/IResult';
+import { IResult, IRawResult, IResultData, IdResultData } from '../api/IResult';
 import { TiplistModel } from '../models/TiplistModel';
 import { IListItem } from '../views/IListItem';
 import { IViewModel } from '../views/IView';
@@ -9,6 +9,7 @@ import { IViewFactory } from '../views/IViewFactory';
 import { ApiSingleton } from './ApiSingleton';
 import { IApiConfigs } from './IApiConfigs';
 import { IEntityController } from './IEntityController';
+import { IAddData, IEditData } from '../api/IDynamicData';
 /**
  * Entity API controller
  */
