@@ -49,6 +49,11 @@ export declare abstract class EntityController implements IEntityController {
      */
     addExtended<D extends IResultData>(data: IAddData): Promise<IResult<D>>;
     /**
+     * Delete entities
+     * @param ids Ids to delete
+     */
+    delete(...ids: (number | string)[]): Promise<IResult<IResultData>>;
+    /**
      * Edit entity
      * @param data Model data
      */

@@ -89,6 +89,16 @@ export abstract class EntityController implements IEntityController {
     }
 
     /**
+     * Delete entities
+     * @param ids Ids to delete
+     */
+    async delete(...ids: (number | string)[]) {
+        // Single id passed with path, otherwise as query parameters as 'ids=1&ids=2'
+        const api = ids.length == 1 ? '/' + ids[0] : '?' + ids.map(id => `ids=${id}`).join('&')
+        return this.formatResult<IResultData>((await this.api.delete(api)).data)
+    }
+
+    /**
      * Edit entity
      * @param data Model data
      */
