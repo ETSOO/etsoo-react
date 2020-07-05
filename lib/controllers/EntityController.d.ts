@@ -41,7 +41,7 @@ export declare abstract class EntityController implements IEntityController {
      * Add entity
      * @param data Model data
      */
-    add(data: IAddData): Promise<void>;
+    add(data: IAddData): Promise<IResult<IdResultData>>;
     /**
      * Add entity extended
      * @param data Model data
