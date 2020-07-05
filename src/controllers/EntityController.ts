@@ -100,18 +100,20 @@ export abstract class EntityController implements IEntityController {
 
     /**
      * Edit entity
+     * @param id Entity's id
      * @param data Model data
      */
-    async edit(data: IEditData) {
-        return this.editExtended<IdResultData>(data)
+    async edit(id: number | string, data: IEditData) {
+        return this.editExtended<IdResultData>(id, data)
     }
 
     /**
      * Edit entity extended
+     * @param id Entity's id
      * @param data Model data
      */
-    async editExtended<D extends IResultData>(data: IEditData) {
-        return this.formatResult<D>((await this.api.put('', data)).data)
+    async editExtended<D extends IResultData>(id: number | string, data: IEditData) {
+        return this.formatResult<D>((await this.api.put(`/${id}`, data)).data)
     }
 
     /**

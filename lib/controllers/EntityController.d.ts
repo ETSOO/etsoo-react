@@ -55,14 +55,16 @@ export declare abstract class EntityController implements IEntityController {
     delete(...ids: (number | string)[]): Promise<IResult<IResultData>>;
     /**
      * Edit entity
+     * @param id Entity's id
      * @param data Model data
      */
-    edit(data: IEditData): Promise<IResult<IdResultData>>;
+    edit(id: number | string, data: IEditData): Promise<IResult<IdResultData>>;
     /**
      * Edit entity extended
+     * @param id Entity's id
      * @param data Model data
      */
-    editExtended<D extends IResultData>(data: IEditData): Promise<IResult<D>>;
+    editExtended<D extends IResultData>(id: number | string, data: IEditData): Promise<IResult<D>>;
     /**
      * Format the result data to IResult interface
      * @param data Raw result data, avoid use any for simplicity

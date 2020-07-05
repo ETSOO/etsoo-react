@@ -15,6 +15,5 @@ export interface IAddData extends IDynamicData {
 /**
  * Edit model data
  */
-export interface IEditData extends IAddData {
-    id: number | string
+export interface IEditData extends IDynamicData {
 }
