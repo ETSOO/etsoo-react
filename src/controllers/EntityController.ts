@@ -76,7 +76,7 @@ export abstract class EntityController implements IEntityController {
      * @param data Model data
      */
     async add(data: IAddData) {
-        this.addExtended<IdResultData>(data)
+        return this.addExtended<IdResultData>(data)
     }
 
     /**
