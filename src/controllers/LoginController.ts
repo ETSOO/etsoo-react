@@ -22,6 +22,18 @@ export interface UserLoginSuccess
 }
 
 /**
+ * Login data factory callback
+ * Format the data to unified object
+ */
+export interface ILoginDataFactory
+{
+    /**
+     * Callback function
+     */
+    (data: any): IResult<LoginResultData>
+}
+
+/**
  * Login API controller
  */
 export abstract class LoginController extends EntityController
@@ -30,6 +42,16 @@ export abstract class LoginController extends EntityController
      * User state dispatch
      */
     protected dispatch: React.Dispatch<UserAction>
+
+    /**
+     * Login result format callback
+     */
+    public loginFormat?: ILoginDataFactory
+
+    /**
+     * Login with token format callback
+     */
+    public loginTokenFormat?: ILoginDataFactory
     
     /**
      * Constructor
@@ -109,8 +131,9 @@ export abstract class LoginController extends EntityController
      */
     async login(model: LoginModel, dataCallback: UserLoginSuccess | null = null) {
         const { method, currentLanguage: languageCid } = this.singleton.settings
-        const data = Object.assign(model, { method, languageCid })
-        const result = this.formatResult<LoginResultData>((await this.api.post('Login', data)).data)
+        const post = Object.assign(model, { method, languageCid })
+        const data = (await this.api.post('Login', post)).data
+        const result = this.loginFormat ? this.loginFormat(data) : this.formatResult<LoginResultData>(data)
         await this.loginResult(result, dataCallback, model)
         return result
     }
@@ -121,8 +144,9 @@ export abstract class LoginController extends EntityController
      */
     async loginToken(model: LoginTokenModel, dataCallback: UserLoginSuccess | null = null) {
         const { method, currentLanguage: languageCid } = this.singleton.settings
-        const data = Object.assign(model, { method, languageCid })
-        const result = this.formatResult<LoginResultData>((await this.api.post('LoginToken', data)).data)
+        const post = Object.assign(model, { method, languageCid })
+        const data = (await this.api.post('LoginToken', post)).data
+        const result = this.loginTokenFormat ? this.loginTokenFormat(data) : this.formatResult<LoginResultData>(data)
         await this.loginResult(result, dataCallback, undefined)
         return result
     }

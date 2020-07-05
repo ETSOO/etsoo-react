@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios'
 import { IApiUser } from "../api/IApiUser"
 import { IApiEntity } from '../api/IApiEntity'
-import { IResult, IRawResult, IResultData, ResultError } from '../api/IResult'
+import { IResult, IRawResult, IResultData, ResultError, IAddData, IEditData, IdResultData } from '../api/IResult'
 import { TiplistModel } from '../models/TiplistModel'
 import { IListItem } from '../views/IListItem'
 import { IViewModel } from '../views/IView'
@@ -69,6 +69,38 @@ export abstract class EntityController implements IEntityController {
         if(configs.baseUrl == null)
             configs.baseUrl = this.singleton.settings.endpoint + '/' + entity.identity
         this.#api = this.singleton.createApi(configs)
+    }
+    
+    /**
+     * Add entity
+     * @param data Model data
+     */
+    async add(data: IAddData) {
+        this.addExtended<IdResultData>(data)
+    }
+
+    /**
+     * Add entity extended
+     * @param data Model data
+     */
+    async addExtended<D extends IResultData>(data: IAddData) {
+        return this.formatResult<D>((await this.api.post('', data)).data)
+    }
+
+    /**
+     * Edit entity
+     * @param data Model data
+     */
+    async edit(data: IEditData) {
+        return this.editExtended<IdResultData>(data)
+    }
+
+    /**
+     * Edit entity extended
+     * @param data Model data
+     */
+    async editExtended<D extends IResultData>(data: IEditData) {
+        return this.formatResult<D>((await this.api.put('', data)).data)
     }
 
     /**

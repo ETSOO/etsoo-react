@@ -19,6 +19,16 @@ export interface UserLoginSuccess {
     (userId: number): Promise<IUserUpdate>;
 }
 /**
+ * Login data factory callback
+ * Format the data to unified object
+ */
+export interface ILoginDataFactory {
+    /**
+     * Callback function
+     */
+    (data: any): IResult<LoginResultData>;
+}
+/**
  * Login API controller
  */
 export declare abstract class LoginController extends EntityController {
@@ -26,6 +36,14 @@ export declare abstract class LoginController extends EntityController {
      * User state dispatch
      */
     protected dispatch: React.Dispatch<UserAction>;
+    /**
+     * Login result format callback
+     */
+    loginFormat?: ILoginDataFactory;
+    /**
+     * Login with token format callback
+     */
+    loginTokenFormat?: ILoginDataFactory;
     /**
      * Constructor
      * @param user Current user

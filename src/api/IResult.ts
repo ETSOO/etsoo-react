@@ -7,6 +7,26 @@ export interface IResultData {
 }
 
 /**
+ * Add model data
+ */
+export interface IAddData extends IResultData {
+}
+
+/**
+ * Edit model data
+ */
+export interface IEditData extends IAddData {
+    id: number | string
+}
+
+/**
+ * Add/Edit result data
+ */
+export interface IdResultData extends IResultData {
+    id: number | string
+}
+
+/**
  * Result errors
  * Indexable type
  */

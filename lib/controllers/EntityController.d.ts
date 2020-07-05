@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { IApiUser } from "../api/IApiUser";
 import { IApiEntity } from '../api/IApiEntity';
-import { IResult, IRawResult, IResultData } from '../api/IResult';
+import { IResult, IRawResult, IResultData, IAddData, IEditData, IdResultData } from '../api/IResult';
 import { TiplistModel } from '../models/TiplistModel';
 import { IListItem } from '../views/IListItem';
 import { IViewModel } from '../views/IView';
@@ -37,6 +37,26 @@ export declare abstract class EntityController implements IEntityController {
      * @param configs Additional API configs
      */
     protected constructor(user: IApiUser, entity: IApiEntity, configs: IApiConfigs);
+    /**
+     * Add entity
+     * @param data Model data
+     */
+    add(data: IAddData): Promise<void>;
+    /**
+     * Add entity extended
+     * @param data Model data
+     */
+    addExtended<D extends IResultData>(data: IAddData): Promise<IResult<D>>;
+    /**
+     * Edit entity
+     * @param data Model data
+     */
+    edit(data: IEditData): Promise<IResult<IdResultData>>;
+    /**
+     * Edit entity extended
+     * @param data Model data
+     */
+    editExtended<D extends IResultData>(data: IEditData): Promise<IResult<D>>;
     /**
      * Format the result data to IResult interface
      * @param data Raw result data, avoid use any for simplicity
