@@ -8,20 +8,20 @@ export interface INotifier {
      * @param title Title
      * @callback callback Callback
      */
-    confirm(message: string, title: string | undefined, callback: INotifierCallback | null): void;
+    confirm(message: string, title?: string, callback?: INotifierCallback): void;
     /**
      * Report message
      * @param message Message
      * @param title Title
      * @callback callback Callback
      */
-    report(message: string, title: string | undefined, callback: INotifierCallback | null): void;
+    report(message: string, title?: string, callback?: INotifierCallback): void;
     /**
      * Report error
      * @param error Error message
      * @callback callback Callback
      */
-    reportError(error: string, callback: INotifierCallback | null): void;
+    reportError(error: string, callback?: INotifierCallback): void;
     /**
      * Show loading
      * @param show Show it or hide

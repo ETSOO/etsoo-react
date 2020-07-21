@@ -38,6 +38,7 @@ export * from './mu/InfiniteTable';
 export * from './mu/LanguageChooser';
 export * from './mu/ListPanel';
 export * from './mu/MaskedInput';
+export * from './mu/ModuleCountryList';
 export * from './mu/Notifier';
 export * from './mu/NotifierUI';
 export * from './mu/RadioGroupField';

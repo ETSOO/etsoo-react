@@ -43,7 +43,7 @@ export class ApiSingleton {
     private errorHandler(error: any) {
         // Get the message
         let message: string = error.message
-        let callback: INotifierCallback | null = null
+        let callback: INotifierCallback | undefined = undefined
         if(error.response) {
             message = 'Response: ' + message
 
@@ -112,7 +112,7 @@ export class ApiSingleton {
      * @param title Title
      * @param callback Callback
      */
-    public confirm(message: string, title: string | undefined = undefined, callback: INotifierCallback | null = null) {
+    public confirm(message: string, title?: string, callback?: INotifierCallback) {
         this.notifier?.confirm(message, title, callback)
     }
 
@@ -122,7 +122,7 @@ export class ApiSingleton {
      * @param title Title
      * @param callback Callback
      */
-    public report(message: string, title: string | undefined = undefined, callback: INotifierCallback | null = null) {
+    public report(message: string, title?: string, callback?: INotifierCallback) {
         this.notifier?.report(message, title, callback)
     }
 
@@ -131,7 +131,7 @@ export class ApiSingleton {
      * @param error Error message
      * @param callback Callback
      */
-    public reportError(error: string, callback: INotifierCallback | null = null) {
+    public reportError(error: string, callback?: INotifierCallback) {
         this.notifier?.reportError(error, callback)
     }
 

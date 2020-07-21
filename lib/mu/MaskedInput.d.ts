@@ -8,4 +8,4 @@ export declare type MaskedInputProps = TextFieldProps & Props;
  * Masked input
  * @param props Properties
  */
-export declare function MaskedInput({ fullWidth, InputLabelProps, label, ...rest }: MaskedInputProps): JSX.Element;
+export declare function MaskedInput({ error, fullWidth, helperText, InputLabelProps, label, name, required, ...rest }: MaskedInputProps): JSX.Element;

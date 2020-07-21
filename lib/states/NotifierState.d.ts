@@ -38,7 +38,7 @@ export interface NotifierAction extends IAction {
     /**
      * Callback function
      */
-    callback?: INotifierCallback | null;
+    callback?: INotifierCallback;
     /**
      * Message
      */

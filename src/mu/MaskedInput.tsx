@@ -11,10 +11,17 @@ export type MaskedInputProps = TextFieldProps & Props
  * Masked input
  * @param props Properties
  */
-export function MaskedInput({fullWidth, InputLabelProps, label, ...rest}: MaskedInputProps) {
+export function MaskedInput({error, fullWidth, helperText, InputLabelProps, label, name, required, ...rest}: MaskedInputProps) {
     return (
-        <InputMask {...rest as Props}>
-            {() => <TextField fullWidth={fullWidth} InputLabelProps={InputLabelProps} label={label} />}
+        <InputMask name={name} {...rest as Props}>
+            {() => <TextField
+                error={error}
+                fullWidth={fullWidth}
+                helperText={helperText}
+                InputLabelProps={InputLabelProps}
+                name={name}
+                required={required}
+                label={label} />}
         </InputMask>
     )
 }

@@ -27,7 +27,7 @@ export class Notifier implements INotifier {
      * @param title Title
      * @param callback Callback
      */
-    public confirm(message: string, title: string | undefined = undefined, callback: INotifierCallback | null = null) {
+    public confirm(message: string, title?: string, callback?: INotifierCallback) {
         const action: NotifierAction = { type: NotifierActionType.Confirm, title: title, message: message, callback: callback }
         this.notifierUpdate?.dispatch(action)
     }
@@ -38,7 +38,7 @@ export class Notifier implements INotifier {
      * @param title Title
      * @param callback Callback
      */
-    public report(message: string, title: string | undefined = undefined, callback: INotifierCallback | null = null) {
+    public report(message: string, title?: string, callback?: INotifierCallback) {
         const action: NotifierAction = { type: NotifierActionType.Message, title: title, message: message, callback: callback }
         this.notifierUpdate?.dispatch(action)
     }
@@ -48,7 +48,7 @@ export class Notifier implements INotifier {
      * @param error Error message
      * @param callback Callback
      */
-    public reportError(error: string, callback: INotifierCallback | null = null) {
+    public reportError(error: string, callback?: INotifierCallback) {
         const action: NotifierAction = { type: NotifierActionType.Error, message: error, callback: callback }
         this.notifierUpdate?.dispatch(action)
     }
