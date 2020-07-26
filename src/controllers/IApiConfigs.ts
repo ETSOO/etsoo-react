@@ -10,5 +10,5 @@ export interface IApiConfigs {
     /**
      * Default show the loading bar
      */
-    defaultLoading?: boolean 
+    defaultLoading?: boolean
 }

@@ -1,4 +1,4 @@
-import { INotifier, INotifierCallback } from "../api/INotifier";
+import { INotifier, INotifierCallback } from '../api/INotifier';
 /**
  * Notifier class
  */

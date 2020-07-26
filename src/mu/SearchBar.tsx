@@ -1,8 +1,9 @@
-
-import React, { ChangeEvent } from 'react'
-import { InputBase, makeStyles, fade, Theme } from '@material-ui/core'
-import SearchIcon from '@material-ui/icons/Search'
-import { ApiSettings } from '../api/IApiSettings'
+import React, { ChangeEvent } from 'react';
+import {
+    InputBase, makeStyles, fade, Theme
+} from '@material-ui/core';
+import { Search } from '@material-ui/icons';
+import { ApiSettings } from '../api/IApiSettings';
 
 interface ICustomStyle {
     /**
@@ -53,18 +54,18 @@ const useStyles = makeStyles<Theme, ICustomStyle>((theme) => ({
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.common.white, 0.2),
         '&:hover': {
-            backgroundColor: fade(theme.palette.common.white, 0.3),
+            backgroundColor: fade(theme.palette.common.white, 0.3)
         },
         marginRight: theme.spacing(1),
         marginLeft: 0,
         [theme.breakpoints.up('xs')]: {
             marginLeft: theme.spacing(3),
-            width: 'auto',
+            width: 'auto'
         },
         [theme.breakpoints.down('xs')]: {
-            width: (props) => props.width == null ? '80px' : props.width,
+            width: (props) => props.width || '80px',
             '&:focus-within': {
-                width: (props) => props.focusWidth == null ? '100%' : props.focusWidth
+                width: (props) => props.focusWidth || '100%'
             }
         }
     },
@@ -75,10 +76,10 @@ const useStyles = makeStyles<Theme, ICustomStyle>((theme) => ({
         pointerEvents: 'none',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     inputRoot: {
-        color: 'inherit',
+        color: 'inherit'
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
@@ -87,37 +88,59 @@ const useStyles = makeStyles<Theme, ICustomStyle>((theme) => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '30ch',
-        },
+            width: '30ch'
+        }
     }
-}))
+}));
 
 /**
  * Search bar
  * @param props Properties
  */
-export function SearchBar( { focusWidth, onBlur, onChange, onDelayChange, onFocus, placeholder, width }: SearchBarProps) {
+export function SearchBar(props: SearchBarProps) {
+    // Destruct
+    const {
+        focusWidth,
+        onBlur,
+        onChange,
+        onDelayChange,
+        onFocus,
+        placeholder,
+        width
+    } = props;
+
     // Style
-    const classes = useStyles( { focusWidth, width } )
+    const classes = useStyles({ focusWidth, width });
 
     // Input ref
-    const setInputRef = (input: HTMLInputElement) => {
-        ApiSettings.setSearchInput(input)
-    }
+    const setInputRef = (input: HTMLInputElement) => ApiSettings.setSearchInput(input);
+
+    // change seed
+    let changeSeed: number = 0;
 
     // Input text change event handler
     const changeHandler = (event: ChangeEvent) => {
-        if(onDelayChange) {
-
-        } else if(onChange) {
-
+        if (onDelayChange) {
+            window.clearTimeout(changeSeed);
+            changeSeed = window.setTimeout(() => {
+                onDelayChange(event);
+            }, 360);
+            onDelayChange(event);
+        } else if (onChange) {
+            onChange(event);
         }
-    }
+    };
+
+    // Layout
+    React.useEffect(() => () => {
+        window.clearTimeout(changeSeed);
+        changeSeed = 0;
+    }, []);
 
     return (
         <div className={classes.search}>
             <div className={classes.searchIcon}>
-                <SearchIcon />
+                <Search />
             </div>
             <InputBase
                 placeholder={placeholder}
@@ -127,9 +150,9 @@ export function SearchBar( { focusWidth, onBlur, onChange, onDelayChange, onFocu
                 onChange={changeHandler}
                 classes={{
                     root: classes.inputRoot,
-                    input: classes.inputInput,
+                    input: classes.inputInput
                 }}
             />
-      </div>
-    )
+        </div>
+    );
 }

@@ -1,9 +1,10 @@
-import React from 'react'
-import { makeStyles, Fab, Theme, Menu, MenuItem } from '@material-ui/core'
-import AddIcon from '@material-ui/icons/Add'
-import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop'
-import { IClickAction } from '../api/IClickAction'
-import { SearchPageMoreFab } from './SearchPageMoreFab'
+import React from 'react';
+import {
+    makeStyles, Fab, Theme
+} from '@material-ui/core';
+import { Add, VerticalAlignTop } from '@material-ui/icons';
+import { IClickAction } from '../api/IClickAction';
+import { SearchPageMoreFab } from './SearchPageMoreFab';
 
 /**
  * Search page fabs methods
@@ -51,8 +52,8 @@ const useStyles = makeStyles<Theme, {bottom?: number, right?: number}>((theme) =
     fabs: {
         position: 'absolute',
         justifyItems: 'center',
-        bottom: (style) => style.bottom == null ? theme.spacing(4) : style.bottom,
-        right: (style) => style.right == null ? theme.spacing(4) : style.right,
+        bottom: (style) => (style.bottom == null ? theme.spacing(4) : style.bottom),
+        right: (style) => (style.right == null ? theme.spacing(4) : style.right),
         display: 'flex',
         alignItems: 'center',
         alignContent: 'center',
@@ -73,60 +74,79 @@ const useStyles = makeStyles<Theme, {bottom?: number, right?: number}>((theme) =
             }
         }
     }
-}))
+}));
 
 /**
  * Search page fabs of 'Go top', 'Add', and 'More' functions
  */
-export const SearchPageFabs = React.forwardRef<SearchPageFabsMethods, SearchPageFabsProps>(({ bottom, moreActions, onAddClick, onGoTopClick, right }, ref) => {
+export const SearchPageFabs = React.forwardRef<SearchPageFabsMethods,
+SearchPageFabsProps>((props, ref) => {
+    // Destruct
+    const {
+        bottom,
+        moreActions,
+        onAddClick,
+        onGoTopClick,
+        right
+    } = props;
+
     // Style
-    const classes = useStyles({ bottom, right })
+    const classes = useStyles({ bottom, right });
 
     // Icons
-    const fabs: React.ReactElement[] = []
+    const fabs: React.ReactElement[] = [];
 
     // Go top icon ref
-    const topRef = React.useRef<HTMLElement>(null)
+    const topRef = React.useRef<HTMLElement>(null);
 
     // Public methods through ref
     React.useImperativeHandle(ref, () => ({
         scollChange(visible: boolean) {
-            if(topRef.current)
-                topRef.current.style.visibility = (visible ? 'visible' : 'hidden')
+            const element = topRef.current;
+            if (element) {
+                element.style.visibility = (visible ? 'visible' : 'hidden');
+            }
         }
-    }))
+    }));
 
     // Go top
-    if(onGoTopClick) {
+    if (onGoTopClick) {
         fabs.push(
-            <Fab color="default" size="medium" style={{visibility: 'hidden'}} onClick={onGoTopClick} key="gotop" buttonRef={topRef}>
-                <VerticalAlignTopIcon />
+            <Fab
+                color="default"
+                size="medium"
+                style={{ visibility: 'hidden' }}
+                onClick={onGoTopClick}
+                key="gotop"
+                buttonRef={topRef}
+            >
+                <VerticalAlignTop />
             </Fab>
-        )
+        );
     }
 
     // Add
-    if(onAddClick) {
+    if (onAddClick) {
         fabs.push(
             <Fab color="primary" onClick={onAddClick} key="add">
-                <AddIcon />
+                <Add />
             </Fab>
-        )
+        );
     }
 
     // More
-    if(moreActions && moreActions.length > 0) {
+    if (moreActions && moreActions.length > 0) {
         fabs.push(
             <SearchPageMoreFab
                 key="more"
                 actions={moreActions}
             />
-        )
+        );
     }
 
     return (
         <div className={classes.fabs}>
             {fabs}
         </div>
-    )
-})
+    );
+});

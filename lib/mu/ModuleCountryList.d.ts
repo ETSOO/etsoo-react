@@ -1,5 +1,5 @@
-import React from "react";
-import { CountryListRef, CountryListProps } from "./CountryList";
+import React from 'react';
+import { CountryListRef, CountryListProps } from './CountryList';
 /**
  * Country list properties
  */

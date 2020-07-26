@@ -1,73 +1,68 @@
-import { EntityController } from "./EntityController"
-import { IApiUser } from "../api/IApiUser"
-import { ApiModule } from "../api/IApiEntity"
-import { IApiConfigs } from "./IApiConfigs"
-import { CustomerSearchModel } from "../models/CustomerSearchModel"
-import { CustomerSearchItem, CustomerSearchPersonItem, CustomerSearchAddressItem, CustomerSearchPersonLogoItem } from "../views/CustomerSearchItem"
-import { ISearchResult } from "../views/ISearchResult"
-import { ExtendAddress } from "./ExtendAddress"
+import { EntityController } from './EntityController';
+import { IApiUser } from '../api/IApiUser';
+import { ApiModule } from '../api/IApiEntity';
+import { IApiConfigs } from './IApiConfigs';
+import { CustomerSearchModel } from '../models/CustomerSearchModel';
+import {
+    CustomerSearchItem,
+    CustomerSearchPersonItem,
+    CustomerSearchAddressItem,
+    CustomerSearchPersonLogoItem
+} from '../views/CustomerSearchItem';
+import { ISearchResult } from '../views/ISearchResult';
+import { ExtendAddress } from './ExtendAddress';
 
 /**
  * Customer API controller
  */
-class CustomerControllerBase extends EntityController
-{
+class CustomerControllerBase extends EntityController {
     /**
      * Constructor
      * @param user Current user
      */
     constructor(user: IApiUser, configs: IApiConfigs) {
-        super(user, {
-            identity: 'customer',
-            module: ApiModule.Customer
-        }, configs)
-    }
-
-    /**
-     * Format search model
-     * @param model Search condition
-     * @param field Field
-     */
-    formatSearchModel(model: CustomerSearchModel | undefined, field: string) {
-        if(model == null)
-            return { field }
-        else {
-            model.field = field
-            return model
-        }  
+        super(
+            user,
+            {
+                identity: 'customer',
+                module: ApiModule.Customer
+            },
+            configs
+        );
     }
 
     /**
      * Search data
      * @param model Search condition data model
      */
-    async search<D extends CustomerSearchItem>(model: CustomerSearchModel | undefined = undefined) {
-        return await super.searchBase<ISearchResult<D>, CustomerSearchModel>(model)
+    async search<D extends CustomerSearchItem>(model?: CustomerSearchModel) {
+        const result = await super.searchBase<ISearchResult<D>, CustomerSearchModel>(model);
+        return result;
     }
 
     /**
      * Search address items
      * @param model Search condition data model
      */
-    async searchAddressItems(model: CustomerSearchModel | undefined = undefined) {
-        return this.search<CustomerSearchAddressItem>(this.formatSearchModel(model, 'address'))
+    async searchAddressItems(model?: CustomerSearchModel) {
+        return this.search<CustomerSearchAddressItem>(EntityController.formatSearchModel('address', model));
     }
 
     /**
      * Search person items
      * @param model Search condition data model
      */
-    async searchPersonItems(model: CustomerSearchModel | undefined = undefined) {
-        return this.search<CustomerSearchPersonItem>(this.formatSearchModel(model, 'person'))
+    async searchPersonItems(model?: CustomerSearchModel) {
+        return this.search<CustomerSearchPersonItem>(EntityController.formatSearchModel('person', model));
     }
 
     /**
      * Search person logo items
      * @param model Search condition data model
      */
-    async searchPersonLogoItems(model: CustomerSearchModel | undefined = undefined) {
-        return this.search<CustomerSearchPersonLogoItem>(this.formatSearchModel(model, 'personlogo'))
+    async searchPersonLogoItems(model?: CustomerSearchModel) {
+        return this.search<CustomerSearchPersonLogoItem>(EntityController.formatSearchModel('personlogo', model));
     }
 }
 
-export const CustomerController = ExtendAddress(CustomerControllerBase)
+export const CustomerController = ExtendAddress(CustomerControllerBase);

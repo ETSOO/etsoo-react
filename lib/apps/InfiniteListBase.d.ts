@@ -1,7 +1,7 @@
-import React from "react";
-import InfiniteLoader from "react-window-infinite-loader";
-import { ListChildComponentProps, Layout, ListOnScrollProps, ReactElementType, ListItemKeySelector } from "react-window";
-import { InfiniteListSharedProps } from "./InfiniteListSharedProps";
+import React from 'react';
+import InfiniteLoader from 'react-window-infinite-loader';
+import { ListChildComponentProps, Layout, ListOnScrollProps, ReactElementType, ListItemKeySelector } from 'react-window';
+import { InfiniteListSharedProps } from './InfiniteListSharedProps';
 /**
  * Infinite list base component item properties
  */

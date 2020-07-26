@@ -1,4 +1,4 @@
-import { IResultData } from "../api/IResult"
+import { IResultData } from '../api/IResult';
 
 /**
  * Authorization data result
@@ -13,6 +13,7 @@ export interface AuthorizationResultData extends IResultData {
 /**
  * Login result data result
  */
+/* eslint-disable camelcase */
 export interface LoginResultData extends AuthorizationResultData {
     /**
      * Temp access token

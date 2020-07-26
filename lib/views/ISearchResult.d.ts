@@ -1,5 +1,5 @@
-import { Align } from "../api/Align";
-import { DataType } from "../api/DataType";
+import { Align } from '../api/Align';
+import { DataType } from '../api/DataType';
 /**
  * Common search layout item
  */

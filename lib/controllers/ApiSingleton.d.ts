@@ -1,6 +1,6 @@
-import { INotifier, INotifierCallback } from "../api/INotifier";
-import { IApiSettings } from "../api/IApiSettings";
-import { IApiConfigs } from "./IApiConfigs";
+import { INotifier, INotifierCallback } from '../api/INotifier';
+import { IApiSettings } from '../api/IApiSettings';
+import { IApiConfigs } from './IApiConfigs';
 /**
  * API Singleton to deal
  */
@@ -19,18 +19,22 @@ export declare class ApiSingleton {
      */
     readonly settings: IApiSettings;
     private constructor();
-    private errorHandler;
+    /**
+     * Error handler
+     * @param error Error
+     */
+    protected errorHandler(error: any): void;
     /**
      * Create API
      * @param configs Additional API configs
      */
     createApi(configs: IApiConfigs): import("axios").AxiosInstance;
     /**
-      * Confirm action
-      * @param message Message
-      * @param title Title
-      * @param callback Callback
-      */
+     * Confirm action
+     * @param message Message
+     * @param title Title
+     * @param callback Callback
+     */
     confirm(message: string, title?: string, callback?: INotifierCallback): void;
     /**
      * Report message

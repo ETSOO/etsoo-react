@@ -1,6 +1,6 @@
-import { LoginMethod } from "./LoginMethod"
-import { LanguageStateCreator, ILanguage, LanguageAction } from "../states/LanguageState"
-import { IUpdate } from "../states/IState"
+import { LoginMethod } from './LoginMethod';
+import { LanguageStateCreator, ILanguage, LanguageAction } from '../states/LanguageState';
+import { IUpdate } from '../states/IState';
 
 /**
  * Language definiton item
@@ -103,13 +103,13 @@ export interface IApiSettings {
 }
 
 // Settings
-let apiSettings: IApiSettings
+let apiSettings: IApiSettings;
 
 // Context
-let languageContext: React.Context<IUpdate<ILanguage, LanguageAction>>
+let languageContext: React.Context<IUpdate<ILanguage, LanguageAction>>;
 
 // Provider
-let lanugageProvider: React.FunctionComponent<{}>
+let lanugageProvider: React.FunctionComponent<{}>;
 
 /**
  * Setup
@@ -117,45 +117,39 @@ let lanugageProvider: React.FunctionComponent<{}>
  */
 const setup = (settings: IApiSettings) => {
     // Set
-    apiSettings = settings
+    apiSettings = settings;
 
     // Default language item
-    const languageItem = settings.supportedLanguages.find(l => l.name === settings.currentLanguage)
+    const languageItem = settings.supportedLanguages.find(l => l.name === settings.currentLanguage);
 
     // Language state
-    const state = LanguageStateCreator(languageItem)
-    languageContext = state.context
-    lanugageProvider = state.provider
+    const state = LanguageStateCreator(languageItem);
+    languageContext = state.context;
+    lanugageProvider = state.provider;
 
     // Return
-    return state
-}
+    return state;
+};
 
 /**
  * Set search input element
  * @param input Search input
  */
-const setSearchInput = (input: HTMLInputElement) => {
-    apiSettings.searchInput = input
-}
+const setSearchInput = (input: HTMLInputElement): void => {
+    apiSettings.searchInput = input;
+};
 
 /**
  * API settings utils
  */
 export const ApiSettings = {
-    get: () => {
-        return apiSettings
-    },
+    get: () => apiSettings,
 
-    languageContext: () => {
-        return languageContext
-    },
+    languageContext: () => languageContext,
 
-    lanugageProvider: () => {
-        return lanugageProvider
-    },
+    lanugageProvider: () => lanugageProvider,
 
     setSearchInput,
 
     setup
-}
+};

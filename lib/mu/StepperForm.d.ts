@@ -1,5 +1,5 @@
-import React from "react";
-import { IDynamicData } from "../api/IDynamicData";
+import React from 'react';
+import { IDynamicData } from '../api/IDynamicData';
 /**
  * Stepper form item properties
  */
@@ -86,4 +86,4 @@ export interface StepperFormProps {
  * Stepper form
  * @param props Properties
  */
-export declare function StepperForm({ buttons, maxWidth, padding, promptForExit, steps, submitHandler }: StepperFormProps): JSX.Element;
+export declare function StepperForm(props: StepperFormProps): JSX.Element;

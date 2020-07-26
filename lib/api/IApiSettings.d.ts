@@ -1,7 +1,7 @@
 /// <reference types="react" />
-import { LoginMethod } from "./LoginMethod";
-import { ILanguage, LanguageAction } from "../states/LanguageState";
-import { IUpdate } from "../states/IState";
+import { LoginMethod } from './LoginMethod';
+import { ILanguage, LanguageAction } from '../states/LanguageState';
+import { IUpdate } from '../states/IState';
 /**
  * Language definiton item
  */

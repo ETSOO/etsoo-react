@@ -1,6 +1,6 @@
-import { Align } from "../api/Align"
-import { DataType } from "../api/DataType"
-import { Utils } from "../api/Utils"
+import { Align } from '../api/Align';
+import { DataType } from '../api/DataType';
+import { Utils } from '../api/Utils';
 
 /**
  * Common search layout item
@@ -109,17 +109,18 @@ interface SearchLayoutFormatCallback {
  * @param align Align
  */
 export const searchLayoutAlign = (align?: Align) => {
-    if(align) {
-        if(align == Align.Left)
-            return 'left'
-        else if(align == Align.Center)
-            return 'center'
-        else
-            return 'right'
-    } else {
-        return undefined
+    if (align) {
+        if (align === Align.Left) {
+            return 'left';
+        }
+        if (align === Align.Center) {
+            return 'center';
+        }
+        return 'right';
     }
-}
+
+    return undefined;
+};
 
 /**
  * Format layouts
@@ -127,17 +128,21 @@ export const searchLayoutAlign = (align?: Align) => {
  * @param callback Callback
  * @param firstOnly First letter only
  */
-export const searchLayoutFormat = (layouts: ISearchLayoutItem[], callback: SearchLayoutFormatCallback | undefined = undefined, firstOnly: boolean = false) => {
+export const searchLayoutFormat = (
+    layouts: ISearchLayoutItem[],
+    callback?: SearchLayoutFormatCallback,
+    firstOnly: boolean = false
+) => {
     layouts.forEach(c => {
         // Callback
-        let label = callback ? callback(c.field) : c.label
+        let label = callback ? callback(c.field) : c.label;
 
-        if(label == null) {
+        if (label == null) {
             // Default format
-            label = Utils.snakeNameToWord(c.field, firstOnly)
+            label = Utils.snakeNameToWord(c.field, firstOnly);
         }
 
         // Update
-        Object.assign(c, {label})
-    })
-}
+        Object.assign(c, { label });
+    });
+};

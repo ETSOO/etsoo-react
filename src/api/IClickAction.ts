@@ -1,5 +1,3 @@
-import { IDynamicData } from "./IDynamicData"
-
 /**
  * Click action callback interface
  */

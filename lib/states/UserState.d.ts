@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import { IAction } from "./IState";
-import { IApiUser, IApiUserBase } from "../api/IApiUser";
+import { IAction } from './IState';
+import { IApiUser, IApiUserBase } from '../api/IApiUser';
 /**
  * Application user update interface
  */

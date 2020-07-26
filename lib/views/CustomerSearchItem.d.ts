@@ -1,4 +1,4 @@
-import { ISearchItem } from "./ISearchResult";
+import { ISearchItem } from './ISearchResult';
 /**
  * Customer search default item
  */

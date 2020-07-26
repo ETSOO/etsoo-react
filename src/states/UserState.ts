@@ -1,6 +1,6 @@
-import { IAction } from "./IState"
-import { CreateState } from "./CreateState"
-import { IApiUser, IApiUserBase } from "../api/IApiUser"
+import { IAction } from './IState';
+import { CreateState } from './CreateState';
+import { IApiUser, IApiUserBase } from '../api/IApiUser';
 
 /**
  * Application user update interface
@@ -35,13 +35,13 @@ export interface IUser extends IApiUser, IUserUpdate {
  */
 export enum UserActionType {
     // Login action
-    Login = "LOGIN",
+    Login = 'LOGIN',
 
     // Logout action
-    Logout = "LOGOUT",
+    Logout = 'LOGOUT',
 
     // Update action
-    Update = "UPDATE"
+    Update = 'UPDATE'
 }
 
 /**
@@ -70,19 +70,22 @@ export interface UserAction extends IAction {
  * @param action Action
  */
 export function UserReducer(state: IUser, action: UserAction) {
-    switch(action.type) {
-        case UserActionType.Login:
-            return Object.assign({}, action.user, action.update || {}, { authorized: true })
-        case UserActionType.Logout:
-            return Object.assign({}, state, { authorized: false })
-        case UserActionType.Update:
-            return Object.assign({}, state, action.update)
-        default:
-            return state
+    switch (action.type) {
+    case UserActionType.Login:
+        return { ...action.user!, ...action.update, authorized: true };
+    case UserActionType.Logout:
+        return { ...state, authorized: false };
+    case UserActionType.Update:
+        return { ...state, ...action.update };
+    default:
+        return state;
     }
 }
 
 /**
  * User context and provider
  */
-export const { context: UserStateContext, provider: UserStateProvider } = CreateState(UserReducer, {} as IUser)
+export const {
+    context: UserStateContext,
+    provider: UserStateProvider
+} = CreateState(UserReducer, {} as IUser);

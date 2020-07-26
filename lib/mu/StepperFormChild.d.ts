@@ -1,6 +1,6 @@
-import React from "react";
-import { StepperFormItemMethods } from "./StepperForm";
-import { IDynamicData } from "../api/IDynamicData";
+import React from 'react';
+import { StepperFormItemMethods } from './StepperForm';
+import { IDynamicData } from '../api/IDynamicData';
 /**
  * Stepper form child properties
  */

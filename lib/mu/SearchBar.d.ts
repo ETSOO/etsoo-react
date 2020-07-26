@@ -38,5 +38,5 @@ export interface SearchBarProps extends ICustomStyle {
  * Search bar
  * @param props Properties
  */
-export declare function SearchBar({ focusWidth, onBlur, onChange, onDelayChange, onFocus, placeholder, width }: SearchBarProps): JSX.Element;
+export declare function SearchBar(props: SearchBarProps): JSX.Element;
 export {};

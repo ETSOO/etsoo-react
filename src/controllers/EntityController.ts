@@ -1,28 +1,81 @@
-import { AxiosInstance } from 'axios'
-import { IApiUser } from "../api/IApiUser"
-import { IApiEntity } from '../api/IApiEntity'
-import { IResult, IRawResult, IResultData, ResultError, IdResultData } from '../api/IResult'
-import { TiplistModel } from '../models/TiplistModel'
-import { IListItem } from '../views/IListItem'
-import { IViewModel } from '../views/IView'
-import { IViewFactory } from '../views/IViewFactory'
-import { ApiSingleton } from './ApiSingleton'
-import { Notifier } from '../mu/Notifier'
-import { IApiConfigs } from './IApiConfigs'
-import { IEntityController } from './IEntityController'
-import { IAddData, IEditData } from '../api/IDynamicData'
+import { AxiosInstance } from 'axios';
+import { IApiUser } from '../api/IApiUser';
+import { IApiEntity } from '../api/IApiEntity';
+import {
+    IResult, IRawResult, IResultData, ResultError, IdResultData
+} from '../api/IResult';
+import { TiplistModel } from '../models/TiplistModel';
+import { IListItem } from '../views/IListItem';
+import { IViewModel } from '../views/IView';
+import { IViewFactory } from '../views/IViewFactory';
+import { ApiSingleton } from './ApiSingleton';
+import { Notifier } from '../mu/Notifier';
+import { IApiConfigs } from './IApiConfigs';
+import { IEntityController } from './IEntityController';
+import { IAddData, IEditData } from '../api/IDynamicData';
+import { SearchModel } from '../models/SearchModel';
 
 /**
  * Entity API controller
  */
 export abstract class EntityController implements IEntityController {
+    /**
+     * Format the result data to IResult interface
+     * @param data Raw result data, avoid use any for simplicity
+     */
+    protected static formatResult<D extends IResultData>(data: IRawResult) {
+        return {
+            errorCode: data.error_code,
+            ok: data.error_code === 0,
+            ...data
+        } as IResult<D>;
+    }
+
+    /**
+     * Format the result data to IResult interface
+     * @param data Raw result data, avoid use any for simplicity
+     */
+    protected static formatResultBase(data: IRawResult) {
+        return EntityController.formatResult<IResultData>(data);
+    }
+
+    /**
+     * Format search result data, if error found, report it
+     * @param data Raw search result data
+     */
+    protected static formatSearchResult<D>(data: any) {
+        // error_code is the flag property of the error result
+        if ('error_code' in data) {
+            throw new ResultError(EntityController.formatResultBase(data));
+        }
+
+        return data as D;
+    }
+
+    /**
+     * Format search model
+     * @param field Field for search range
+     * @param model Search condition
+     */
+    protected static formatSearchModel(field: string, model?: SearchModel) {
+        if (model == null) {
+            return { field };
+        }
+
+        // Update field
+        // eslint-disable-next-line no-param-reassign
+        model.field = field;
+
+        return model;
+    }
+
     #api: AxiosInstance
 
     /**
      * API
      */
     public get api() {
-        return this.#api
+        return this.#api;
     }
 
     #entity: IApiEntity
@@ -31,7 +84,7 @@ export abstract class EntityController implements IEntityController {
      * Current entity description
      */
     public get entity() {
-        return this.#entity
+        return this.#entity;
     }
 
     #singleton: ApiSingleton
@@ -40,7 +93,7 @@ export abstract class EntityController implements IEntityController {
      * API Singleton
      */
     public get singleton() {
-        return this.#singleton
+        return this.#singleton;
     }
 
     #user: IApiUser
@@ -49,7 +102,7 @@ export abstract class EntityController implements IEntityController {
      * Current user
      */
     public get user() {
-        return this.#user
+        return this.#user;
     }
 
     /**
@@ -60,24 +113,27 @@ export abstract class EntityController implements IEntityController {
      */
     protected constructor(user: IApiUser, entity: IApiEntity, configs: IApiConfigs) {
         // API Singleton
-        this.#singleton = ApiSingleton.getInstance(new Notifier())
+        this.#singleton = ApiSingleton.getInstance(new Notifier());
 
         // Init
-        this.#user = user
-        this.#entity = entity
+        this.#user = user;
+        this.#entity = entity;
 
         // API configuration
-        if(configs.baseUrl == null)
-            configs.baseUrl = this.singleton.settings.endpoint + '/' + entity.identity
-        this.#api = this.singleton.createApi(configs)
+        if (configs.baseUrl == null) {
+            // eslint-disable-next-line no-param-reassign
+            configs.baseUrl = `${this.singleton.settings.endpoint}/${entity.identity}`;
+        }
+
+        this.#api = this.singleton.createApi(configs);
     }
-    
+
     /**
      * Add entity
      * @param data Model data
      */
     async add(data: IAddData) {
-        return this.addExtended<IdResultData>(data)
+        return this.addExtended<IdResultData>(data);
     }
 
     /**
@@ -85,7 +141,7 @@ export abstract class EntityController implements IEntityController {
      * @param data Model data
      */
     async addExtended<D extends IResultData>(data: IAddData) {
-        return this.formatResult<D>((await this.api.post('', data)).data)
+        return EntityController.formatResult<D>((await this.api.post('', data)).data);
     }
 
     /**
@@ -94,8 +150,10 @@ export abstract class EntityController implements IEntityController {
      */
     async delete(...ids: (number | string)[]) {
         // Single id passed with path, otherwise as query parameters as 'ids=1&ids=2'
-        const api = ids.length == 1 ? '/' + ids[0] : '?' + ids.map(id => `ids=${id}`).join('&')
-        return this.formatResult<IResultData>((await this.api.delete(api)).data)
+        const api = ids.length === 1
+            ? `/${ids[0]}`
+            : `?${ids.map(id => `ids=${id}`).join('&')}`;
+        return EntityController.formatResult<IResultData>((await this.api.delete(api)).data);
     }
 
     /**
@@ -104,7 +162,7 @@ export abstract class EntityController implements IEntityController {
      * @param data Model data
      */
     async edit(id: number | string, data: IEditData) {
-        return this.editExtended<IdResultData>(id, data)
+        return this.editExtended<IdResultData>(id, data);
     }
 
     /**
@@ -113,40 +171,7 @@ export abstract class EntityController implements IEntityController {
      * @param data Model data
      */
     async editExtended<D extends IResultData>(id: number | string, data: IEditData) {
-        return this.formatResult<D>((await this.api.put(`/${id}`, data)).data)
-    }
-
-    /**
-     * Format the result data to IResult interface
-     * @param data Raw result data, avoid use any for simplicity
-     */
-    protected formatResultBase(data: IRawResult) {
-        return this.formatResult<IResultData>(data)
-    }
-
-    /**
-     * Format the result data to IResult interface
-     * @param data Raw result data, avoid use any for simplicity
-     */
-    protected formatResult<D extends IResultData>(data: IRawResult) {
-        return {
-            errorCode: data.error_code,
-            ok: data.error_code === 0,
-            ...data
-        } as IResult<D>
-    }
-
-    /**
-     * Format search result data, if error found, report it
-     * @param data Raw search result data
-     */
-    protected formatSearchResult<D>(data: any) {
-        // error_code is the flag property of the error result
-        if('error_code' in data) {
-            throw new ResultError(this.formatResultBase(data))
-        }
-
-        return data as D
+        return EntityController.formatResult<D>((await this.api.put(`/${id}`, data)).data);
     }
 
     /**
@@ -154,24 +179,24 @@ export abstract class EntityController implements IEntityController {
      * @param id Field of data
      * @param parameters Parameters
      */
-    async report<D>(id: string, parameters: string | undefined = undefined) {
-        return this.formatSearchResult<D>((await this.api.get(`report/${id}`, { params: { p: parameters} })).data)
+    async report<D>(id: string, parameters?: string) {
+        return EntityController.formatSearchResult<D>((await this.api.get(`report/${id}`, { params: { p: parameters } })).data);
     }
 
     /**
      * Search source data
      * @param conditions Search conditions
      */
-    async searchBase<D, M extends TiplistModel>(conditions: M | undefined = undefined) {
-        return this.formatSearchResult<D>((await this.api.get('', { params: conditions })).data)
+    async searchBase<D, M extends TiplistModel>(conditions?: M) {
+        return EntityController.formatSearchResult<D>((await this.api.get('', { params: conditions })).data);
     }
 
     /**
      * Get tiplist data
      * @param model Data model
      */
-    async tiplist<M extends TiplistModel>(model: M | undefined = undefined) {
-        return this.formatSearchResult<IListItem[]>((await this.api.get('tiplist', { params: model })).data)
+    async tiplist<M extends TiplistModel>(model?: M) {
+        return EntityController.formatSearchResult<IListItem[]>((await this.api.get('tiplist', { params: model })).data);
     }
 
     /**
@@ -179,8 +204,8 @@ export abstract class EntityController implements IEntityController {
      * @param id Entity id
      * @param field Data region
      */
-    async viewBase(id: number, field:string | undefined = undefined) {
-        return (await this.api.get(`${id}${field == null ? '' : '/' + field}`)).data
+    async viewBase(id: number, field?:string) {
+        return (await this.api.get(`${id}${field == null ? '' : `/${field}`}`)).data;
     }
 
     /**
@@ -188,8 +213,8 @@ export abstract class EntityController implements IEntityController {
      * @param id Entity id
      * @param field Data region
      */
-    async view<D extends IViewModel>(id: number, field:string | undefined = undefined) {
-        return this.formatSearchResult<D>(await this.viewBase(id, field))
+    async view<D extends IViewModel>(id: number, field?:string) {
+        return EntityController.formatSearchResult<D>(await this.viewBase(id, field));
     }
 
     /**
@@ -197,7 +222,8 @@ export abstract class EntityController implements IEntityController {
      * @param id Entity id
      * @param field Data region
      */
-    async viewF<V>(factory: IViewFactory<V>, id: number, field:string | undefined = undefined) {
-        return factory(this.formatSearchResult<IViewModel>(await this.viewBase(id, field)))
+    async viewF<V>(factory: IViewFactory<V>, id: number, field?:string) {
+        const apiResult = await this.viewBase(id, field);
+        return factory(EntityController.formatSearchResult<IViewModel>(apiResult));
     }
 }

@@ -1,12 +1,27 @@
-import React from 'react'
-import { Backdrop, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, makeStyles, Theme, Typography } from '@material-ui/core'
-import ErrorIcon from '@material-ui/icons/Error'
-import InfoIcon from '@material-ui/icons/Info'
-import HelpIcon from '@material-ui/icons/Help'
-import { CreateState } from '../states/CreateState'
-import { NotifierReducer, INotifierState, NotifierActionType, NotifierAction } from '../states/NotifierState'
-import { ApiSettings } from '../api/IApiSettings'
-import { LanguageLabel } from '../states/LanguageState'
+import React from 'react';
+import {
+    Backdrop,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    makeStyles,
+    Typography
+} from '@material-ui/core';
+import {
+    Error,
+    Info,
+    Help
+} from '@material-ui/icons';
+import { CreateState } from '../states/CreateState';
+import {
+    NotifierReducer, INotifierState, NotifierActionType, NotifierAction
+} from '../states/NotifierState';
+import { ApiSettings } from '../api/IApiSettings';
+import { LanguageLabel } from '../states/LanguageState';
 
 // Style
 const useStyles = makeStyles((theme) => (
@@ -25,109 +40,119 @@ const useStyles = makeStyles((theme) => (
             }
         }
     }
-))
+));
 
 /**
  * Notifier context and provider
  */
-export const { context: NotifierContext, provider: NotifierProvider } = CreateState(NotifierReducer, {} as INotifierState, (state, dispatch) => {
+export const {
+    context: NotifierContext,
+    provider: NotifierProvider
+} = CreateState(NotifierReducer, {} as INotifierState, (state, dispatch) => {
     // Handle reset
     const handleReset = () => {
-        const action: NotifierAction = { type: NotifierActionType.None }
-        dispatch(action)
-    }
+        const action: NotifierAction = { type: NotifierActionType.None };
+        dispatch(action);
+    };
 
     // Handle result
     const handleResult = (result: boolean = true) => {
-        if(state.callback) {
-            state.callback.call(null, result)
-        }
-        handleReset()
-    }
+        state.callback?.call(null, result);
+        handleReset();
+    };
 
     // Handle OK button click
     const handleOK = () => {
-        handleResult()
-    }
+        handleResult();
+    };
 
     // Handle Yes button click
     const handleYes = () => {
-        handleResult()
-    }
+        handleResult();
+    };
 
     // Handle No button click
     const handleNo = () => {
-        handleResult(false)
-    }
+        handleResult(false);
+    };
 
     // Style
-    const classes = useStyles()
+    const classes = useStyles();
 
     // Labels
-    let labels: LanguageLabel
-    if(ApiSettings.languageContext) {
-        const { state: L } = React.useContext(ApiSettings.languageContext())
-        labels = L.labels
+    let labels: LanguageLabel;
+    if (ApiSettings.languageContext) {
+        const { state: L } = React.useContext(ApiSettings.languageContext());
+        labels = L.labels;
     } else {
-        labels = {}
+        labels = {};
     }
 
     // Message
-    const isMessage = state.type == NotifierActionType.Message
+    const isMessage = state.type === NotifierActionType.Message;
 
     // Confirm
-    const isConfirm = state.type == NotifierActionType.Confirm
+    const isConfirm = state.type === NotifierActionType.Confirm;
 
-    if(state == null || state.type == NotifierActionType.None)
+    if (state == null || state.type === NotifierActionType.None) {
         // Empty
         return (
             <></>
-        )
-    else if(state.type == NotifierActionType.Loading)
+        );
+    }
+
+    if (state.type === NotifierActionType.Loading) {
         // Loading
         return (
-            <Backdrop className={classes.backdrop} open={true}>
+            <Backdrop className={classes.backdrop} open>
                 <CircularProgress color="primary" />
             </Backdrop>
-        )
-    else if(state.type == NotifierActionType.Error || isMessage || isConfirm) {
-        // Title
-        let title: string | undefined = state.title
+        );
+    }
 
-        // null or undefined title
-        if(title == null) {
-            if(isMessage)
-                title = labels['result'] || 'Result'
-            else if(isConfirm)
-                title = labels['confirm'] || 'Confirm'
-            else
-                title = labels['error'] || 'Error'
-        }
+    if (state.type === NotifierActionType.Error || isMessage || isConfirm) {
+        // Title
+        let { title } = state;
 
         // Icon
-        const icon = isMessage ? <InfoIcon color="primary" /> : ( isConfirm ? <HelpIcon color="action" /> : <ErrorIcon color="error" /> )
+        let icon: JSX.Element;
 
-        // Error
+        if (isMessage) {
+            title = title || labels.result || 'Result';
+            icon = <Info color="primary" />;
+        } else if (isConfirm) {
+            title = title || labels.confirm || 'Confirm';
+            icon = <Help color="action" />;
+        } else {
+            title = title || labels.error || 'Error';
+            icon = <Error color="error" />;
+        }
+
         return (
-            <Dialog open={true} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-                <DialogTitle id="alert-dialog-title" disableTypography  className={classes.errorTitle}>
+            <Dialog open aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+                <DialogTitle id="alert-dialog-title" disableTypography className={classes.errorTitle}>
                     {icon}
-                    <Typography component="h2">{title}</Typography></DialogTitle>
+                    <Typography component="h2">{title}</Typography>
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">{state.message}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    {
-                        isConfirm
-                        ? <><Button color="secondary" onClick={handleNo} autoFocus>{labels['no'] || 'No'}</Button><Button color="primary" onClick={handleYes} autoFocus>{labels['yes'] || 'Yes'}</Button></>
-                        : <Button color="primary" onClick={handleOK} autoFocus>{labels['ok'] || 'OK'}</Button>
-                    }
+                    {isConfirm
+                        ? (
+                            <>
+                                <Button color="secondary" onClick={handleNo} autoFocus>{labels.no || 'No'}</Button>
+                                <Button color="primary" onClick={handleYes} autoFocus>{labels.yes || 'Yes'}</Button>
+                            </>
+                        )
+                        : <Button color="primary" onClick={handleOK} autoFocus>{labels.ok || 'OK'}</Button>}
                 </DialogActions>
             </Dialog>
-        )
-    } else
-        // Other
-        return (
-            <></>
-        )
-})
+        );
+    }
+
+    // Other
+    return (
+        <></>
+    );
+});

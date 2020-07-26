@@ -1,6 +1,6 @@
-import { ILanguageItem } from "./IApiSettings";
-import { ISearchItem } from "../views/ISearchResult";
-import { DataType } from "./DataType";
+import { ILanguageItem } from './IApiSettings';
+import { ISearchItem } from '../views/ISearchResult';
+import { DataType } from './DataType';
 /**
  * Cache kind
  */

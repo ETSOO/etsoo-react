@@ -1,7 +1,7 @@
-import { AxiosInstance } from "axios"
-import { IApiEntity } from "../api/IApiEntity"
-import { ApiSingleton } from "./ApiSingleton"
-import { IApiUser } from "../api/IApiUser"
+import { AxiosInstance } from 'axios';
+import { IApiEntity } from '../api/IApiEntity';
+import { ApiSingleton } from './ApiSingleton';
+import { IApiUser } from '../api/IApiUser';
 
 /**
  * Entity controller interface

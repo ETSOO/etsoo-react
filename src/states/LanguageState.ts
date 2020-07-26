@@ -1,6 +1,6 @@
-import { IAction } from "./IState"
-import { CreateState } from "./CreateState"
-import { ILanguageItem } from "../api/IApiSettings"
+import { IAction } from './IState';
+import { CreateState } from './CreateState';
+import { ILanguageItem } from '../api/IApiSettings';
 
 /**
  * Language label, simple i18n solution
@@ -46,15 +46,16 @@ export interface LanguageAction extends IAction {
  * @param state State
  * @param action Action
  */
-export function LanguageReducer(state: ILanguage, action: LanguageAction) {
-    if(state.name === action.name)
-        return state
-
-    if(action.name) {
-        return Object.assign({}, state, action)
+export function LanguageReducer(state: ILanguage, action: LanguageAction): ILanguage {
+    if (state.name === action.name) {
+        return state;
     }
 
-    return state
+    if (action.name) {
+        return { ...state, ...action };
+    }
+
+    return state;
 }
 
 /**
@@ -64,8 +65,10 @@ export function LanguageReducer(state: ILanguage, action: LanguageAction) {
  */
 export const LanguageStateCreator = ((languageItem?: ILanguageItem) => {
     // Default
-    const defaultLanguageItem: ILanguage = languageItem == null ? {} as ILanguage : { name: languageItem.name, labels: languageItem.labels }
+    const defaultLanguageItem: ILanguage = languageItem == null
+        ? {} as ILanguage
+        : { name: languageItem.name, labels: languageItem.labels };
 
     // Act
-    return CreateState(LanguageReducer, defaultLanguageItem)
-})
+    return CreateState(LanguageReducer, defaultLanguageItem);
+});

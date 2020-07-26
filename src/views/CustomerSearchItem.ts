@@ -1,4 +1,5 @@
-import { ISearchItem } from "./ISearchResult"
+/* eslint-disable camelcase */
+import { ISearchItem } from './ISearchResult';
 
 /**
  * Customer search default item

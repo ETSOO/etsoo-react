@@ -1,0 +1,48 @@
+{
+    "env": {
+        "browser": true,
+        "es2020": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 11,
+        "project": "./tsconfig.json",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
+    /* https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/README.md#extension-rules */
+    "rules": {
+        "comma-dangle": ["error", "never"],
+        "indent": ["error", 4],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": "off",
+        "import/extensions": ["error", "never"],
+        "react/prop-types": [0],
+        "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
+        "react/jsx-props-no-spreading": [0],
+        "no-console": "off",
+        "arrow-parens": "off",
+        "linebreak-style": "off",
+        "import/prefer-default-export": "off",
+        "no-unused-vars": "error",
+        "@typescript-eslint/no-unused-vars": ["error"]
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "paths": ["src"],
+                "extensions": [".ts", ".tsx"]
+            }
+        }
+    }
+}

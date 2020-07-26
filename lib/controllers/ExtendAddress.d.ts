@@ -1,13 +1,13 @@
-import { IEntityController } from "./IEntityController";
+import { IEntityController } from './IEntityController';
 /**
- * Type limits supported class
+ * Type limits supported address class
  */
-export declare type Constructor<T = IEntityController> = new (...args: any[]) => T;
+export declare type AddressConstructor<T = IEntityController> = new (...args: any[]) => T;
 /**
  * Extend class to support address APIs
  * @param controller Applied class
  */
-export declare function ExtendAddress<C extends Constructor>(controller: C): {
+export declare function ExtendAddress<C extends AddressConstructor>(controller: C): {
     new (...args: any[]): {
         /**
          * Get country list

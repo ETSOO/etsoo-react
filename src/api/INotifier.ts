@@ -27,7 +27,7 @@ export interface INotifier {
 
     /**
      * Show loading
-     * @param show Show it or hide 
+     * @param show Show it or hide
      */
     showLoading(show: boolean): void
 }

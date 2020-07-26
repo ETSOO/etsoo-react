@@ -1,11 +1,13 @@
-import React from "react"
-import { makeStyles, Stepper, Step, StepButton, Hidden, MobileStepper, Button, useTheme, Container, Theme } from "@material-ui/core"
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons"
-import { Prompt, useHistory } from "react-router-dom"
-import * as H from 'history'
-import { NotifierContext } from "./NotifierUI"
-import { NotifierAction, NotifierActionType } from "../states/NotifierState"
-import { IDynamicData } from "../api/IDynamicData"
+import React from 'react';
+import {
+    makeStyles, Stepper, Step, StepButton, Hidden, MobileStepper, Button, useTheme, Container, Theme
+} from '@material-ui/core';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { Prompt, useHistory } from 'react-router-dom';
+import * as H from 'history';
+import { NotifierContext } from './NotifierUI';
+import { NotifierAction, NotifierActionType } from '../states/NotifierState';
+import { IDynamicData } from '../api/IDynamicData';
 
 /**
  * Stepper form item properties
@@ -112,151 +114,166 @@ const useStyles = makeStyles<Theme, {padding?: number}>((theme) => ({
         width: '100%'
     },
     paper: {
-        padding: props => theme.spacing(props.padding == null ? 3 : props.padding),
+        padding: props => theme.spacing(props.padding == null ? 3 : props.padding)
     }
-}))
+}));
 
 /**
  * Stepper form
  * @param props Properties
  */
-export function StepperForm({buttons, maxWidth, padding, promptForExit, steps, submitHandler}: StepperFormProps) {
+export function StepperForm(props: StepperFormProps) {
+    // Destruct
+    const {
+        buttons,
+        maxWidth,
+        padding,
+        promptForExit,
+        steps,
+        submitHandler
+    } = props;
+
     // Styles
-    const classes = useStyles({padding})
-    const theme = useTheme()
+    const classes = useStyles({ padding });
+    const theme = useTheme();
 
     // Steps count
-    const stepCount = steps.length
+    const stepCount = steps.length;
 
     // Active step state
-    const [activeStep, updateActiveStep] = React.useState(0)
+    const [activeStep, updateActiveStep] = React.useState(0);
 
     // Handler step click
     const handleStepClick = (step: number) => () => {
-        updateActiveStep(step)
-    }
+        updateActiveStep(step);
+    };
 
     // Complted steps
-    const [completedSteps] = React.useState(new Set<number>())
+    const [completedSteps] = React.useState(new Set<number>());
 
     // Check specific step is completed
-    const isStepCompleted = (step: number) => {
-        return completedSteps.has(step)
-    }
+    const isStepCompleted = (step: number) => completedSteps.has(step);
 
     // Notifier
-    const notifierUpdate = React.useContext(NotifierContext)
+    const notifierUpdate = React.useContext(NotifierContext);
 
     // history
-    const history = useHistory()
+    const history = useHistory();
 
     // Prompt
-    const [prompt, updatePrompt] = React.useState(true)
+    const [prompt, updatePrompt] = React.useState(true);
 
     // Form data
-    const [formData] = React.useState<IDynamicData>({})
+    const [formData] = React.useState<IDynamicData>({});
 
     // Prompt for leave
     // return true for navigating
     // return false for silence
     // return a string for calling default promt command
     const promptHandler = (location: H.Location) => {
-        if(promptForExit) {
+        if (promptForExit) {
             // Notifier UI defined
-            if(history && notifierUpdate) {
-                const action: NotifierAction = { type: NotifierActionType.Confirm, title: undefined, message: promptForExit, callback: (ok) => {
-                    if(ok) {
-                        // Update the prompt status
-                        updatePrompt(false)
+            if (history && notifierUpdate) {
+                const action: NotifierAction = {
+                    type: NotifierActionType.Confirm,
+                    title: undefined,
+                    message: promptForExit,
+                    callback: (ok) => {
+                        if (ok) {
+                            // Update the prompt status
+                            updatePrompt(false);
 
-                        // Delayed push
-                        window.setTimeout(() => {
-                            history.push(location.pathname + location.search)
-                        }, 50)
+                            // Delayed push
+                            window.setTimeout(() => {
+                                history.push(location.pathname + location.search);
+                            }, 50);
+                        }
                     }
-                } }
-                notifierUpdate.dispatch(action)
-                return false
-            } else {
-                return promptForExit
+                };
+                notifierUpdate.dispatch(action);
+                return false;
             }
+            return promptForExit;
         }
 
-        return true
-    }
+        return true;
+    };
 
     // Current form methods
-    let currentMethods: StepperFormItemMethods | undefined = undefined
+    let currentMethods: StepperFormItemMethods | undefined;
 
     // Form ready callback
     const formReady = (methods: StepperFormItemMethods) => {
-        currentMethods = methods
-    }
+        currentMethods = methods;
+    };
 
     // Update step data
     const updateStep = (data: IDynamicData | null) => {
-        if(data) {
+        if (data) {
             // Passed validataion and get the form data
-            Object.assign(formData, data)
+            Object.assign(formData, data);
 
             // Set completed flag
-            if(!completedSteps.has(activeStep))
-                completedSteps.add(activeStep)
+            if (!completedSteps.has(activeStep)) {
+                completedSteps.add(activeStep);
+            }
 
-            return true
-        } else {
-            // Remove possible completed flag
-            completedSteps.delete(activeStep)
-
-            return false
+            return true;
         }
-    }
+
+        // Remove possible completed flag
+        completedSteps.delete(activeStep);
+
+        return false;
+    };
 
     /**
      * Create button elements
      */
-    const last = (activeStep + 1 === stepCount) ? true : (activeStep === 0 ? false : undefined)
+    const firstCase = (activeStep === 0 ? false : undefined);
+    const last = (activeStep + 1 === stepCount) ? true : firstCase;
     const buttonElements = React.useMemo(() => {
         const callback = (action: StepperFormAction) => {
-            switch(action) {
-                case StepperFormAction.Next:
-                    if(currentMethods) {
-                        currentMethods.collectData().then(data => {
-                            // Update step data
-                            if(updateStep(data)) {
-                                // Next page
-                                updateActiveStep(activeStep + 1)
-                            }
-                        })
-                    }
-                    break
-                case StepperFormAction.Previous:
-                    updateActiveStep(activeStep - 1)
-                    break
-                default:
-                    if(currentMethods) {
-                        currentMethods.collectData().then(data => {
-                            // Update step data
-                            if(updateStep(data)) {
-                                // Check completion
-                                for(let index = 0; index < steps.length; index++) {
-                                    if(!completedSteps.has(index)) {
-                                        updateActiveStep(index)
-                                        // Break totally
-                                        return
-                                    }
-                                }
+            switch (action) {
+            case StepperFormAction.Next:
+                if (currentMethods) {
+                    currentMethods.collectData().then(data => {
+                        // Update step data
+                        if (updateStep(data)) {
+                            // Next page
+                            updateActiveStep(activeStep + 1);
+                        }
+                    });
+                }
+                break;
+            case StepperFormAction.Previous:
+                updateActiveStep(activeStep - 1);
+                break;
+            default:
+                if (currentMethods) {
+                    currentMethods.collectData().then(data => {
+                        // Update step data
+                        if (updateStep(data)) {
+                            // Check completion
+                            const activeIndex = steps.findIndex(
+                                (_step, index) => !completedSteps.has(index)
+                            );
 
-                                // Submit data
-                                submitHandler(formData)
+                            // Active index found
+                            if (activeIndex !== -1) {
+                                updateActiveStep(activeIndex);
                             }
-                        })
-                    }
-                    break
+
+                            // Submit data
+                            submitHandler(formData);
+                        }
+                    });
+                }
+                break;
             }
-        }
-        return buttons(callback, last)
-    }, [last])
+        };
+        return buttons(callback, last);
+    }, [last]);
 
     return (
         <div className={classes.root}>
@@ -287,31 +304,37 @@ export function StepperForm({buttons, maxWidth, padding, promptForExit, steps, s
                     position="static"
                     activeStep={activeStep}
                     className={classes.root}
-                    nextButton={
+                    nextButton={(
                         <Button size="small" onClick={handleStepClick(activeStep + 1)} disabled={activeStep === (steps.length - 1)}>
                             Next
                             {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                         </Button>
-                    }
-                    backButton={
+                    )}
+                    backButton={(
                         <Button size="small" onClick={handleStepClick(activeStep - 1)} disabled={activeStep === 0}>
-                        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
                             Back
                         </Button>
-                    }
+                    )}
                 />
             </Hidden>
             <Container component="main" className={classes.paper} maxWidth={maxWidth == null ? false : maxWidth}>
                 {
                     steps.map((step, index) => {
-                        const active = (index === activeStep)
-                        return <div key={index} hidden={!active} className={classes.formContainer}>
-                            {React.createElement(step.form, { formData, formReady: (active ? formReady : undefined) })}
-                        </div>
+                        const active = (index === activeStep);
+                        return (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <div key={index} hidden={!active} className={classes.formContainer}>
+                                {React.createElement(
+                                    step.form,
+                                    { formData, formReady: (active ? formReady : undefined) }
+                                )}
+                            </div>
+                        );
                     })
                 }
                 {buttonElements}
             </Container>
         </div>
-    )
+    );
 }

@@ -1,5 +1,5 @@
-import { IAction } from "./IState"
-import { INotifierCallback } from "../api/INotifier"
+import { IAction } from './IState';
+import { INotifierCallback } from '../api/INotifier';
 
 /**
  * Notifier action type
@@ -78,9 +78,10 @@ export interface NotifierAction extends IAction {
  */
 export function NotifierReducer(state: INotifierState, action: NotifierAction) {
     // Equality check
-    if(state.type == action.type && state.message === action.message)
-        return state
+    if (state.type === action.type && state.message === action.message) {
+        return state;
+    }
 
     // Simplly copy
-    return Object.assign({}, {...action})
+    return { ...action };
 }

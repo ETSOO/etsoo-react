@@ -1,5 +1,3 @@
-import { ListOnScrollProps } from "react-window"
-
 /**
  * Infinite list base properties
  */

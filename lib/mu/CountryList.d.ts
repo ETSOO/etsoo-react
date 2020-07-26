@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 import { AutocompleteProps } from '@material-ui/lab';
-import { InputLabelProps } from "@material-ui/core";
-import { IDynamicData } from "../api/IDynamicData";
+import { InputLabelProps } from '@material-ui/core';
+import { IDynamicData } from '../api/IDynamicData';
 /**
  * Country list ref
  */

@@ -68,6 +68,7 @@ export interface IRawResult {
     /**
      * Error code, 0 means successful
      */
+    // eslint-disable-next-line camelcase
     readonly error_code: number
 
     /**
@@ -105,7 +106,8 @@ export class ResultError extends Error {
      * @param result Result
      */
     public static format(result: IResult<IResultData>) {
-        return `${result.message || 'Error'} (${result.errorCode}${result.field ? ', ' + result.field : ''})`
+        const field = result.field ? `, ${result.field}` : '';
+        return `${result.message || 'Error'} (${result.errorCode}${field})`;
     }
 
     /**
@@ -119,10 +121,10 @@ export class ResultError extends Error {
      */
     constructor(result: IResult<IResultData>) {
         // Super
-        super(ResultError.format(result))
+        super(ResultError.format(result));
 
         // Hold the result
-        this.result = result
+        this.result = result;
 
         // Set the prototype explicitly
         Object.setPrototypeOf(this, ResultError.prototype);

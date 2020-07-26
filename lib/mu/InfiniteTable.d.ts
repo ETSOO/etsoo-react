@@ -1,7 +1,7 @@
-import React from "react";
-import { ListItemRendererProps, InfinitListMethods, InfiniteListScrollProps } from "../apps/InfiniteList";
-import { ISearchItem, ISearchLayoutItem, ISearchResult } from "../views/ISearchResult";
-import { InfiniteListSharedProps } from "../apps/InfiniteListSharedProps";
+import React from 'react';
+import { ListItemRendererProps, InfinitListMethods, InfiniteListScrollProps } from '../apps/InfiniteList';
+import { ISearchItem, ISearchLayoutItem, ISearchResult } from '../views/ISearchResult';
+import { InfiniteListSharedProps } from '../apps/InfiniteListSharedProps';
 /**
  * Infinite table props
  */

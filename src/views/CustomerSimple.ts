@@ -1,4 +1,5 @@
-import { IViewModel } from "./IView";
+/* eslint-disable camelcase */
+import { IViewModel } from './IView';
 
 /**
  * View customer with field 'simple'

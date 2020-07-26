@@ -1,5 +1,5 @@
-import React, { FormEventHandler } from 'react'
-import { makeStyles } from "@material-ui/core"
+import React, { FormEventHandler } from 'react';
+import { makeStyles } from '@material-ui/core';
 
 /**
  * Styled form properties
@@ -29,19 +29,35 @@ const useStyles = makeStyles((theme) => ({
             marginBottom: theme.spacing(3)
         }
     }
-}))
+}));
 
 /**
  * Styled form
  * @param props Properties
  */
-export const StyledForm = React.forwardRef<HTMLFormElement, React.PropsWithChildren<StyledFormProps>>(({autoComplete, children, hidden, onSubmit}, ref) => {
+export const StyledForm = React.forwardRef<HTMLFormElement,
+React.PropsWithChildren<StyledFormProps>>((props, ref) => {
+    // Destruct
+    const {
+        autoComplete,
+        children,
+        hidden,
+        onSubmit
+    } = props;
+
     // Style
-    const classes = useStyles()
+    const classes = useStyles();
 
     return (
-        <form className={classes.form} hidden={hidden} onSubmit={onSubmit} noValidate ref={ref} autoComplete={autoComplete || 'on'}>
+        <form
+            className={classes.form}
+            hidden={hidden}
+            onSubmit={onSubmit}
+            noValidate
+            ref={ref}
+            autoComplete={autoComplete || 'on'}
+        >
             {children}
         </form>
-    )
-})
+    );
+});

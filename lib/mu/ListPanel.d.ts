@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 /**
  * List panel properties
  */
@@ -32,4 +32,4 @@ export interface ListPanelProps {
  * List panel
  * @param props Properties
  */
-export declare function ListPanel({ className, footerElement, items, itemRenderer, moreElement, title, ...rest }: ListPanelProps): JSX.Element;
+export declare function ListPanel(props: ListPanelProps): JSX.Element;

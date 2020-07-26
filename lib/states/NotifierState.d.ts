@@ -1,5 +1,5 @@
-import { IAction } from "./IState";
-import { INotifierCallback } from "../api/INotifier";
+import { IAction } from './IState';
+import { INotifierCallback } from '../api/INotifier';
 /**
  * Notifier action type
  */

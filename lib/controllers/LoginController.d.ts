@@ -1,14 +1,14 @@
 /// <reference types="react" />
-import { EntityController } from "./EntityController";
-import { UserAction, IUserUpdate } from "../states/UserState";
-import { IApiUser } from "../api/IApiUser";
-import { IApiConfigs } from "./IApiConfigs";
-import { IApiEntity } from "../api/IApiEntity";
-import { ChangePasswordModel } from "../models/ChangePasswordModel";
-import { LoginResultData, AuthorizationResultData } from "../views/LoginResultData";
-import { IResult } from "../api/IResult";
-import { LoginModel } from "../models/LoginModel";
-import { LoginTokenModel } from "../models/LoginTokenModel";
+import { EntityController } from './EntityController';
+import { UserAction, IUserUpdate } from '../states/UserState';
+import { IApiUser } from '../api/IApiUser';
+import { IApiConfigs } from './IApiConfigs';
+import { IApiEntity } from '../api/IApiEntity';
+import { ChangePasswordModel } from '../models/ChangePasswordModel';
+import { LoginResultData, AuthorizationResultData } from '../views/LoginResultData';
+import { IResult } from '../api/IResult';
+import { LoginModel } from '../models/LoginModel';
+import { LoginTokenModel } from '../models/LoginTokenModel';
 /**
  * User login success callback
  */
@@ -53,21 +53,21 @@ export declare abstract class LoginController extends EntityController {
      */
     protected constructor(user: IApiUser, entity: IApiEntity, configs: IApiConfigs, dispatch: React.Dispatch<UserAction>);
     /**
-      * Change password
-      * @param model Data model
-      */
+     * Change password
+     * @param model Data model
+     */
     changePassword(model: ChangePasswordModel): Promise<IResult<import("../api/IResult").IResultData>>;
-    loginResult(result: IResult<LoginResultData>, dataCallback: UserLoginSuccess | null, model: LoginModel | undefined): Promise<void>;
+    loginResult(result: IResult<LoginResultData>, dataCallback?: UserLoginSuccess, model?: LoginModel): Promise<void>;
     /**
      * Login
      * @param model Login model
      */
-    login(model: LoginModel, dataCallback?: UserLoginSuccess | null): Promise<IResult<LoginResultData>>;
+    login(model: LoginModel, dataCallback?: UserLoginSuccess): Promise<IResult<LoginResultData>>;
     /**
      * Login token
      * @param model Login token model
      */
-    loginToken(model: LoginTokenModel, dataCallback?: UserLoginSuccess | null): Promise<IResult<LoginResultData>>;
+    loginToken(model: LoginTokenModel, dataCallback?: UserLoginSuccess): Promise<IResult<LoginResultData>>;
     /**
      * Refresh token
      */

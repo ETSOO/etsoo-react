@@ -1,8 +1,10 @@
-import React from 'react'
-import { Fab, Menu, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
-import { IClickAction } from '../api/IClickAction'
-import { useHistory } from 'react-router-dom'
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import {
+    Fab, Menu, MenuItem, ListItemIcon, ListItemText
+} from '@material-ui/core';
+import { MoreHoriz } from '@material-ui/icons';
+import { IClickAction } from '../api/IClickAction';
 
 /**
  * Search page more fab properties
@@ -17,44 +19,44 @@ export interface SearchPageMoreFabProps {
 /**
  * Search page more fab
  */
-export function SearchPageMoreFab({actions}: SearchPageMoreFabProps) {
+export function SearchPageMoreFab({ actions }: SearchPageMoreFabProps) {
     // Menu anchor element and update
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     // More click handler
     const onMoreClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
+        setAnchorEl(event.currentTarget);
+    };
 
     // Menu close handler
     const handleClose = () => {
-        setAnchorEl(null)
-    }
+        setAnchorEl(null);
+    };
 
     // Router history
-    const history = useHistory()
+    const history = useHistory();
 
     // Menu item click handler
     const handleClick = (index: number) => {
         // Action
-        const action = actions[index]
+        const action = actions[index];
 
-        if(typeof action.action === 'string') {
+        if (typeof action.action === 'string') {
             // URL
-            history.push(action.action)
+            history.push(action.action);
         } else {
             // Callback
-            action.action()
+            action.action();
         }
-        
+
         // Close
-        handleClose()
-    }
+        handleClose();
+    };
 
     return (
         <>
             <Fab color="secondary" size="medium" onClick={onMoreClick} key="more">
-                <MoreHorizIcon />
+                <MoreHoriz />
             </Fab>
             <Menu
                 anchorEl={anchorEl}
@@ -64,7 +66,7 @@ export function SearchPageMoreFab({actions}: SearchPageMoreFabProps) {
             >
                 {
                     actions.map((action, index) => (
-                        <MenuItem key={action.label} onClick={() => {handleClick(index)}}>
+                        <MenuItem key={action.label} onClick={() => handleClick(index)}>
                             {action.icon && (
                                 <ListItemIcon>
                                     {action.icon}
@@ -76,5 +78,5 @@ export function SearchPageMoreFab({actions}: SearchPageMoreFabProps) {
                 }
             </Menu>
         </>
-    )
+    );
 }

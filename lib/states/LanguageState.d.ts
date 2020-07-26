@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import { IAction } from "./IState";
-import { ILanguageItem } from "../api/IApiSettings";
+import { IAction } from './IState';
+import { ILanguageItem } from '../api/IApiSettings';
 /**
  * Language label, simple i18n solution
  * For premium solution: https://www.i18next.com/

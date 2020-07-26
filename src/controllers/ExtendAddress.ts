@@ -1,15 +1,15 @@
-import { IEntityController } from "./IEntityController"
+import { IEntityController } from './IEntityController';
 
 /**
- * Type limits supported class
+ * Type limits supported address class
  */
-export type Constructor<T = IEntityController> = new (...args: any[]) => T
+export type AddressConstructor<T = IEntityController> = new (...args: any[]) => T
 
 /**
  * Extend class to support address APIs
  * @param controller Applied class
  */
-export function ExtendAddress<C extends Constructor>(controller : C) {
+export function ExtendAddress<C extends AddressConstructor>(controller : C) {
     // Extend applied class to support address APIs
     return class extends controller {
         /**
@@ -17,7 +17,7 @@ export function ExtendAddress<C extends Constructor>(controller : C) {
          * @param organizationId Current organization id
          */
         countryList(organizationId?: number) {
-            console.log('country list ' + this.entity.module)
+            console.log(organizationId, this.entity.module);
         }
-    }
+    };
 }

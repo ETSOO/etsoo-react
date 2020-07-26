@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 import * as Yup from 'yup';
-import { IResultData, IResult } from "../api/IResult";
-import { IDynamicData } from "../api/IDynamicData";
+import { IResultData, IResult } from '../api/IResult';
+import { IDynamicData } from '../api/IDynamicData';
 /**
  * Form validatior
  * @param schemas Initial validation schemas
@@ -9,9 +9,9 @@ import { IDynamicData } from "../api/IDynamicData";
  * @param milliseconds Merge change update interval
  */
 export declare const useFormValidator: (schemas: Yup.ObjectSchema<any>, defaultField: string, milliseconds?: number) => {
-    blurHandler: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>, refs?: string[] | null) => void;
+    blurHandler: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>, refs?: string[] | undefined) => void;
     blurFormHandler: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-    changeHandler: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, refs?: string[] | null) => void;
+    changeHandler: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, refs?: string[] | undefined) => void;
     changeFormHandler: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     commitChange: (field: string, value: any) => void;
     commitObjectChange: (field: string, value: object) => void;

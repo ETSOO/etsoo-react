@@ -10,7 +10,7 @@ export interface LanguageChooserProps {
     /**
      * Close event
      */
-    onClose?: (item?: ILanguageItem) => void;
+    onClose?(item?: ILanguageItem): void;
     /**
      * Current selected language
      */

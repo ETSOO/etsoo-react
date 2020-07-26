@@ -79,7 +79,7 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
     itemKey?: string;
     /**
      * Item renderer
-     * @param props
+     * @param props Properties
      */
     itemRenderer(props: ListItemRendererProps): React.ReactElement;
     /**

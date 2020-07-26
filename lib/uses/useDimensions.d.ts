@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 /**
  * Calculate element dimensions
  * @param observeResize Is observing resize event

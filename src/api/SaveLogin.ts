@@ -1,15 +1,15 @@
-import { ApiSettings } from "./IApiSettings"
+import { ApiSettings } from './IApiSettings';
 
 /**
  * Get save login key
  */
-const getSaveLoginKey = () => {
+const getSaveLoginKey = (): string => {
     // API settings
-    const settings = ApiSettings.get()
+    const settings = ApiSettings.get();
 
     // Act
-    return 'etsoo-savelogin-' + settings.role
-}
+    return `etsoo-savelogin-${settings.role}`;
+};
 
 /**
  * Save login data interface
@@ -34,32 +34,35 @@ export interface SaveLoginData {
 /**
  * Get data
  */
-const get = () => {
-    const data = localStorage.getItem(getSaveLoginKey())
-    if(data)
-        return JSON.parse(data) as SaveLoginData
-}
+const get = (): SaveLoginData | undefined => {
+    const data = localStorage.getItem(getSaveLoginKey());
+    if (data) {
+        return JSON.parse(data) as SaveLoginData;
+    }
+
+    return undefined;
+};
 
 /**
  * Save
  * @param data Save login data
  */
-const save = (data: SaveLoginData) => {
+const save = (data: SaveLoginData): void => {
     // Add or update
-    localStorage.setItem(getSaveLoginKey(), JSON.stringify(data))
-}
+    localStorage.setItem(getSaveLoginKey(), JSON.stringify(data));
+};
 
 /**
  * Update token
- * @param token Save login token 
+ * @param token Save login token
  */
-const update = (token?: string) => {
-    const data = get()
-    if(data) {
-        data.token = token
-        save(data)
+const update = (token?: string): void => {
+    const data = get();
+    if (data) {
+        data.token = token;
+        save(data);
     }
-}
+};
 
 /**
  * Save login utils
@@ -68,4 +71,4 @@ export const SaveLogin = {
     get,
     save,
     update
-}
+};

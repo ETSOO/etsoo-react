@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react';
 
 /**
  * For setTimeout to merge actions
@@ -7,29 +7,29 @@ import React from "react"
  */
 export const useTimeout = (action: Function, milliseconds: number) => {
     // Time out seed
-    let seed = 0
+    let seed = 0;
 
     // Cancel function
     const cancel = () => {
-        if(seed > 0) {
-            clearTimeout(seed)
-            seed = 0
+        if (seed > 0) {
+            clearTimeout(seed);
+            seed = 0;
         }
-    }
+    };
 
     // Merge into the life cycle
     React.useEffect(() => {
         seed = window.setTimeout(() => {
-            action.call(null)
-        }, milliseconds)
+            action.call(null);
+        }, milliseconds);
 
         return () => {
-            cancel()
-        }
-    }, [])
+            cancel();
+        };
+    }, []);
 
     // Return cancel method
     return {
         cancel
-    }
-}
+    };
+};

@@ -1,5 +1,5 @@
 # etsoo-react
-ETSOO React TypeScript components NPM package developed by GarryXiao (https://dev.to/garryxiao)
+ETSOO TypeScript React components NPM package developed by GarryXiao (https://dev.to/garryxiao)
 
 # Components
 - Form validation, '/uses/useFormValidator.ts', encapsulated from Yup (https://github.com/jquense/yup)

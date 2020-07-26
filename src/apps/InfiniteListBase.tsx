@@ -1,13 +1,18 @@
-import React from "react"
-import InfiniteLoader from "react-window-infinite-loader"
-import { FixedSizeList, ListChildComponentProps, Layout, ListOnScrollProps, ReactElementType, ListItemKeySelector } from "react-window"
-import { InfiniteListSharedProps } from "./InfiniteListSharedProps"
+import React from 'react';
+import InfiniteLoader from 'react-window-infinite-loader';
+import {
+    FixedSizeList,
+    ListChildComponentProps,
+    Layout, ListOnScrollProps,
+    ReactElementType,
+    ListItemKeySelector
+} from 'react-window';
+import { InfiniteListSharedProps } from './InfiniteListSharedProps';
 
 /**
  * Infinite list base component item properties
  */
 export interface InfiniteListItemProps extends ListChildComponentProps {
-
 }
 
 /**
@@ -79,25 +84,50 @@ export interface InfiniteListBaseProps extends InfiniteListSharedProps {
  * Infinite list base component
  * @param props Properties
  */
-export const InfiniteListBase = React.forwardRef<InfiniteLoader, InfiniteListBaseProps>(({ height, isItemLoaded, itemCount, loadMoreItems, minimumBatchSize, itemRenderer, threshold, width, ...rest }, ref) => {
-    if(height == null || width == null)
-        return <></>
+export const InfiniteListBase = React.forwardRef<InfiniteLoader, InfiniteListBaseProps>(
+    (props, ref) => {
+        // Destruct properties
+        const {
+            height,
+            isItemLoaded,
+            itemCount,
+            loadMoreItems,
+            minimumBatchSize,
+            itemRenderer,
+            threshold,
+            width,
+            ...rest
+        } = props;
 
-    return (
-        <InfiniteLoader loadMoreItems={loadMoreItems} minimumBatchSize={minimumBatchSize} isItemLoaded={isItemLoaded} itemCount={itemCount} ref={ref} threshold={threshold}>
-            {
-                ({ onItemsRendered, ref }) => (
-                    <FixedSizeList
-                        onItemsRendered={onItemsRendered}
-                        ref={ref}
+        // No size return a blank element
+        if (height == null || width == null) {
+            return <></>;
+        }
 
-                        height={height}
-                        itemCount={itemCount}
-                        width={width}
-                        {...rest}
-                    >{itemRenderer}</FixedSizeList>
-                )
-            }
-        </InfiniteLoader>
-    )
-})
+        return (
+            <InfiniteLoader
+                loadMoreItems={loadMoreItems}
+                minimumBatchSize={minimumBatchSize}
+                isItemLoaded={isItemLoaded}
+                itemCount={itemCount}
+                ref={ref}
+                threshold={threshold}
+            >
+                {
+                    ({ onItemsRendered, ref: listRef }) => (
+                        <FixedSizeList
+                            onItemsRendered={onItemsRendered}
+                            ref={listRef}
+                            height={height}
+                            itemCount={itemCount}
+                            width={width}
+                            {...rest}
+                        >
+                            {itemRenderer}
+                        </FixedSizeList>
+                    )
+                }
+            </InfiniteLoader>
+        );
+    }
+);

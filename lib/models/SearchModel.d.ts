@@ -1,4 +1,4 @@
-import { TiplistModel } from "./TiplistModel";
+import { TiplistModel } from './TiplistModel';
 /**
  * Search model
  */
@@ -20,7 +20,9 @@ export interface SearchModel extends TiplistModel {
      */
     hasStructure?: boolean;
     /**
-     * Order index, positive numbers indicate ascending order, negative numbers indicate descending order
+     * Order index
+     * positive numbers indicate ascending
+     * negative numbers indicate descending
      */
     orderIndex?: number;
     /**

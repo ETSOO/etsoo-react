@@ -1,6 +1,8 @@
-import React from "react"
-import { PaperProps, makeStyles, Typography, Divider, List, ListItem } from "@material-ui/core"
-import { Utils } from "../api/Utils"
+import React from 'react';
+import {
+    makeStyles, Typography, Divider, List, ListItem
+} from '@material-ui/core';
+import { Utils } from '../api/Utils';
 
 /**
  * List panel properties
@@ -38,40 +40,53 @@ export interface ListPanelProps {
 }
 
 // Table styles
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         width: '100%'
     },
     header: {
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     title: {
         fontWeight: 'bold',
         flexGrow: 1
     }
-}))
+}));
 
 /**
  * List panel
  * @param props Properties
  */
-export function ListPanel({ className, footerElement, items, itemRenderer, moreElement, title, ...rest }: ListPanelProps) {
+export function ListPanel(props: ListPanelProps) {
+    // Destruct
+    const {
+        className,
+        footerElement,
+        items,
+        itemRenderer,
+        moreElement,
+        title,
+        ...rest
+    } = props;
+
     // Style
-    const classes = useStyles()
+    const classes = useStyles();
 
-    return <List className={Utils.mergeClasses(classes.root, className)} {...rest}>
-        <ListItem className={classes.header}>
-            <Typography className={classes.title}>{title}</Typography>
-            {moreElement}
-        </ListItem>
+    return (
+        <List className={Utils.mergeClasses(classes.root, className)} {...rest}>
+            <ListItem className={classes.header}>
+                <Typography className={classes.title}>{title}</Typography>
+                {moreElement}
+            </ListItem>
 
-        <Divider/>
+            <Divider />
 
-        { items.map((item, index) => itemRenderer(item, index) ) }
+            { items.map((item, index) => itemRenderer(item, index)) }
 
-        <Divider/>
+            <Divider />
 
-        {footerElement}
-    </List>
+            {footerElement}
+        </List>
+    );
 }

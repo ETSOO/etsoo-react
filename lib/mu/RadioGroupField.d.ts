@@ -1,5 +1,5 @@
-import React from "react";
-import { RadioGroupProps } from "@material-ui/core";
+import React from 'react';
+import { RadioGroupProps } from '@material-ui/core';
 /**
  * Radio group item interface
  */
@@ -53,4 +53,4 @@ export interface RadioGroupFieldProps extends RadioGroupProps {
 /**
  * Radio group field
  */
-export declare function RadioGroupField({ className, error, errorClassName, helperText, items, label, listClassName, required, row, titleClassName, ...rest }: RadioGroupFieldProps): JSX.Element;
+export declare function RadioGroupField(props: RadioGroupFieldProps): JSX.Element;

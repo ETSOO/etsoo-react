@@ -1,7 +1,9 @@
-import React from 'react'
-import { Dialog, DialogTitle, List, ListItem, ListItemText, IconButton, Tooltip } from '@material-ui/core'
-import { Language } from '@material-ui/icons'
-import { ILanguageItem } from '../api/IApiSettings'
+import React from 'react';
+import {
+    Dialog, DialogTitle, List, ListItem, ListItemText, IconButton, Tooltip
+} from '@material-ui/core';
+import { Language } from '@material-ui/icons';
+import { ILanguageItem } from '../api/IApiSettings';
 
 /**
  * Language chooser properties
@@ -15,7 +17,7 @@ export interface LanguageChooserProps {
     /**
      * Close event
      */
-    onClose?: (item?: ILanguageItem) => void
+    onClose?(item?: ILanguageItem): void
 
     /**
      * Current selected language
@@ -39,53 +41,65 @@ export interface LanguageChooserProps {
  */
 export function LanguageChooser(props: LanguageChooserProps) {
     //  properties destructure
-    const { className, items, onClose, selectedValue, title } = props
+    const {
+        className,
+        items,
+        onClose,
+        selectedValue,
+        title
+    } = props;
 
     // No items will return a blank component
-    if(items.length == 0)
-        return (<em>No items</em>)
+    if (items.length === 0) {
+        return (<em>No items</em>);
+    }
 
     // Dialog open or not state
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
 
     // Current language state
-    let defaultLanguageItem = items.find(item => item.name === selectedValue)
-    if(defaultLanguageItem == null)
-        defaultLanguageItem = items[0]
-    const [languageItem, setLanguageItem] = React.useState(defaultLanguageItem)
+    let defaultLanguageItem = items.find(item => item.name === selectedValue);
+    if (defaultLanguageItem == null) {
+        [defaultLanguageItem] = items;
+    }
+
+    const [languageItem, setLanguageItem] = React.useState(defaultLanguageItem);
 
     // Click handler
     const clickHandler = () => {
         // More than one language
-        if(items.length < 2)
-            return
-        
+        if (items.length < 2) {
+            return;
+        }
+
         // Open the dialog
-        setOpen(true)
-    }
+        setOpen(true);
+    };
 
     // Close handler
     const closeHandler = () => {
         // Close the dialog
-        setOpen(false)
+        setOpen(false);
 
         // Emit close event
-        if(onClose)
-            onClose(languageItem)
-    }
+        if (onClose) {
+            onClose(languageItem);
+        }
+    };
 
     // Close item handler
     const closeItemHandler = (item: ILanguageItem) => {
         // Update the current item
-        setLanguageItem(item)
+        setLanguageItem(item);
 
         // Close the dialog
-        setOpen(false)
+        setOpen(false);
 
         // Emit close event
-        if(onClose)
-            onClose(item)
-    }
+        if (onClose) {
+            onClose(item);
+        }
+    };
 
     return (
         <>
@@ -98,12 +112,17 @@ export function LanguageChooser(props: LanguageChooserProps) {
                 <DialogTitle id="dialog-title">{title || ''}</DialogTitle>
                 <List>
                     {items.map(item => (
-                        <ListItem button key={item.name} disabled={item.name === languageItem.name} onClick={() => closeItemHandler(item)}>
+                        <ListItem
+                            button
+                            key={item.name}
+                            disabled={item.name === languageItem.name}
+                            onClick={() => closeItemHandler(item)}
+                        >
                             <ListItemText>{item.label}</ListItemText>
                         </ListItem>
                     ))}
                 </List>
             </Dialog>
         </>
-    )
+    );
 }

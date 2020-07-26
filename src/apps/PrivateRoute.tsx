@@ -1,6 +1,6 @@
-import React from 'react'
-import { Redirect, Route, RouteProps } from 'react-router-dom'
-import History from 'history'
+import React from 'react';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
+import History from 'history';
 
 /**
  * Private router property interface
@@ -22,10 +22,11 @@ export interface PrivateRouteRedirectState {
 /**
  * Private route for react-router-dom
  * Configue a strict route with '/login' to redirect to application's actual login page
- * In login page, useLocation() to get the Location object, and Location.state as PrivateRouteRedirectState to access referrer
+ * In login page, useLocation() to get the Location object,
+ * and Location.state as PrivateRouteRedirectState to access referrer
  */
-export function PrivateRoute({authorized, ...rest}: PrivateRouteProp){
+export function PrivateRoute({ authorized, ...rest }: PrivateRouteProp) {
     return (
-        authorized ? <Route {...rest}/> : <Redirect to={{pathname: `/login`, state: {referrer: rest.location} as PrivateRouteRedirectState}}/>
-    )
+        authorized ? <Route {...rest} /> : <Redirect to={{ pathname: '/login', state: { referrer: rest.location } as PrivateRouteRedirectState }} />
+    );
 }

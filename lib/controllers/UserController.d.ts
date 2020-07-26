@@ -1,6 +1,6 @@
-import { EntityController } from "./EntityController";
-import { IApiUser } from "../api/IApiUser";
-import { IApiConfigs } from "./IApiConfigs";
+import { EntityController } from './EntityController';
+import { IApiUser } from '../api/IApiUser';
+import { IApiConfigs } from './IApiConfigs';
 /**
  * User API controller
  */

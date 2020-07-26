@@ -1,4 +1,4 @@
-import { IViewModel } from "./IView";
+import { IViewModel } from './IView';
 
 /**
  * View factory callback

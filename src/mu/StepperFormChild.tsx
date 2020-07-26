@@ -1,7 +1,7 @@
-import React from "react"
-import { StyledForm } from "./StyledForm"
-import { StepperFormItemMethods } from "./StepperForm"
-import { IDynamicData } from "../api/IDynamicData"
+import React from 'react';
+import { StyledForm } from './StyledForm';
+import { StepperFormItemMethods } from './StepperForm';
+import { IDynamicData } from '../api/IDynamicData';
 
 /**
  * Stepper form child properties
@@ -24,29 +24,38 @@ export interface StepperFormChildProps {
  * Stepper form child component
  */
 export const StepperFormChild: React.FunctionComponent<StepperFormChildProps> = (props) => {
+    // Destruct
+    const {
+        children,
+        formReady
+    } = props;
+
     // Form ref
-    const formRef = React.useRef<HTMLFormElement>(null)
+    const formRef = React.useRef<HTMLFormElement>(null);
 
     // Layout ready
     React.useEffect(() => {
         // Callback
-        if(props.formReady) {
-            props.formReady({
+        if (formReady) {
+            formReady({
                 /**
                  * Collect data
                  */
                 async collectData() {
-                    if(formRef.current) {
-                        return await props.validateForm(new FormData(formRef.current))
+                    if (formRef.current) {
+                        const result = await props.validateForm(new FormData(formRef.current));
+                        return result;
                     }
-    
-                    return null
-                }
-            })
-        }
-    }, [props.formReady])
 
-    return <StyledForm autoComplete="on" ref={formRef}>
-        {props.children}
-    </StyledForm>
-}
+                    return null;
+                }
+            });
+        }
+    }, [formReady]);
+
+    return (
+        <StyledForm autoComplete="on" ref={formRef}>
+            {children}
+        </StyledForm>
+    );
+};

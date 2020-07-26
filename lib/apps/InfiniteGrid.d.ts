@@ -1,6 +1,6 @@
 import React from 'react';
-import { ISearchItem } from '../views/ISearchResult';
 import { GridOnScrollProps, GridChildComponentProps } from 'react-window';
+import { ISearchItem } from '../views/ISearchResult';
 import { IDynamicData } from '../api/IDynamicData';
 /**
  * List item renderer properties
@@ -57,7 +57,7 @@ export interface InfiniteGridProps {
     itemKey?: string;
     /**
      * Item renderer
-     * @param props
+     * @param props Properties
      */
     itemRenderer(props: GridItemRendererProps): React.ReactElement<GridItemRendererProps>;
     /**

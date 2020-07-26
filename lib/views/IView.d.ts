@@ -1,4 +1,4 @@
-import { IResultData } from "../api/IResult";
+import { IResultData } from '../api/IResult';
 /**
  * View model interface
  */

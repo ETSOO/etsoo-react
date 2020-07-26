@@ -1,9 +1,9 @@
-import React from "react";
-import { ListItemRendererProps } from "../apps/InfiniteList";
-import { LanguageLabel } from "../states/LanguageState";
-import { ISearchResult, ISearchItem } from "../views/ISearchResult";
-import { IDynamicData } from "../api/IDynamicData";
-import { IClickAction } from "../api/IClickAction";
+import React from 'react';
+import { ListItemRendererProps } from '../apps/InfiniteList';
+import { LanguageLabel } from '../states/LanguageState';
+import { ISearchResult, ISearchItem } from '../views/ISearchResult';
+import { IDynamicData } from '../api/IDynamicData';
+import { IClickAction } from '../api/IClickAction';
 /**
  * Search page properties
  */
@@ -80,4 +80,4 @@ export interface SearchPageProps {
 /**
  * Search page
  */
-export declare function SearchPage({ className, hasFooter, height, moreActions, itemRenderer, labels, loadItems, onAddClick, onItemClick, padding, rowHeight, searchProps, sortable, tryCache, width }: SearchPageProps): JSX.Element;
+export declare function SearchPage(props: SearchPageProps): JSX.Element;
