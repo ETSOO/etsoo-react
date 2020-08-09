@@ -25,35 +25,35 @@ export interface LoginModel {
     /**
      * Verification code
      */
-    code?: string
+    code?: string;
 
     /**
      * Login id, number id/email/mobile
      */
-    id: string
+    id: string;
 
     /**
      * Id type
      */
-    idType?: LoginIdType
+    idType?: LoginIdType;
 
     /**
      * Language cid like zh-CN, en-US
      */
-    languageCid?: string
+    languageCid?: string;
 
     /**
      * Current organization id
      */
-    org?: number
+    org?: number;
 
     /**
      * Raw password
      */
-    password: string
+    password: string;
 
     /**
      * Save login
      */
-    save?: boolean
+    save?: boolean;
 }

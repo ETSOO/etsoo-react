@@ -9,25 +9,23 @@ export interface IUserUpdate {
     /**
      * Foreign name
      */
-    foreignName?: string
+    foreignName?: string;
 
     /**
      * User name
      */
-    name?: string
+    name?: string;
 
     /**
      * Organization name
      */
-    organizationName?: string
+    organizationName?: string;
 }
 
 /**
  * Application user interface
  */
-export interface IUser extends IApiUser, IUserUpdate {
-
-}
+export interface IUser extends IApiUser, IUserUpdate {}
 
 /**
  * User action type
@@ -51,17 +49,17 @@ export interface UserAction extends IAction {
     /**
      * Type
      */
-    type: UserActionType
+    type: UserActionType;
 
     /**
      * User
      */
-    user?: IApiUserBase
+    user?: IApiUserBase;
 
     /**
      * User update
      */
-    update?: IUserUpdate
+    update?: IUserUpdate;
 }
 
 /**
@@ -71,14 +69,14 @@ export interface UserAction extends IAction {
  */
 export function UserReducer(state: IUser, action: UserAction) {
     switch (action.type) {
-    case UserActionType.Login:
-        return { ...action.user!, ...action.update, authorized: true };
-    case UserActionType.Logout:
-        return { ...state, authorized: false };
-    case UserActionType.Update:
-        return { ...state, ...action.update };
-    default:
-        return state;
+        case UserActionType.Login:
+            return { ...action.user!, ...action.update, authorized: true };
+        case UserActionType.Logout:
+            return { ...state, authorized: false };
+        case UserActionType.Update:
+            return { ...state, ...action.update };
+        default:
+            return state;
     }
 }
 

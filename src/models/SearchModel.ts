@@ -7,34 +7,34 @@ export interface SearchModel extends TiplistModel {
     /**
      * Count total records
      */
-    countTotal?: boolean
+    countTotal?: boolean;
 
     /**
      * View domain, not passed as a paramter
      */
-    domain?: string
+    domain?: string;
 
     /**
      * View model
      */
-    field?: string
+    field?: string;
 
     /**
      * Is return structure
      */
-    hasStructure?: boolean
+    hasStructure?: boolean;
 
     /**
      * Order index
      * positive numbers indicate ascending
      * negative numbers indicate descending
      */
-    orderIndex?: number
+    orderIndex?: number;
 
     /**
      * Current page
      */
-    page?: number
+    page?: number;
 }
 
 /**
@@ -44,17 +44,17 @@ export interface SearchOrgModel extends SearchModel {
     /**
      * Full text search keywords
      */
-    fulltext?: string
+    fulltext?: string;
 
     /**
      * Limit to current organization
      */
-    limitToSelf?: boolean
+    limitToSelf?: boolean;
 
     /**
      * Organization id
      */
-    organizationId?: number
+    organizationId?: number;
 }
 
 /**
@@ -64,35 +64,35 @@ export interface SearchAddressModel extends SearchOrgModel {
     /**
      * Country id
      */
-    countryId?: string
+    countryId?: string;
 
     /**
      * Region id
      */
-    regionId?: number
+    regionId?: number;
 
     /**
      * City id
      */
-    cityId?: number
+    cityId?: number;
 
     /**
      * District id
      */
-    districtId?: number
+    districtId?: number;
 
     /**
      * Address part
      */
-    address?:string
+    address?: string;
 
     /**
      * Postcode
      */
-    postcode?: string
+    postcode?: string;
 
     /**
      * Postcode part
      */
-    postcodePart?: string
+    postcodePart?: string;
 }

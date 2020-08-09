@@ -3,5 +3,4 @@ import { SearchAddressModel } from './SearchModel';
 /**
  * Customer search model
  */
-export interface CustomerSearchModel extends SearchAddressModel {
-}
+export interface CustomerSearchModel extends SearchAddressModel {}

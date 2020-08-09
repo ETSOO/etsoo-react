@@ -8,27 +8,27 @@ export interface CustomerSearchItem extends ISearchItem {
     /**
      * Cid
      */
-    readonly cid?: string
+    readonly cid?: string;
 
     /**
      * Description
      */
-    readonly description?: string
+    readonly description?: string;
 
     /**
      * Entry date
      */
-    readonly entry_date?: Date
+    readonly entry_date?: Date;
 
     /**
      * Id
      */
-    readonly id: number
+    readonly id: number;
 
     /**
      * Name
      */
-    readonly name: string
+    readonly name: string;
 }
 
 /**
@@ -38,7 +38,7 @@ export interface CustomerSearchAddressItem extends CustomerSearchItem {
     /**
      * Address
      */
-    readonly address?: string
+    readonly address?: string;
 }
 
 /**
@@ -48,12 +48,12 @@ export interface CustomerSearchPersonItem extends CustomerSearchAddressItem {
     /**
      * Birth date
      */
-    readonly birthday?: Date
+    readonly birthday?: Date;
 
     /**
      * Gender
      */
-    readonly gender?: string
+    readonly gender?: string;
 }
 
 /**
@@ -63,5 +63,5 @@ export interface CustomerSearchPersonLogoItem extends CustomerSearchPersonItem {
     /**
      * Logo
      */
-    readonly logo?: string
+    readonly logo?: string;
 }

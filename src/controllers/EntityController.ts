@@ -1,8 +1,11 @@
-import { AxiosInstance } from 'axios';
+import { createClient, IApiErrorHandler } from '@etsoo/restclient';
 import { IApiUser } from '../api/IApiUser';
 import { IApiEntity } from '../api/IApiEntity';
 import {
-    IResult, IRawResult, IResultData, ResultError, IdResultData
+    IResult,
+    IResultData,
+    ResultError,
+    IdResultData
 } from '../api/IResult';
 import { TiplistModel } from '../models/TiplistModel';
 import { IListItem } from '../views/IListItem';
@@ -10,47 +13,59 @@ import { IViewModel } from '../views/IView';
 import { IViewFactory } from '../views/IViewFactory';
 import { ApiSingleton } from './ApiSingleton';
 import { Notifier } from '../mu/Notifier';
-import { IApiConfigs } from './IApiConfigs';
 import { IEntityController } from './IEntityController';
 import { IAddData, IEditData } from '../api/IDynamicData';
 import { SearchModel } from '../models/SearchModel';
+import { isRawResult, IRawResult } from '../views/RawResult';
 
 /**
  * Entity API controller
  */
 export abstract class EntityController implements IEntityController {
     /**
-     * Format the result data to IResult interface
-     * @param data Raw result data, avoid use any for simplicity
+     * Format raw result data
+     * @param data Raw result data
      */
-    protected static formatResult<D extends IResultData>(data: IRawResult) {
+    protected static formatRawResult<D extends IResultData = IResultData>(
+        data: IRawResult
+    ) {
+        const { error_code: errorCode, ...rest } = data;
         return {
-            errorCode: data.error_code,
-            ok: data.error_code === 0,
-            ...data
+            errorCode,
+            ok: errorCode === 0,
+            ...rest
         } as IResult<D>;
     }
 
     /**
-     * Format the result data to IResult interface
-     * @param data Raw result data, avoid use any for simplicity
+     * Result data parser
      */
-    protected static formatResultBase(data: IRawResult) {
-        return EntityController.formatResult<IResultData>(data);
-    }
+    protected static resultParser = <D extends IResultData = IResultData>() => (
+        data: any
+    ): IResult<D> => {
+        if (isRawResult(data)) {
+            return [undefined, EntityController.formatRawResult<D>(data)];
+        }
+        return [new TypeError(), undefined];
+    };
 
     /**
-     * Format search result data, if error found, report it
-     * @param data Raw search result data
+     * Format search result raw data
+     * @param data Raw search result
      */
-    protected static formatSearchResult<D>(data: any) {
-        // error_code is the flag property of the error result
-        if ('error_code' in data) {
-            throw new ResultError(EntityController.formatResultBase(data));
+    protected static searchResultParser = <D>() => <D>(
+        data: any
+    ): ApiResult<D> => {
+        if (isRawResult(data)) {
+            return [
+                new ResultError(EntityController.formatRawResult(data)),
+                undefined
+            ];
         }
 
-        return data as D;
-    }
+        // Formated result
+        return [undefined, data as D];
+    };
 
     /**
      * Format search model
@@ -69,16 +84,7 @@ export abstract class EntityController implements IEntityController {
         return model;
     }
 
-    #api: AxiosInstance
-
-    /**
-     * API
-     */
-    public get api() {
-        return this.#api;
-    }
-
-    #entity: IApiEntity
+    #entity: IApiEntity;
 
     /**
      * Current entity description
@@ -87,7 +93,7 @@ export abstract class EntityController implements IEntityController {
         return this.#entity;
     }
 
-    #singleton: ApiSingleton
+    #singleton: ApiSingleton;
 
     /**
      * API Singleton
@@ -96,7 +102,7 @@ export abstract class EntityController implements IEntityController {
         return this.#singleton;
     }
 
-    #user: IApiUser
+    #user: IApiUser;
 
     /**
      * Current user
@@ -106,124 +112,205 @@ export abstract class EntityController implements IEntityController {
     }
 
     /**
+     * API
+     */
+    public get api() {
+        return this.#singleton.api;
+    }
+
+    /**
      * Constructor
      * @param user Current user
      * @param entity Entity settings
      * @param configs Additional API configs
      */
-    protected constructor(user: IApiUser, entity: IApiEntity, configs: IApiConfigs) {
-        // API Singleton
-        this.#singleton = ApiSingleton.getInstance(new Notifier());
-
+    protected constructor(user: IApiUser, entity: IApiEntity) {
         // Init
         this.#user = user;
         this.#entity = entity;
 
-        // API configuration
-        if (configs.baseUrl == null) {
-            // eslint-disable-next-line no-param-reassign
-            configs.baseUrl = `${this.singleton.settings.endpoint}/${entity.identity}`;
-        }
+        // API Singleton
+        this.#singleton = ApiSingleton.getInstance(
+            () => createClient(),
+            new Notifier()
+        );
+    }
 
-        this.#api = this.singleton.createApi(configs);
+    /**
+     * Build entity API URL
+     * @param url Short URL
+     */
+    protected buildEntityApi(url: string = '') {
+        return `/${this.entity.identity}/${url}`;
     }
 
     /**
      * Add entity
      * @param data Model data
+     * @param onError Error handler
      */
-    async add(data: IAddData) {
-        return this.addExtended<IdResultData>(data);
+    async add(data: IAddData, onError?: IApiErrorHandler) {
+        return this.addExtended<IdResultData>(data, onError);
     }
 
     /**
      * Add entity extended
      * @param data Model data
+     * @param onError Error handler
      */
-    async addExtended<D extends IResultData>(data: IAddData) {
-        return EntityController.formatResult<D>((await this.api.post('', data)).data);
+    async addExtended<D extends IResultData>(
+        data: IAddData,
+        onError?: IApiErrorHandler
+    ) {
+        const url = this.buildEntityApi();
+        const result = await this.api.post<IResult<D>>(url, data, {
+            onError,
+            parser: EntityController.resultParser<D>()
+        });
+        return result;
     }
 
     /**
      * Delete entities
      * @param ids Ids to delete
+     * @param onError Error handler
      */
-    async delete(...ids: (number | string)[]) {
+    async delete(ids: (number | string)[], onError?: IApiErrorHandler) {
         // Single id passed with path, otherwise as query parameters as 'ids=1&ids=2'
-        const api = ids.length === 1
-            ? `/${ids[0]}`
-            : `?${ids.map(id => `ids=${id}`).join('&')}`;
-        return EntityController.formatResult<IResultData>((await this.api.delete(api)).data);
+        const url = this.buildEntityApi(
+            ids.length === 1
+                ? `${ids[0]}`
+                : `?${ids.map((id) => `ids=${id}`).join('&')}`
+        );
+        const result = await this.api.delete(url, undefined, {
+            onError,
+            parser: EntityController.resultParser()
+        });
+        return result;
     }
 
     /**
      * Edit entity
      * @param id Entity's id
      * @param data Model data
+     * @param onError Error handler
      */
-    async edit(id: number | string, data: IEditData) {
-        return this.editExtended<IdResultData>(id, data);
+    async edit(
+        id: number | string,
+        data: IEditData,
+        onError?: IApiErrorHandler
+    ) {
+        return this.editExtended<IdResultData>(id, data, onError);
     }
 
     /**
      * Edit entity extended
      * @param id Entity's id
      * @param data Model data
+     * @param onError Error handler
      */
-    async editExtended<D extends IResultData>(id: number | string, data: IEditData) {
-        return EntityController.formatResult<D>((await this.api.put(`/${id}`, data)).data);
+    async editExtended<D extends IResultData>(
+        id: number | string,
+        data: IEditData,
+        onError?: IApiErrorHandler
+    ) {
+        const url = this.buildEntityApi(`${id}`);
+        const result = await this.api.put<IResult<D>>(url, data, {
+            onError,
+            parser: EntityController.resultParser<D>()
+        });
+        return result;
     }
 
     /**
      * Data report
      * @param id Field of data
      * @param parameters Parameters
+     * @param onError Error handler
      */
-    async report<D>(id: string, parameters?: string) {
-        return EntityController.formatSearchResult<D>((await this.api.get(`report/${id}`, { params: { p: parameters } })).data);
+    async report<D>(
+        id: string,
+        parameters?: string,
+        onError?: IApiErrorHandler
+    ) {
+        const url = this.buildEntityApi(`report/${id}`);
+        const result = await this.api.get<D>(
+            url,
+            { p: parameters },
+            { onError, parser: EntityController.searchResultParser<D>() }
+        );
+        return result;
     }
 
     /**
      * Search source data
      * @param conditions Search conditions
+     * @param onError Error handler
      */
-    async searchBase<D, M extends TiplistModel>(conditions?: M) {
-        return EntityController.formatSearchResult<D>((await this.api.get('', { params: conditions })).data);
+    async searchBase<D, M extends TiplistModel>(
+        conditions?: M,
+        onError?: IApiErrorHandler
+    ) {
+        const url = `/${this.entity.identity}`;
+        const result = await this.api.get<D>(url, conditions, {
+            onError,
+            parser: EntityController.searchResultParser<D>()
+        });
+        return result;
     }
 
     /**
      * Get tiplist data
      * @param model Data model
+     * @param onError Error handler
      */
-    async tiplist<M extends TiplistModel>(model?: M) {
-        return EntityController.formatSearchResult<IListItem[]>((await this.api.get('tiplist', { params: model })).data);
-    }
-
-    /**
-     * View entity
-     * @param id Entity id
-     * @param field Data region
-     */
-    async viewBase(id: number, field?:string) {
-        return (await this.api.get(`${id}${field == null ? '' : `/${field}`}`)).data;
+    async tiplist<M extends TiplistModel>(
+        model?: M,
+        onError?: IApiErrorHandler
+    ) {
+        const url = this.buildEntityApi('tiplist');
+        const result = await this.api.get<IListItem>(url, model, {
+            onError,
+            parser: EntityController.searchResultParser<IListItem>()
+        });
+        return result;
     }
 
     /**
      * View entity with strong type
      * @param id Entity id
      * @param field Data region
+     * @param onError Error handler
      */
-    async view<D extends IViewModel>(id: number, field?:string) {
-        return EntityController.formatSearchResult<D>(await this.viewBase(id, field));
+    async view<D extends IViewModel>(
+        id: number | string,
+        field?: string,
+        onError?: IApiErrorHandler
+    ) {
+        const url = this.buildEntityApi(field ? `${id}/${field}` : `${id}`);
+        const result = await this.api.get<D>(url, undefined, {
+            onError,
+            parser: EntityController.searchResultParser<D>()
+        });
+        return result;
     }
 
     /**
      * View entity with factory callback
      * @param id Entity id
      * @param field Data region
+     * @param onError Error handler
      */
-    async viewF<V>(factory: IViewFactory<V>, id: number, field?:string) {
-        const apiResult = await this.viewBase(id, field);
-        return factory(EntityController.formatSearchResult<IViewModel>(apiResult));
+    async viewF<V>(
+        factory: IViewFactory<V>,
+        id: number,
+        field?: string,
+        onError?: IApiErrorHandler
+    ) {
+        const result = await this.view<IViewModel>(id, field, onError);
+        if (result) {
+            return factory(result);
+        }
+        return undefined;
     }
 }

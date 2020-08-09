@@ -22,10 +22,10 @@ export interface IApiEntity {
     /**
      * Entity identity like user/customer
      */
-    readonly identity: string
+    readonly identity: string;
 
     /**
      * Entity module
      */
-    readonly module: ApiModule
+    readonly module: ApiModule;
 }

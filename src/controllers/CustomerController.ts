@@ -1,7 +1,6 @@
 import { EntityController } from './EntityController';
 import { IApiUser } from '../api/IApiUser';
 import { ApiModule } from '../api/IApiEntity';
-import { IApiConfigs } from './IApiConfigs';
 import { CustomerSearchModel } from '../models/CustomerSearchModel';
 import {
     CustomerSearchItem,
@@ -20,15 +19,11 @@ class CustomerControllerBase extends EntityController {
      * Constructor
      * @param user Current user
      */
-    constructor(user: IApiUser, configs: IApiConfigs) {
-        super(
-            user,
-            {
-                identity: 'customer',
-                module: ApiModule.Customer
-            },
-            configs
-        );
+    constructor(user: IApiUser) {
+        super(user, {
+            identity: 'customer',
+            module: ApiModule.Customer
+        });
     }
 
     /**
@@ -36,7 +31,10 @@ class CustomerControllerBase extends EntityController {
      * @param model Search condition data model
      */
     async search<D extends CustomerSearchItem>(model?: CustomerSearchModel) {
-        const result = await super.searchBase<ISearchResult<D>, CustomerSearchModel>(model);
+        const result = await super.searchBase<
+            ISearchResult<D>,
+            CustomerSearchModel
+        >(model);
         return result;
     }
 
@@ -45,7 +43,9 @@ class CustomerControllerBase extends EntityController {
      * @param model Search condition data model
      */
     async searchAddressItems(model?: CustomerSearchModel) {
-        return this.search<CustomerSearchAddressItem>(EntityController.formatSearchModel('address', model));
+        return this.search<CustomerSearchAddressItem>(
+            EntityController.formatSearchModel('address', model)
+        );
     }
 
     /**
@@ -53,7 +53,9 @@ class CustomerControllerBase extends EntityController {
      * @param model Search condition data model
      */
     async searchPersonItems(model?: CustomerSearchModel) {
-        return this.search<CustomerSearchPersonItem>(EntityController.formatSearchModel('person', model));
+        return this.search<CustomerSearchPersonItem>(
+            EntityController.formatSearchModel('person', model)
+        );
     }
 
     /**
@@ -61,7 +63,9 @@ class CustomerControllerBase extends EntityController {
      * @param model Search condition data model
      */
     async searchPersonLogoItems(model?: CustomerSearchModel) {
-        return this.search<CustomerSearchPersonLogoItem>(EntityController.formatSearchModel('personlogo', model));
+        return this.search<CustomerSearchPersonLogoItem>(
+            EntityController.formatSearchModel('personlogo', model)
+        );
     }
 }
 

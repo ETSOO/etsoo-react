@@ -9,8 +9,8 @@ import { DataType } from './DataType';
  * @param baseCtors Mixin base classes
  */
 const applyMixins = (derivedCtor: any, baseCtors: any[]) => {
-    baseCtors.forEach(baseCtor => {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+    baseCtors.forEach((baseCtor) => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
             if (name !== 'constructor') {
                 // eslint-disable-next-line no-param-reassign
                 derivedCtor.prototype[name] = baseCtor.prototype[name];
@@ -76,14 +76,18 @@ const detectedLanguage = (() => {
     // URL first, then local storage
     let language: string | null;
     try {
-        language = new URL(window.location.href).searchParams.get('lang') || localStorage.getItem('lang');
+        language =
+            new URL(window.location.href).searchParams.get('lang') ||
+            localStorage.getItem('lang');
     } catch {
         language = null;
     }
 
     // Browser detected
     if (language == null) {
-        language = (navigator.languages && navigator.languages[0]) || navigator.language;
+        language =
+            (navigator.languages && navigator.languages[0]) ||
+            navigator.language;
     }
 
     // Return
@@ -105,10 +109,11 @@ const dimensionEqual = (d1?: DOMRect, d2?: DOMRect) => {
     }
 
     if (
-        d1.left === d2.left
-        && d1.top === d2.top
-        && d1.right === d2.right
-        && d1.bottom === d2.bottom) {
+        d1.left === d2.left &&
+        d1.top === d2.top &&
+        d1.right === d2.right &&
+        d1.bottom === d2.bottom
+    ) {
         return true;
     }
 
@@ -119,7 +124,8 @@ const dimensionEqual = (d1?: DOMRect, d2?: DOMRect) => {
  * Format word's first letter to upper case
  * @param word Word
  */
-const formatUpperLetter = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
+const formatUpperLetter = (word: string) =>
+    word.charAt(0).toUpperCase() + word.slice(1);
 
 /**
  * Form data to object
@@ -137,7 +143,7 @@ const getCurrentLanguage = (items: ILanguageItem[], language: string) => {
         return undefined;
     }
 
-    return (items.find(item => item.name === language) || items[0]).name;
+    return (items.find((item) => item.name === language) || items[0]).name;
 };
 
 /**
@@ -150,13 +156,15 @@ const getLocationKey = (key: string) => `${window.location.href}:${key}`;
  * Join items as a string
  * @param items Items
  */
-const joinItems = (...items: (string | undefined)[]) => items.filter(item => item != null).join(', ');
+const joinItems = (...items: (string | undefined)[]) =>
+    items.filter((item) => item != null).join(', ');
 
 /**
  * Merge class names
  * @param classNames Class names
  */
-const mergeClasses = (...classNames: (string | undefined)[]) => classNames.filter(name => name != null).join(' ');
+const mergeClasses = (...classNames: (string | undefined)[]) =>
+    classNames.filter((name) => name != null).join(' ');
 
 /**
  * Parse float value
@@ -175,6 +183,15 @@ const parseNumber = (rawData: string | number | undefined | object): number => {
 };
 
 /**
+ * Promise handler to catch error
+ * @param promise Promise
+ */
+const promiseHandler = (promise: Promise<any>) =>
+    promise
+        .then((value) => [value, undefined])
+        .catch((reason) => Promise.resolve([undefined, reason]));
+
+/**
  * Snake name to works, 'snake_name' to 'Snake Name'
  * @param name Name text
  * @param firstOnly Only convert the first word to upper case
@@ -186,7 +203,7 @@ const snakeNameToWord = (name: string, firstOnly: boolean = false) => {
         return items.join(' ');
     }
 
-    return items.map(part => formatUpperLetter(part)).join(' ');
+    return items.map((part) => formatUpperLetter(part)).join(' ');
 };
 
 /**
@@ -196,19 +213,22 @@ const snakeNameToWord = (name: string, firstOnly: boolean = false) => {
  * @param type Data type
  * @param ascending Is ascending
  */
-const sortItems = (items: (ISearchItem | undefined)[],
+const sortItems = (
+    items: (ISearchItem | undefined)[],
     field: string,
     type: DataType,
-    ascending: boolean) => {
+    ascending: boolean
+) => {
     items.sort((item1, item2) => {
         // Null item
         if (
-            item1 == null
-            || item2 == null
-            || item1.viewFlag === -1
-            || item1.viewFlag === -2
-            || item2.viewFlag === -1
-            || item2.viewFlag === -2) {
+            item1 == null ||
+            item2 == null ||
+            item1.viewFlag === -1 ||
+            item1.viewFlag === -2 ||
+            item2.viewFlag === -1 ||
+            item2.viewFlag === -2
+        ) {
             return 0;
         }
 
@@ -223,7 +243,11 @@ const sortItems = (items: (ISearchItem | undefined)[],
             return ascending ? 1 : -1;
         }
 
-        if (type === DataType.Date || type === DataType.Money || type === DataType.Number) {
+        if (
+            type === DataType.Date ||
+            type === DataType.Money ||
+            type === DataType.Number
+        ) {
             const n1: number = type === DataType.Date ? Date.parse(v1) : v1;
             const n2: number = type === DataType.Date ? Date.parse(v2) : v2;
             if (n1 > n2) {
@@ -279,6 +303,7 @@ export const Utils = {
     joinItems,
     mergeClasses,
     parseNumber,
+    promiseHandler,
     snakeNameToWord,
     sortItems
 };

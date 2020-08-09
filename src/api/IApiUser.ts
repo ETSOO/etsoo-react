@@ -5,27 +5,27 @@ export interface IApiUserBase {
     /**
      * Temp access token
      */
-    accessToken: string
+    accessToken: string;
 
     /**
      * User id
      */
-    id: number
+    id: number;
 
     /**
      * Organization current user belongs
      */
-    organizationId: number
+    organizationId: number;
 
     /**
      * Refresh seconds
      */
-    refreshSeconds: number
+    refreshSeconds: number;
 
     /**
      * Current visit organization id
      */
-    visitOrganizationId?: number
+    visitOrganizationId?: number;
 }
 
 /**
@@ -35,5 +35,5 @@ export interface IApiUser extends IApiUserBase {
     /**
      * Authorized or not
      */
-    authorized: boolean
+    authorized: boolean;
 }

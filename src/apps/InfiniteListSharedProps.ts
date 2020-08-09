@@ -5,20 +5,20 @@ export interface InfiniteListSharedProps {
     /**
      * Class name
      */
-    className?: string
+    className?: string;
 
     /**
      * Height
      */
-    height?: number
+    height?: number;
 
     /**
      * Threshold at which to pre-fetch data; defaults to 15
      */
-    threshold?: number
+    threshold?: number;
 
     /**
      * Width px
      */
-    width?: number | string
+    width?: number | string;
 }

@@ -8,7 +8,11 @@ export interface INotifier {
      * @param title Title
      * @callback callback Callback
      */
-    confirm(message: string, title?: string, callback?: INotifierCallback): void
+    confirm(
+        message: string,
+        title?: string,
+        callback?: INotifierCallback
+    ): void;
 
     /**
      * Report message
@@ -16,25 +20,25 @@ export interface INotifier {
      * @param title Title
      * @callback callback Callback
      */
-    report(message: string, title?: string, callback?: INotifierCallback): void
+    report(message: string, title?: string, callback?: INotifierCallback): void;
 
     /**
      * Report error
      * @param error Error message
      * @callback callback Callback
      */
-    reportError(error: string, callback?: INotifierCallback): void
+    reportError(error: string, callback?: INotifierCallback): void;
 
     /**
      * Show loading
      * @param show Show it or hide
      */
-    showLoading(show: boolean): void
+    showLoading(show: boolean): void;
 }
 
 /**
  * Notifier callback function
  */
 export interface INotifierCallback {
-    (ok: boolean): void
+    (ok: boolean): void;
 }

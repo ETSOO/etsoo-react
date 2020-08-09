@@ -3,13 +3,15 @@ import { IEntityController } from './IEntityController';
 /**
  * Type limits supported address class
  */
-export type AddressConstructor<T = IEntityController> = new (...args: any[]) => T
+export type AddressConstructor<T = IEntityController> = new (
+    ...args: any[]
+) => T;
 
 /**
  * Extend class to support address APIs
  * @param controller Applied class
  */
-export function ExtendAddress<C extends AddressConstructor>(controller : C) {
+export function ExtendAddress<C extends AddressConstructor>(controller: C) {
     // Extend applied class to support address APIs
     return class extends controller {
         /**

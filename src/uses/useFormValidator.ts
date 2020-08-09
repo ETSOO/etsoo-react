@@ -11,19 +11,19 @@ interface FormValidatorStateField {
     /**
      * Is error state
      */
-    error: boolean
+    error: boolean;
 
     /**
      * state text
      */
-    text: string
+    text: string;
 }
 
 /**
  * Form validator state fields
  */
 interface FormValidatorStateFields {
-    [key: string]: FormValidatorStateField
+    [key: string]: FormValidatorStateField;
 }
 
 /**
@@ -34,12 +34,14 @@ interface FormValidatorStateFields {
  */
 export const useFormValidator = (
     schemas: Yup.ObjectSchema<any>,
-    defaultField:string,
+    defaultField: string,
     milliseconds: number = 200
 ) => {
     // useState init
     const defaultState: FormValidatorStateFields = {};
-    const [state, updateState] = React.useState<FormValidatorStateFields>(defaultState);
+    const [state, updateState] = React.useState<FormValidatorStateFields>(
+        defaultState
+    );
 
     // Change timeout seed
     let changeSeed = 0;
@@ -85,11 +87,14 @@ export const useFormValidator = (
     const commitObjectChange = (field: string, value: object) => {
         // Validate the field, then before catch, if catch before then, both will be triggered
         // validateAt is better than Yun.reach then validate when ref used in validation rules
-        schemas.validateAt(field, value).then(result => {
-            commitResult(field, result);
-        }).catch(result => {
-            commitResult(field, result);
-        });
+        schemas
+            .validateAt(field, value)
+            .then((result) => {
+                commitResult(field, result);
+            })
+            .catch((result) => {
+                commitResult(field, result);
+            });
     };
 
     // Change value handler
@@ -128,7 +133,7 @@ export const useFormValidator = (
                 // Without fields included, all parsed
                 Object.assign(obj, Utils.formDataToObject(formData));
             } else {
-                refs.forEach(field => {
+                refs.forEach((field) => {
                     const fieldValue = formData.get(field) as string;
                     if (fieldValue) {
                         obj[field] = fieldValue;
@@ -169,7 +174,9 @@ export const useFormValidator = (
      * Input or Textarea blur handler, with all form data to validate
      * @param event Focus event
      */
-    const blurFormHandler = (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const blurFormHandler = (
+        event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         blurHandler(event, []);
     };
 
@@ -200,7 +207,7 @@ export const useFormValidator = (
      * Update action result to error report
      * @param result Action report
      */
-    const updateResult = (result: IResult<IResultData>) => {
+    const updateResult = (result: IResult) => {
         // OK status return anyway
         if (result.ok) {
             return;
@@ -212,7 +219,7 @@ export const useFormValidator = (
         // Errors
         const { errors } = result;
         if (errors) {
-            Object.keys(errors).forEach(key => {
+            Object.keys(errors).forEach((key) => {
                 const field = getField(key);
                 if (newState[field] == null) {
                     // New item
@@ -245,9 +252,11 @@ export const useFormValidator = (
     const validate = async (data: any) => {
         try {
             clearSeed();
-            const result = await schemas.validate(
-                data, { strict: false, abortEarly: false, stripUnknown: false }
-            ) as IDynamicData;
+            const result = (await schemas.validate(data, {
+                strict: false,
+                abortEarly: false,
+                stripUnknown: false
+            })) as IDynamicData;
             return result;
         } catch (e) {
             // Reset
@@ -255,7 +264,7 @@ export const useFormValidator = (
 
             // Iterate the error items
             if (e instanceof Yup.ValidationError) {
-                e.inner.forEach(error => {
+                e.inner.forEach((error) => {
                     // Only show the first error of the field
                     const field = getField(error.path);
                     if (newState[field] == null) {
@@ -287,9 +296,12 @@ export const useFormValidator = (
     };
 
     // Merge into the life cycle
-    React.useEffect(() => () => {
-        clearSeed();
-    }, []);
+    React.useEffect(
+        () => () => {
+            clearSeed();
+        },
+        []
+    );
 
     // Return methods for manipulation
     return {

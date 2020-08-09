@@ -5,10 +5,10 @@ export interface ChangePasswordModel {
     /**
      * Current (old) password
      */
-    oldPassword: string
+    oldPassword: string;
 
     /**
      * New password
      */
-    newPassword: string
+    newPassword: string;
 }

@@ -6,17 +6,17 @@ import { IViewModel } from './IView';
  */
 export interface ViewCustomerSimpleModel extends IViewModel {
     // Id
-    id: number
+    id: number;
 
     // Name
-    name: string
+    name: string;
 
     // Main category id
-    category_id: number
+    category_id: number;
 
     // Top category id
-    top_category_id: number
+    top_category_id: number;
 
     // Top category name
-    top_category: string
+    top_category: string;
 }

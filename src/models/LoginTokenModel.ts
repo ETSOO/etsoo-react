@@ -5,10 +5,10 @@ export interface LoginTokenModel {
     /**
      * User id
      */
-    id: number
+    id: number;
 
     /**
      * Token
      */
-    token: string
+    token: string;
 }

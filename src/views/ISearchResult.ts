@@ -9,42 +9,42 @@ export interface ISearchLayoutItem {
     /**
      * Text align
      */
-    align?: Align
+    align?: Align;
 
     /**
      * Data field
      */
-    field: string
+    field: string;
 
     /**
      * Label
      */
-    label?: string
+    label?: string;
 
     /**
      * Sort field index
      */
-    sort?: number
+    sort?: number;
 
     /**
      * Data type
      */
-    type: DataType
+    type: DataType;
 
     /**
      * Width
      */
-    width?: number
+    width?: number;
 
     /**
      * Max width
      */
-    widthmax?: number
+    widthmax?: number;
 
     /**
      * Min width
      */
-    widthmin?: number
+    widthmin?: number;
 }
 
 /**
@@ -54,22 +54,22 @@ export interface ISearchItem {
     /**
      * Loaded or not
      */
-    loading?: boolean
+    loading?: boolean;
 
     /**
      * View flag value
      */
-    viewFlag?: number
+    viewFlag?: number;
 
     /**
      * Selected
      */
-    selected?: boolean
+    selected?: boolean;
 
     /**
      * Key index
      */
-    [key: string]: any
+    [key: string]: any;
 }
 
 /**
@@ -79,29 +79,29 @@ export interface ISearchResult<T extends ISearchItem> {
     /**
      * Custom data
      */
-    data?: any
+    data?: any;
 
     /**
      * Items
      */
-    items: T[]
+    items: T[];
 
     /**
      * Layout
      */
-    layouts?: ISearchLayoutItem[]
+    layouts?: ISearchLayoutItem[];
 
     /**
      * Total records
      */
-    records?: number
+    records?: number;
 }
 
 /**
  * Format layouts callback interface
  */
 interface SearchLayoutFormatCallback {
-    (field: string): string | null
+    (field: string): string | null;
 }
 
 /**
@@ -133,7 +133,7 @@ export const searchLayoutFormat = (
     callback?: SearchLayoutFormatCallback,
     firstOnly: boolean = false
 ) => {
-    layouts.forEach(c => {
+    layouts.forEach((c) => {
         // Callback
         let label = callback ? callback(c.field) : c.label;
 

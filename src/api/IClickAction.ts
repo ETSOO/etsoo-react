@@ -2,7 +2,7 @@
  * Click action callback interface
  */
 export interface IClickCallback {
-    (): void
+    (): void;
 }
 
 /**
@@ -12,15 +12,15 @@ export interface IClickAction {
     /**
      * Label of the item
      */
-    label: string
+    label: string;
 
     /**
      * Navigation URL or callback
      */
-    action: string | IClickCallback
+    action: string | IClickCallback;
 
     /**
      * Icon
      */
-    icon?: React.ReactElement
+    icon?: React.ReactElement;
 }

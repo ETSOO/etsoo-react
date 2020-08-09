@@ -1,36 +1,37 @@
 import { EntityController } from './EntityController';
 import { UserAction, UserActionType, IUserUpdate } from '../states/UserState';
 import { IApiUser } from '../api/IApiUser';
-import { IApiConfigs } from './IApiConfigs';
 import { IApiEntity } from '../api/IApiEntity';
 import { ChangePasswordModel } from '../models/ChangePasswordModel';
-import { LoginResultData, AuthorizationResultData } from '../views/LoginResultData';
+import {
+    LoginResultData,
+    AuthorizationResultData
+} from '../views/LoginResultData';
 import { IResult } from '../api/IResult';
 import { SaveLoginData, SaveLogin } from '../api/SaveLogin';
 import { LoginModel } from '../models/LoginModel';
 import { LoginTokenModel } from '../models/LoginTokenModel';
+import { IApiErrorHandler, ApiResult } from '../api/IApi';
 
 /**
  * User login success callback
  */
-export interface UserLoginSuccess
-{
+export interface UserLoginSuccess {
     /**
      * Callback function
      */
-    (userId: number): Promise<IUserUpdate>
+    (userId: number): Promise<IUserUpdate | undefined>;
 }
 
 /**
  * Login data factory callback
  * Format the data to unified object
  */
-export interface ILoginDataFactory
-{
+export interface ILoginDataFactory {
     /**
      * Callback function
      */
-    (data: any): IResult<LoginResultData>
+    (data: any): IResult<LoginResultData>;
 }
 
 /**
@@ -40,47 +41,56 @@ export abstract class LoginController extends EntityController {
     /**
      * User state dispatch
      */
-    protected dispatch: React.Dispatch<UserAction>
+    protected dispatch: React.Dispatch<UserAction>;
 
     /**
      * Login result format callback
      */
-    public loginFormat?: ILoginDataFactory
+    public loginFormat?: ILoginDataFactory;
 
     /**
      * Login with token format callback
      */
-    public loginTokenFormat?: ILoginDataFactory
+    public loginTokenFormat?: ILoginDataFactory;
 
     /**
      * Constructor
      * @param user Current user
      * @param entity Service entity
-     * @param configs Configurations
      * @param dispatch User state dispatch
      */
     protected constructor(
         user: IApiUser,
         entity: IApiEntity,
-        configs: IApiConfigs,
         dispatch: React.Dispatch<UserAction>
     ) {
-        super(user, entity, configs);
+        super(user, entity);
         this.dispatch = dispatch;
     }
 
     /**
      * Change password
      * @param model Data model
+     * @param onError Error handler
      */
-    async changePassword(model: ChangePasswordModel) {
-        return EntityController.formatResult((await this.api.post('ChangePassword', model)).data);
+    async changePassword(
+        model: ChangePasswordModel,
+        onError?: IApiErrorHandler
+    ) {
+        const url = this.buildEntityApi('ChangePassword');
+        const result = await this.api.post(url, model, {
+            onError,
+            parser: EntityController.resultParser()
+        });
+        return result;
     }
 
     // Login result process
-    async loginResult(result: IResult<LoginResultData>,
+    async loginResult(
+        result: IResult<LoginResultData>,
         dataCallback?: UserLoginSuccess,
-        model?: LoginModel) {
+        model?: LoginModel
+    ) {
         if (result.ok) {
             // ! is non-null assertion operator
             const data = result.data!;
@@ -117,7 +127,10 @@ export abstract class LoginController extends EntityController {
             // Callback
             if (dataCallback) {
                 // Update action
-                action.update = await dataCallback(data.token_user_id);
+                const cbResult = await dataCallback(data.token_user_id);
+                if (cbResult) {
+                    action.update = cbResult;
+                }
 
                 // Update user
                 this.dispatch(action);
@@ -134,39 +147,90 @@ export abstract class LoginController extends EntityController {
     /**
      * Login
      * @param model Login model
+     * @param dataCallback Login success callback
+     * @param onError Error handler
      */
-    async login(model: LoginModel, dataCallback?: UserLoginSuccess) {
-        const { method, currentLanguage: languageCid } = this.singleton.settings;
+    async login(
+        model: LoginModel,
+        dataCallback?: UserLoginSuccess,
+        onError?: IApiErrorHandler
+    ) {
+        const {
+            method,
+            currentLanguage: languageCid
+        } = this.singleton.settings;
         const post = Object.assign(model, { method, languageCid });
-        const { data } = (await this.api.post('Login', post));
-        const result = this.loginFormat
-            ? this.loginFormat(data)
-            : EntityController.formatResult<LoginResultData>(data);
-        await this.loginResult(result, dataCallback, model);
+        const url = this.buildEntityApi('Login');
+        const parser = this.loginFormat
+            ? (data: any): ApiResult<IResult<LoginResultData>> => [
+                  undefined,
+                  this.loginFormat!(data)
+              ]
+            : EntityController.resultParser<LoginResultData>();
+
+        // Act
+        const result = await this.api.post<IResult<LoginResultData>>(
+            url,
+            post,
+            { onError, parser }
+        );
+
+        if (result) {
+            await this.loginResult(result, dataCallback, model);
+        }
+
         return result;
     }
 
     /**
      * Login token
      * @param model Login token model
+     * @param dataCallback Login success callback
+     * @param onError Error handler
      */
-    async loginToken(model: LoginTokenModel, dataCallback?: UserLoginSuccess) {
-        const { method, currentLanguage: languageCid } = this.singleton.settings;
+    async loginToken(
+        model: LoginTokenModel,
+        dataCallback?: UserLoginSuccess,
+        onError?: IApiErrorHandler
+    ) {
+        const {
+            method,
+            currentLanguage: languageCid
+        } = this.singleton.settings;
         const post = Object.assign(model, { method, languageCid });
-        const { data } = (await this.api.post('LoginToken', post));
-        const result = this.loginTokenFormat
-            ? this.loginTokenFormat(data)
-            : EntityController.formatResult<LoginResultData>(data);
-        await this.loginResult(result, dataCallback, undefined);
+        const url = this.buildEntityApi('LoginToken');
+        const parser = this.loginTokenFormat
+            ? (data: any): ApiResult<IResult<LoginResultData>> => [
+                  undefined,
+                  this.loginTokenFormat!(data)
+              ]
+            : EntityController.resultParser<LoginResultData>();
+
+        // Act
+        const result = await this.api.post<IResult<LoginResultData>>(
+            url,
+            post,
+            { onError, parser }
+        );
+
+        if (result) {
+            await this.loginResult(result, dataCallback, undefined);
+        }
+
         return result;
     }
 
     /**
      * Refresh token
+     * @param onError Error handler
      */
-    async refreshToken() {
-        const result = EntityController.formatResult<AuthorizationResultData>((await this.api.put('RefreshToken')).data);
-        if (result.ok) {
+    async refreshToken(onError?: IApiErrorHandler) {
+        const url = this.buildEntityApi('RefreshToken');
+        const result = await this.api.put(url, undefined, {
+            onError,
+            parser: EntityController.resultParser<AuthorizationResultData>()
+        });
+        if (result?.ok) {
             // Update token
             this.singleton.UpdateToken(result.data?.authorization);
         }
@@ -176,20 +240,32 @@ export abstract class LoginController extends EntityController {
     /**
      * Service summary data
      * @param id Field of data
+     * @param onError Error handler
      */
-    async serviceSummary<D>(id: string) {
-        return (await this.api.get(`servicesummary/${id}`)).data as D;
+    async serviceSummary<D>(id: string, onError?: IApiErrorHandler) {
+        const url = this.buildEntityApi(`servicesummary/${id}`);
+        const result = await this.api.get<D>(url, undefined, {
+            onError,
+            parser: EntityController.searchResultParser<D>()
+        });
+        return result;
     }
 
     /**
      * Signout
      * @param clearToken Clear saved login token
+     * @param onError Error handler
      */
-    async signout(clearToken: boolean) {
+    async signout(clearToken: boolean, onError?: IApiErrorHandler) {
         const { method } = this.singleton.settings;
-        const api = `Signout?method=${method}&clear=${clearToken}`;
-        const result = EntityController.formatResult((await this.api.put(api)).data);
-        if (result.ok) {
+        const api = this.buildEntityApi(
+            `Signout?method=${method}&clear=${clearToken}`
+        );
+        const result = await this.api.put(api, undefined, {
+            onError,
+            parser: EntityController.resultParser()
+        });
+        if (result?.ok) {
             // Clear API token
             this.singleton.UpdateToken(undefined);
 

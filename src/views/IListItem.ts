@@ -3,8 +3,8 @@
  */
 export interface IListItem {
     // Id
-    id: number
+    id: number;
 
     // Label
-    label: string
+    label: string;
 }

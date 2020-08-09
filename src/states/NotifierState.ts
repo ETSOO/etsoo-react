@@ -28,22 +28,22 @@ export interface INotifierState {
     /**
      * Callback function
      */
-    callback?: INotifierCallback | null
+    callback?: INotifierCallback | null;
 
     /**
      * Message
      */
-    message?: string
+    message?: string;
 
     /**
      * Title
      */
-    title?: string
+    title?: string;
 
     /**
      * Type
      */
-    type: NotifierActionType
+    type: NotifierActionType;
 }
 
 /**
@@ -53,22 +53,22 @@ export interface NotifierAction extends IAction {
     /**
      * Callback function
      */
-    callback?: INotifierCallback
+    callback?: INotifierCallback;
 
     /**
      * Message
      */
-    message?: string
+    message?: string;
 
     /**
      * Title
      */
-    title?: string
+    title?: string;
 
     /**
      * Type
      */
-    type: NotifierActionType
+    type: NotifierActionType;
 }
 
 /**

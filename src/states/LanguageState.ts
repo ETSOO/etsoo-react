@@ -8,7 +8,7 @@ import { ILanguageItem } from '../api/IApiSettings';
  * Indexable type
  */
 export interface LanguageLabel {
-    readonly [key: string]: string
+    readonly [key: string]: string;
 }
 
 /**
@@ -18,12 +18,12 @@ export interface ILanguage {
     /**
      * Global labels
      */
-    labels: LanguageLabel
+    labels: LanguageLabel;
 
     /**
      * Current language name
      */
-    name: string
+    name: string;
 }
 
 /**
@@ -33,12 +33,12 @@ export interface LanguageAction extends IAction {
     /**
      * Labels of the language
      */
-    labels: LanguageLabel,
+    labels: LanguageLabel;
 
     /**
      * Language cid, like 'zh-CN'
      */
-    name: string
+    name: string;
 }
 
 /**
@@ -46,7 +46,10 @@ export interface LanguageAction extends IAction {
  * @param state State
  * @param action Action
  */
-export function LanguageReducer(state: ILanguage, action: LanguageAction): ILanguage {
+export function LanguageReducer(
+    state: ILanguage,
+    action: LanguageAction
+): ILanguage {
     if (state.name === action.name) {
         return state;
     }
@@ -63,12 +66,13 @@ export function LanguageReducer(state: ILanguage, action: LanguageAction): ILang
  * Cannot update a component (`provider`) while rendering a different component (`Login`)
  * @param language Current language
  */
-export const LanguageStateCreator = ((languageItem?: ILanguageItem) => {
+export const LanguageStateCreator = (languageItem?: ILanguageItem) => {
     // Default
-    const defaultLanguageItem: ILanguage = languageItem == null
-        ? {} as ILanguage
-        : { name: languageItem.name, labels: languageItem.labels };
+    const defaultLanguageItem: ILanguage =
+        languageItem == null
+            ? ({} as ILanguage)
+            : { name: languageItem.name, labels: languageItem.labels };
 
     // Act
     return CreateState(LanguageReducer, defaultLanguageItem);
-});
+};

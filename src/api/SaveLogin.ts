@@ -18,17 +18,17 @@ export interface SaveLoginData {
     /**
      * User id
      */
-    readonly id: number,
+    readonly id: number;
 
     /**
      * Raw user id for login
      */
-    readonly rawId: string,
+    readonly rawId: string;
 
     /**
      * Token
      */
-    token?: string
+    token?: string;
 }
 
 /**

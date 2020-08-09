@@ -1,7 +1,11 @@
 import React from 'react';
 import { INotifier, INotifierCallback } from '../api/INotifier';
 import { IUpdate } from '../states/IState';
-import { NotifierAction, INotifierState, NotifierActionType } from '../states/NotifierState';
+import {
+    NotifierAction,
+    INotifierState,
+    NotifierActionType
+} from '../states/NotifierState';
 import { NotifierContext } from './NotifierUI';
 
 /**
@@ -11,7 +15,10 @@ export class Notifier implements INotifier {
     /**
      * Notifier update
      */
-    private notifierUpdate?: IUpdate<INotifierState, NotifierAction> = undefined
+    private notifierUpdate?: IUpdate<
+        INotifierState,
+        NotifierAction
+    > = undefined;
 
     /**
      * Constructor
@@ -27,7 +34,11 @@ export class Notifier implements INotifier {
      * @param title Title
      * @param callback Callback
      */
-    public confirm(message: string, title?: string, callback?: INotifierCallback) {
+    public confirm(
+        message: string,
+        title?: string,
+        callback?: INotifierCallback
+    ) {
         const action: NotifierAction = {
             type: NotifierActionType.Confirm,
             title,
@@ -43,7 +54,11 @@ export class Notifier implements INotifier {
      * @param title Title
      * @param callback Callback
      */
-    public report(message: string, title?: string, callback?: INotifierCallback) {
+    public report(
+        message: string,
+        title?: string,
+        callback?: INotifierCallback
+    ) {
         const action: NotifierAction = {
             type: NotifierActionType.Message,
             title,

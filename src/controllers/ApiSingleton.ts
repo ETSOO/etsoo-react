@@ -1,116 +1,64 @@
-import Axios from 'axios';
+import { IApi } from '@etsoo/restclient';
 import { INotifier, INotifierCallback } from '../api/INotifier';
 import { IApiSettings, ApiSettings } from '../api/IApiSettings';
-import { IApiConfigs } from './IApiConfigs';
+
+/**
+ * API creator
+ */
+export interface IApiCreator {
+    (settings: IApiSettings): IApi;
+}
 
 /**
  * API Singleton to deal
  */
 export class ApiSingleton {
     // Singleton instance
-    private static instance: ApiSingleton
+    private static instance: ApiSingleton;
 
     /**
      * Get the singleton instance
+     * @param apiCreator API creator
+     * @param notifier Notifier
      */
-    public static getInstance(notifier: INotifier): ApiSingleton {
+    public static getInstance(
+        apiCreator: IApiCreator,
+        notifier: INotifier
+    ): ApiSingleton {
         if (!ApiSingleton.instance) {
-            ApiSingleton.instance = new ApiSingleton();
+            ApiSingleton.instance = new ApiSingleton(apiCreator, notifier);
         }
-
-        ApiSingleton.instance.notifier = notifier;
-
         return ApiSingleton.instance;
     }
 
     /**
      * Notifier, be sure to update to the current context
      */
-    private notifier?: INotifier
+    private notifier?: INotifier;
 
     /**
-     * Api settings
+     * Api
      */
-    public readonly settings: IApiSettings
+    public readonly api: IApi;
+
+    /**
+     * Settings
+     */
+    public readonly settings: IApiSettings;
 
     // Constructor
-    private constructor() {
-        // API settings
+    private constructor(apiCreator: IApiCreator, notifier: INotifier) {
         this.settings = ApiSettings.get();
-    }
+        this.api = apiCreator(this.settings);
+        this.notifier = notifier;
 
-    /**
-     * Error handler
-     * @param error Error
-     */
-    protected errorHandler(error: any) {
-        // Destruct properties
-        const { message, request, response } = error;
+        // Base url of the API
+        this.api.baseUrl = this.settings.endpoint;
 
-        let callback: INotifierCallback | undefined;
-        let errorMessage = message;
-        if (response) {
-            errorMessage = `Response: ${message}`;
-
-            // 401 unauthorized
-            if (response.status === 401) {
-                callback = () => {
-                    // Redirect to login page, homepage of React project set to '.' or './'
-                    // should be configured here as undefined
-                    const loginUrl = `${(this.settings.homepage || '')}/login`;
-                    window.location.href = loginUrl;
-                };
-            }
-        } else if (request) {
-            errorMessage = `Request: ${message}`;
-        }
-
-        // Hide the loading bar (Same state component)
-        // Report the error
-        this.reportError(errorMessage, callback);
-    }
-
-    /**
-     * Create API
-     * @param configs Additional API configs
-     */
-    public createApi(configs: IApiConfigs) {
-        // Create
-        const api = Axios.create({
-            baseURL: configs.baseUrl
-        });
-
-        // Interceptors
-        api.interceptors.request.use(config => {
-            // Attach token
-            const { token } = this.settings;
-            if (token) {
-                const { headers } = config;
-                headers.Authorization = `Bearer ${token}`;
-            }
-
-            if (configs.defaultLoading) {
-                this.showLoading();
-            }
-
-            return config;
-        }, error => {
-            this.errorHandler(error);
-            return Promise.reject(error);
-        });
-
-        api.interceptors.response.use(response => {
-            if (configs.defaultLoading) {
-                this.showLoading(false);
-            }
-            return response;
-        }, error => {
-            this.errorHandler(error);
-            return Promise.reject(error);
-        });
-
-        // Return
-        return api;
+        // Global API error handler
+        this.api.onError = (error: Error) => {
+            this.reportError(error.toString());
+        };
     }
 
     /**
@@ -119,7 +67,11 @@ export class ApiSingleton {
      * @param title Title
      * @param callback Callback
      */
-    public confirm(message: string, title?: string, callback?: INotifierCallback) {
+    public confirm(
+        message: string,
+        title?: string,
+        callback?: INotifierCallback
+    ) {
         this.notifier?.confirm(message, title, callback);
     }
 
@@ -129,7 +81,11 @@ export class ApiSingleton {
      * @param title Title
      * @param callback Callback
      */
-    public report(message: string, title?: string, callback?: INotifierCallback) {
+    public report(
+        message: string,
+        title?: string,
+        callback?: INotifierCallback
+    ) {
         this.notifier?.report(message, title, callback);
     }
 

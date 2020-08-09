@@ -5,30 +5,30 @@ export interface TiplistModel {
     /**
      * Id
      */
-    id?: number
+    id?: number;
 
     /**
      * Id array
      */
-    ids?: number[]
+    ids?: number[];
 
     /**
      * Hide id
      */
-    hideId?: number
+    hideId?: number;
 
     /**
      * Hide ids array
      */
-    hideIds?: number[]
+    hideIds?: number[];
 
     /**
      * Records to read
      */
-    records?: number
+    records?: number;
 
     /**
      * Search keyword
      */
-    sc?: string
+    sc?: string;
 }

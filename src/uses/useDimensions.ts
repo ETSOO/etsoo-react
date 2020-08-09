@@ -5,7 +5,9 @@ import { Utils } from '../api/Utils';
  * Calculate element dimensions
  * @param observeResize Is observing resize event
  */
-export function useDimensions<E extends Element>(observeResize: boolean = false) {
+export function useDimensions<E extends Element>(
+    observeResize: boolean = false
+) {
     // References for a HTML elements passed to its 'ref' property
     const ref = React.useRef<E>(null);
 
@@ -75,7 +77,10 @@ export function useDimensions2<E1 extends Element, E2 extends Element>(
         if (ref1.current && ref2.current) {
             const d1 = ref1.current.getBoundingClientRect();
             const d2 = ref2.current.getBoundingClientRect();
-            if (!Utils.dimensionEqual(dimensions1, d1) || !Utils.dimensionEqual(dimensions2, d2)) {
+            if (
+                !Utils.dimensionEqual(dimensions1, d1) ||
+                !Utils.dimensionEqual(dimensions2, d2)
+            ) {
                 updateDimensions([d1, d2]);
             }
         }

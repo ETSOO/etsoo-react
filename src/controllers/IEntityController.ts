@@ -1,29 +1,29 @@
-import { AxiosInstance } from 'axios';
 import { IApiEntity } from '../api/IApiEntity';
 import { ApiSingleton } from './ApiSingleton';
 import { IApiUser } from '../api/IApiUser';
+import { IApi } from '../api/IApi';
 
 /**
  * Entity controller interface
  */
 export interface IEntityController {
     /**
-     * API
-     */
-    api: AxiosInstance
-
-    /**
      * Current entity description
      */
-    entity: IApiEntity
+    entity: IApiEntity;
 
     /**
      * API Singleton
      */
-    singleton: ApiSingleton
+    singleton: ApiSingleton;
 
     /**
      * Current user
      */
-    user: IApiUser
+    user: IApiUser;
+
+    /**
+     * API
+     */
+    api: IApi;
 }

@@ -1,5 +1,9 @@
 import { LoginMethod } from './LoginMethod';
-import { LanguageStateCreator, ILanguage, LanguageAction } from '../states/LanguageState';
+import {
+    LanguageStateCreator,
+    ILanguage,
+    LanguageAction
+} from '../states/LanguageState';
 import { IUpdate } from '../states/IState';
 
 /**
@@ -9,17 +13,17 @@ export interface ILanguageItem {
     /**
      * Name, like zh-CN
      */
-    readonly name: string
+    readonly name: string;
 
     /**
      * Label for description, like Simplifined Chinese
      */
-    readonly label: string
+    readonly label: string;
 
     /**
      * Labels
      */
-    readonly labels: any
+    readonly labels: any;
 }
 
 /**
@@ -43,63 +47,79 @@ export enum AppRole {
 }
 
 /**
- * API settings interface
+ * Configurable API settings
  */
-export interface IApiSettings {
-    /**
-     * Current language
-     */
-    readonly currentLanguage?: string
-
-    /**
-     * Detected language
-     */
-    readonly detectedLanguage: string
-
+export interface IApiConfigurable {
     /**
      * API endpoint
      */
-    readonly endpoint: string
+    readonly endpoint: string;
 
     /**
      * App root url
      */
-    readonly homepage: string
+    readonly homepage: string;
 
     /**
      * Limited organization id
      */
-    readonly org?: number
-
-    /**
-     * Login method
-     */
-    readonly method: LoginMethod.Web
-
-    /**
-     * Application role
-     */
-    readonly role: AppRole
-
-    /**
-     * Supported languages
-     */
-    readonly supportedLanguages: ILanguageItem[]
-
-    /**
-     * Search input element
-     */
-    searchInput?: HTMLInputElement
-
-    /**
-     * User token
-     */
-    token?: string
+    readonly org?: number;
 
     /**
      * Cloud web url
      */
-    readonly webUrl: string
+    readonly webUrl: string;
+}
+
+/**
+ * Configurable API settings host
+ * Usually passed by window global configs property
+ */
+export interface IApiConfigurableHost {
+    /**
+     * Configurable API settings
+     */
+    configs: IApiConfigurable;
+}
+
+/**
+ * API settings interface
+ */
+export interface IApiSettings extends IApiConfigurable {
+    /**
+     * Current language
+     */
+    readonly currentLanguage?: string;
+
+    /**
+     * Detected language
+     */
+    readonly detectedLanguage: string;
+
+    /**
+     * Login method
+     */
+    readonly method: LoginMethod.Web;
+
+    /**
+     * Application role
+     */
+    readonly role: AppRole;
+
+    /**
+     * Supported languages
+     */
+    readonly supportedLanguages: ILanguageItem[];
+
+    /**
+     * Search input element
+     */
+    searchInput?: HTMLInputElement;
+
+    /**
+     * User token
+     */
+    token?: string;
 }
 
 // Settings
@@ -120,7 +140,9 @@ const setup = (settings: IApiSettings) => {
     apiSettings = settings;
 
     // Default language item
-    const languageItem = settings.supportedLanguages.find(l => l.name === settings.currentLanguage);
+    const languageItem = settings.supportedLanguages.find(
+        (l) => l.name === settings.currentLanguage
+    );
 
     // Language state
     const state = LanguageStateCreator(languageItem);
