@@ -1,7 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import {
-    InputBase, makeStyles, fade, Theme
-} from '@material-ui/core';
+import { InputBase, makeStyles, fade, Theme } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import { ApiSettings } from '../api/IApiSettings';
 
@@ -9,12 +7,12 @@ interface ICustomStyle {
     /**
      * Focus width
      */
-    focusWidth?: string
+    focusWidth?: string;
 
     /**
      * Input width
      */
-    width?: string
+    width?: string;
 }
 
 /**
@@ -24,27 +22,27 @@ export interface SearchBarProps extends ICustomStyle {
     /**
      * Input blur event handler
      */
-    onBlur?: React.FocusEventHandler
+    onBlur?: React.FocusEventHandler;
 
     /**
      * Input change event handler
      */
-    onChange?: React.ChangeEventHandler
+    onChange?: React.ChangeEventHandler;
 
     /**
      * Input delay change event handler
      */
-    onDelayChange?: React.ChangeEventHandler
+    onDelayChange?: React.ChangeEventHandler;
 
     /**
      * Input focus event handler
      */
-    onFocus?: React.FocusEventHandler
+    onFocus?: React.FocusEventHandler;
 
     /**
      * placeholder for the input
      */
-    placeholder?: string
+    placeholder?: string;
 }
 
 // Styles
@@ -113,7 +111,8 @@ export function SearchBar(props: SearchBarProps) {
     const classes = useStyles({ focusWidth, width });
 
     // Input ref
-    const setInputRef = (input: HTMLInputElement) => ApiSettings.setSearchInput(input);
+    const setInputRef = (input: HTMLInputElement) =>
+        ApiSettings.setSearchInput(input);
 
     // change seed
     let changeSeed: number = 0;
@@ -132,10 +131,13 @@ export function SearchBar(props: SearchBarProps) {
     };
 
     // Layout
-    React.useEffect(() => () => {
-        window.clearTimeout(changeSeed);
-        changeSeed = 0;
-    }, []);
+    React.useEffect(
+        () => () => {
+            window.clearTimeout(changeSeed);
+            changeSeed = 0;
+        },
+        []
+    );
 
     return (
         <div className={classes.search}>

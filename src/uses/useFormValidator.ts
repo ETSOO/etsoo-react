@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { IResultData, IResult } from '../api/IResult';
+import { IResult } from '../api/IResult';
 import { Utils } from '../api/Utils';
 import { IDynamicData } from '../api/IDynamicData';
 

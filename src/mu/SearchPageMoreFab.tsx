@@ -1,7 +1,11 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-    Fab, Menu, MenuItem, ListItemIcon, ListItemText
+    Fab,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText
 } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { IClickAction } from '../api/IClickAction';
@@ -13,7 +17,7 @@ export interface SearchPageMoreFabProps {
     /**
      * Actions
      */
-    actions: IClickAction[]
+    actions: IClickAction[];
 }
 
 /**
@@ -55,7 +59,12 @@ export function SearchPageMoreFab({ actions }: SearchPageMoreFabProps) {
 
     return (
         <>
-            <Fab color="secondary" size="medium" onClick={onMoreClick} key="more">
+            <Fab
+                color="secondary"
+                size="medium"
+                onClick={onMoreClick}
+                key="more"
+            >
                 <MoreHoriz />
             </Fab>
             <Menu
@@ -64,18 +73,17 @@ export function SearchPageMoreFab({ actions }: SearchPageMoreFabProps) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {
-                    actions.map((action, index) => (
-                        <MenuItem key={action.label} onClick={() => handleClick(index)}>
-                            {action.icon && (
-                                <ListItemIcon>
-                                    {action.icon}
-                                </ListItemIcon>
-                            )}
-                            <ListItemText primary={action.label} />
-                        </MenuItem>
-                    ))
-                }
+                {actions.map((action, index) => (
+                    <MenuItem
+                        key={action.label}
+                        onClick={() => handleClick(index)}
+                    >
+                        {action.icon && (
+                            <ListItemIcon>{action.icon}</ListItemIcon>
+                        )}
+                        <ListItemText primary={action.label} />
+                    </MenuItem>
+                ))}
             </Menu>
         </>
     );

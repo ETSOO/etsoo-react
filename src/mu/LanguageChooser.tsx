@@ -1,6 +1,12 @@
 import React from 'react';
 import {
-    Dialog, DialogTitle, List, ListItem, ListItemText, IconButton, Tooltip
+    Dialog,
+    DialogTitle,
+    List,
+    ListItem,
+    ListItemText,
+    IconButton,
+    Tooltip
 } from '@material-ui/core';
 import { Language } from '@material-ui/icons';
 import { ILanguageItem } from '../api/IApiSettings';
@@ -12,27 +18,27 @@ export interface LanguageChooserProps {
     /**
      * Style class name
      */
-    className?: string
+    className?: string;
 
     /**
      * Close event
      */
-    onClose?(item?: ILanguageItem): void
+    onClose?(item?: ILanguageItem): void;
 
     /**
      * Current selected language
      */
-    selectedValue?:string
+    selectedValue?: string;
 
     /**
      * Title
      */
-    title?: string
+    title?: string;
 
     /**
      * Items
      */
-    items: ILanguageItem[]
+    items: ILanguageItem[];
 }
 
 /**
@@ -41,24 +47,18 @@ export interface LanguageChooserProps {
  */
 export function LanguageChooser(props: LanguageChooserProps) {
     //  properties destructure
-    const {
-        className,
-        items,
-        onClose,
-        selectedValue,
-        title
-    } = props;
+    const { className, items, onClose, selectedValue, title } = props;
 
     // No items will return a blank component
     if (items.length === 0) {
-        return (<em>No items</em>);
+        return <em>No items</em>;
     }
 
     // Dialog open or not state
     const [open, setOpen] = React.useState(false);
 
     // Current language state
-    let defaultLanguageItem = items.find(item => item.name === selectedValue);
+    let defaultLanguageItem = items.find((item) => item.name === selectedValue);
     if (defaultLanguageItem == null) {
         [defaultLanguageItem] = items;
     }
@@ -104,14 +104,23 @@ export function LanguageChooser(props: LanguageChooserProps) {
     return (
         <>
             <Tooltip title={languageItem.label} aria-label="Current language">
-                <IconButton color="primary" className={className} aria-label="Language" onClick={clickHandler}>
+                <IconButton
+                    color="primary"
+                    className={className}
+                    aria-label="Language"
+                    onClick={clickHandler}
+                >
                     <Language />
                 </IconButton>
             </Tooltip>
-            <Dialog aria-labelledby="dialog-title" open={open} onClose={closeHandler}>
+            <Dialog
+                aria-labelledby="dialog-title"
+                open={open}
+                onClose={closeHandler}
+            >
                 <DialogTitle id="dialog-title">{title || ''}</DialogTitle>
                 <List>
-                    {items.map(item => (
+                    {items.map((item) => (
                         <ListItem
                             button
                             key={item.name}

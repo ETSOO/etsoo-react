@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-    IState, IAction, IUpdate, IUICreator
-} from './IState';
+import { IState, IAction, IUpdate, IUICreator } from './IState';
 
 /**
  * Generic to create state context and provider
@@ -39,9 +37,7 @@ export function CreateState<S extends IState, A extends IAction>(
         }
 
         return (
-            <context.Provider value={contextValue}>
-                {children}
-            </context.Provider>
+            <context.Provider value={contextValue}>{children}</context.Provider>
         );
     };
 

@@ -18,12 +18,12 @@ export interface RadioGroupFieldItem {
     /**
      * Label of the item
      */
-    label: string
+    label: string;
 
     /**
      * Value of the item
      */
-    value: unknown
+    value: unknown;
 }
 
 // Styles
@@ -34,8 +34,7 @@ const useStyles = makeStyles((theme) => ({
     title: {
         ...theme.typography.caption
     },
-    listContainer: {
-    },
+    listContainer: {},
     error: {
         ...theme.typography.caption
     }
@@ -48,42 +47,42 @@ export interface RadioGroupFieldProps extends RadioGroupProps {
     /**
      * If `true`, the label should be displayed in an error state
      */
-    error?: boolean
+    error?: boolean;
 
     /**
      * Error class name
      */
-    errorClassName?: string
+    errorClassName?: string;
 
     /**
      * The helper text content
      */
-    helperText?: React.ReactNode
+    helperText?: React.ReactNode;
 
     /**
      * Radio items
      */
-    items: RadioGroupFieldItem[]
+    items: RadioGroupFieldItem[];
 
     /**
      * Label for the field
      */
-    label?: string
+    label?: string;
 
     /**
      * If `true`, the label will indicate that the input is required.
      */
-    required?: boolean
+    required?: boolean;
 
     /**
      * List class name
      */
-    listClassName?: string
+    listClassName?: string;
 
     /**
      * Title class name
      */
-    titleClassName?: string
+    titleClassName?: string;
 }
 
 /**
@@ -112,7 +111,10 @@ export function RadioGroupField(props: RadioGroupFieldProps) {
     const localRow = row == null ? true : row;
 
     return (
-        <FormControl className={Utils.mergeClasses(classes.root, className)} required={required}>
+        <FormControl
+            className={Utils.mergeClasses(classes.root, className)}
+            required={required}
+        >
             <FormLabel
                 className={Utils.mergeClasses(classes.title, titleClassName)}
                 error={error}
@@ -121,15 +123,26 @@ export function RadioGroupField(props: RadioGroupFieldProps) {
                 {label}
             </FormLabel>
             <RadioGroup
-                className={Utils.mergeClasses(classes.listContainer, listClassName)}
+                className={Utils.mergeClasses(
+                    classes.listContainer,
+                    listClassName
+                )}
                 row={localRow}
-                {...rest as RadioGroupProps}
+                {...(rest as RadioGroupProps)}
             >
-                {
-                    items.map(item => (
-                        <FormControlLabel key={item.label} value={item.value} control={<Radio size="small" style={{ marginTop: -4, marginBottom: -4 }} />} label={item.label} />
-                    ))
-                }
+                {items.map((item) => (
+                    <FormControlLabel
+                        key={item.label}
+                        value={item.value}
+                        control={
+                            <Radio
+                                size="small"
+                                style={{ marginTop: -4, marginBottom: -4 }}
+                            />
+                        }
+                        label={item.label}
+                    />
+                ))}
             </RadioGroup>
             <FormHelperText
                 className={Utils.mergeClasses(classes.error, errorClassName)}

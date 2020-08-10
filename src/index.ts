@@ -1,11 +1,6 @@
 // api
 export * from './api/Align';
-export * from './api/ApiBase';
-export * from './api/ApiError';
-export * from './api/AxiosApi';
 export * from './api/DataType';
-export * from './api/FetchApi';
-export * from './api/IApi';
 export * from './api/IApiEntity';
 export * from './api/IApiSettings';
 export * from './api/IApiUser';

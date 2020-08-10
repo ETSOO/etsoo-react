@@ -6,7 +6,7 @@ import History from 'history';
  * Private router property interface
  */
 export interface PrivateRouteProp extends RouteProps {
-    authorized: boolean
+    authorized: boolean;
 }
 
 /**
@@ -16,7 +16,7 @@ export interface PrivateRouteRedirectState {
     /**
      * referrer location
      */
-    referrer: History.Location
+    referrer: History.Location;
 }
 
 /**
@@ -26,7 +26,14 @@ export interface PrivateRouteRedirectState {
  * and Location.state as PrivateRouteRedirectState to access referrer
  */
 export function PrivateRoute({ authorized, ...rest }: PrivateRouteProp) {
-    return (
-        authorized ? <Route {...rest} /> : <Redirect to={{ pathname: '/login', state: { referrer: rest.location } as PrivateRouteRedirectState }} />
+    return authorized ? (
+        <Route {...rest} />
+    ) : (
+        <Redirect
+            to={{
+                pathname: '/login',
+                state: { referrer: rest.location } as PrivateRouteRedirectState
+            }}
+        />
     );
 }

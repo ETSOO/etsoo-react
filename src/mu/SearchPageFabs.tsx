@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-    makeStyles, Fab, Theme
-} from '@material-ui/core';
+import { makeStyles, Fab, Theme } from '@material-ui/core';
 import { Add, VerticalAlignTop } from '@material-ui/icons';
 import { IClickAction } from '../api/IClickAction';
 import { SearchPageMoreFab } from './SearchPageMoreFab';
@@ -14,7 +12,7 @@ export interface SearchPageFabsMethods {
      * Scroll change
      * @param visible Is visible
      */
-    scollChange(visible: boolean): void
+    scollChange(visible: boolean): void;
 }
 
 /**
@@ -24,71 +22,71 @@ export interface SearchPageFabsProps {
     /**
      * Bottom position
      */
-    bottom?: number
+    bottom?: number;
 
     /**
      * More actions
      */
-    moreActions?: IClickAction[]
+    moreActions?: IClickAction[];
 
     /**
      * Add button click handler
      */
-    onAddClick?: React.MouseEventHandler
+    onAddClick?: React.MouseEventHandler;
 
     /**
      * Go top button click handler
      */
-    onGoTopClick?: React.MouseEventHandler
+    onGoTopClick?: React.MouseEventHandler;
 
     /**
      * Right position
      */
-    right?: number
+    right?: number;
 }
 
 // Styles
-const useStyles = makeStyles<Theme, {bottom?: number, right?: number}>((theme) => ({
-    fabs: {
-        position: 'absolute',
-        justifyItems: 'center',
-        bottom: (style) => (style.bottom == null ? theme.spacing(4) : style.bottom),
-        right: (style) => (style.right == null ? theme.spacing(4) : style.right),
-        display: 'flex',
-        alignItems: 'center',
-        alignContent: 'center',
-        opacity: 0.8,
-        '&:hover': {
-            opacity: 1
-        },
-        [theme.breakpoints.up('md')]: {
-            flexDirection: 'row',
-            '&>*': {
-                marginLeft: theme.spacing(2)
-            }
-        },
-        [theme.breakpoints.down('md')]: {
-            flexDirection: 'column',
-            '&>*': {
-                marginTop: theme.spacing(2)
+const useStyles = makeStyles<Theme, { bottom?: number; right?: number }>(
+    (theme) => ({
+        fabs: {
+            position: 'absolute',
+            justifyItems: 'center',
+            bottom: (style) =>
+                style.bottom == null ? theme.spacing(4) : style.bottom,
+            right: (style) =>
+                style.right == null ? theme.spacing(4) : style.right,
+            display: 'flex',
+            alignItems: 'center',
+            alignContent: 'center',
+            opacity: 0.8,
+            '&:hover': {
+                opacity: 1
+            },
+            [theme.breakpoints.up('md')]: {
+                flexDirection: 'row',
+                '&>*': {
+                    marginLeft: theme.spacing(2)
+                }
+            },
+            [theme.breakpoints.down('md')]: {
+                flexDirection: 'column',
+                '&>*': {
+                    marginTop: theme.spacing(2)
+                }
             }
         }
-    }
-}));
+    })
+);
 
 /**
  * Search page fabs of 'Go top', 'Add', and 'More' functions
  */
-export const SearchPageFabs = React.forwardRef<SearchPageFabsMethods,
-SearchPageFabsProps>((props, ref) => {
+export const SearchPageFabs = React.forwardRef<
+    SearchPageFabsMethods,
+    SearchPageFabsProps
+>((props, ref) => {
     // Destruct
-    const {
-        bottom,
-        moreActions,
-        onAddClick,
-        onGoTopClick,
-        right
-    } = props;
+    const { bottom, moreActions, onAddClick, onGoTopClick, right } = props;
 
     // Style
     const classes = useStyles({ bottom, right });
@@ -104,7 +102,7 @@ SearchPageFabsProps>((props, ref) => {
         scollChange(visible: boolean) {
             const element = topRef.current;
             if (element) {
-                element.style.visibility = (visible ? 'visible' : 'hidden');
+                element.style.visibility = visible ? 'visible' : 'hidden';
             }
         }
     }));
@@ -136,17 +134,8 @@ SearchPageFabsProps>((props, ref) => {
 
     // More
     if (moreActions && moreActions.length > 0) {
-        fabs.push(
-            <SearchPageMoreFab
-                key="more"
-                actions={moreActions}
-            />
-        );
+        fabs.push(<SearchPageMoreFab key="more" actions={moreActions} />);
     }
 
-    return (
-        <div className={classes.fabs}>
-            {fabs}
-        </div>
-    );
+    return <div className={classes.fabs}>{fabs}</div>;
 });

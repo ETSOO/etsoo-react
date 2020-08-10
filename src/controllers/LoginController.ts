@@ -1,3 +1,4 @@
+import { IApiErrorHandler, ApiResult } from '@etsoo/restclient';
 import { EntityController } from './EntityController';
 import { UserAction, UserActionType, IUserUpdate } from '../states/UserState';
 import { IApiUser } from '../api/IApiUser';
@@ -11,7 +12,6 @@ import { IResult } from '../api/IResult';
 import { SaveLoginData, SaveLogin } from '../api/SaveLogin';
 import { LoginModel } from '../models/LoginModel';
 import { LoginTokenModel } from '../models/LoginTokenModel';
-import { IApiErrorHandler, ApiResult } from '../api/IApi';
 
 /**
  * User login success callback

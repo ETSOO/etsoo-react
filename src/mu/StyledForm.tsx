@@ -8,17 +8,17 @@ export interface StyledFormProps {
     /**
      * Form auto complete
      */
-    autoComplete?: 'on' | 'off'
+    autoComplete?: 'on' | 'off';
 
     /**
      * Hidden of the form
      */
-    hidden?: boolean
+    hidden?: boolean;
 
     /**
      * On submit event handler
      */
-    onSubmit?: FormEventHandler
+    onSubmit?: FormEventHandler;
 }
 
 // Styles
@@ -35,15 +35,12 @@ const useStyles = makeStyles((theme) => ({
  * Styled form
  * @param props Properties
  */
-export const StyledForm = React.forwardRef<HTMLFormElement,
-React.PropsWithChildren<StyledFormProps>>((props, ref) => {
+export const StyledForm = React.forwardRef<
+    HTMLFormElement,
+    React.PropsWithChildren<StyledFormProps>
+>((props, ref) => {
     // Destruct
-    const {
-        autoComplete,
-        children,
-        hidden,
-        onSubmit
-    } = props;
+    const { autoComplete, children, hidden, onSubmit } = props;
 
     // Style
     const classes = useStyles();
@@ -61,3 +58,4 @@ React.PropsWithChildren<StyledFormProps>>((props, ref) => {
         </form>
     );
 });
+StyledForm.displayName = 'StyledForm';

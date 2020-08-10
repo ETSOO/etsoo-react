@@ -5,7 +5,7 @@ import { TextField, TextFieldProps } from '@material-ui/core';
 /**
  * Masked input properties
  */
-export type MaskedInputProps = TextFieldProps & Props
+export type MaskedInputProps = TextFieldProps & Props;
 
 /**
  * Masked input
@@ -25,7 +25,7 @@ export function MaskedInput(props: MaskedInputProps) {
     } = props;
 
     return (
-        <InputMask name={name} {...rest as Props}>
+        <InputMask name={name} {...(rest as Props)}>
             {() => (
                 <TextField
                     error={error}

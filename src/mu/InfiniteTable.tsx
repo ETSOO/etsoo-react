@@ -1,12 +1,23 @@
 import React from 'react';
 import {
-    makeStyles, CircularProgress, TableCell, useTheme, Checkbox, TableSortLabel
+    makeStyles,
+    CircularProgress,
+    TableCell,
+    useTheme,
+    Checkbox,
+    TableSortLabel
 } from '@material-ui/core';
 import {
-    InfiniteList, ListItemRendererProps, InfinitListMethods, InfiniteListScrollProps
+    InfiniteList,
+    ListItemRendererProps,
+    InfinitListMethods,
+    InfiniteListScrollProps
 } from '../apps/InfiniteList';
 import {
-    ISearchItem, ISearchLayoutItem, ISearchResult, searchLayoutAlign
+    ISearchItem,
+    ISearchLayoutItem,
+    ISearchResult,
+    searchLayoutAlign
 } from '../views/ISearchResult';
 import { Utils } from '../api/Utils';
 import { InfiniteListSharedProps } from '../apps/InfiniteListSharedProps';
@@ -22,12 +33,11 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * @param className Style class name
      * @param parentClasses Parent style classes
      */
-    footerRenderer?
-    (
+    footerRenderer?(
         props: ListItemRendererProps,
         className: string,
         parentClasses: string[]
-    ): React.ReactElement
+    ): React.ReactElement;
 
     /**
      * Header renderer
@@ -35,27 +45,26 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * @param className Style class name
      * @param parentClasses Parent style classes
      */
-    headerRenderer?
-    (
+    headerRenderer?(
         props: ListItemRendererProps,
         className: string,
         parentClasses: string[]
-    ): React.ReactElement
+    ): React.ReactElement;
 
     /**
      * Is hide header
      */
-    hideHeader?: boolean
+    hideHeader?: boolean;
 
     /**
      * Inner container class name
      */
-    innerClassName?: string
+    innerClassName?: string;
 
     /**
      * Item unit property name, default is id
      */
-    itemKey?: string
+    itemKey?: string;
 
     /**
      * Item renderer
@@ -63,12 +72,11 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * @param className Style class name
      * @param parentClasses Parent style classes
      */
-    itemRenderer?
-    (
+    itemRenderer?(
         props: ListItemRendererProps,
         className: string,
         parentClasses: string[]
-    ): React.ReactElement
+    ): React.ReactElement;
 
     /**
      * Load items callback
@@ -76,30 +84,29 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * @param records Records to load
      * @param orderIndex Order field index
      */
-    loadItems
-    (
+    loadItems(
         page: number,
         records: number,
         orderIndex?: number
-    ): Promise<ISearchResult<ISearchItem>>
+    ): Promise<ISearchResult<ISearchItem>>;
 
     /**
      * Item click handler
      * @param event Click event
      * @param item Current item
      */
-    onItemClick?(event: React.MouseEvent, item: ISearchItem | undefined): void
+    onItemClick?(event: React.MouseEvent, item: ISearchItem | undefined): void;
 
     /**
      * On scroll callback
      * @param props Scroll properties
      */
-    onScroll?(props: InfiniteListScrollProps): void
+    onScroll?(props: InfiniteListScrollProps): void;
 
     /**
      * Order field index
      */
-    orderIndex?: number
+    orderIndex?: number;
 
     /**
      * On scroll change callback
@@ -107,49 +114,51 @@ export interface InfiniteTableProps extends InfiniteListSharedProps {
      * @param vertical Vertical scroll
      * @param zero Is zero scroll offset
      */
-    onScrollChange?(scroller: HTMLElement, vertical: boolean, zero: boolean): void
+    onScrollChange?(
+        scroller: HTMLElement,
+        vertical: boolean,
+        zero: boolean
+    ): void;
 
     /**
      * Padding, Material space unit
      */
-    padding?: number
+    padding?: number;
 
     /**
      * Records to read onetime
      */
-    records?: number
+    records?: number;
 
     /**
      * Row height
      */
-    rowHeight: number
+    rowHeight: number;
 
     /**
      * Selectable
      */
-    selectable?: boolean
+    selectable?: boolean;
 
     /**
      * Sortable
      */
-    sortable?: boolean
+    sortable?: boolean;
 
     /**
      * Try cache
      */
-    tryCache?: boolean
+    tryCache?: boolean;
 }
 
 /**
  * Infinite table public methods
  */
-export interface InfiniteTableMethods extends InfinitListMethods {
-}
+export interface InfiniteTableMethods extends InfinitListMethods {}
 
 // Table styles
 const useStyles = makeStyles(() => ({
-    table: {
-    },
+    table: {},
 
     tableHeader: {
         backgroundColor: '#d3d3d3!important'
@@ -172,7 +181,6 @@ const useStyles = makeStyles(() => ({
         paddingTop: 0,
         paddingRight: 0,
         paddingBottom: '6px'
-
     },
 
     tableRow: {
@@ -202,9 +210,12 @@ const useStyles = makeStyles(() => ({
  * Get table row class
  * @param columns Columns
  */
-export function InfiniteTableGetRowClass(columns: ISearchLayoutItem[], selectable?: boolean) {
+export function InfiniteTableGetRowClass(
+    columns: ISearchLayoutItem[],
+    selectable?: boolean
+) {
     // Css template columns
-    const styles = columns.map(c => {
+    const styles = columns.map((c) => {
         if (c.width) {
             return `${c.width}px`;
         }
@@ -234,8 +245,10 @@ export function InfiniteTableGetRowClass(columns: ISearchLayoutItem[], selectabl
 /**
  * Infinite MUI table
  */
-export const InfiniteTable = React.forwardRef<InfiniteTableMethods,
-InfiniteTableProps>((props, ref) => {
+export const InfiniteTable = React.forwardRef<
+    InfiniteTableMethods,
+    InfiniteTableProps
+>((props, ref) => {
     // Destruct
     const {
         innerClassName,
@@ -272,28 +285,28 @@ InfiniteTableProps>((props, ref) => {
 
     // Cached order index
     const cacheOrderIndexKey = Utils.getLocationKey('orderIndex');
-    const cachedOrderIndex = Utils.cacheSessionDataParse<number>(cacheOrderIndexKey);
+    const cachedOrderIndex = Utils.cacheSessionDataParse<number>(
+        cacheOrderIndexKey
+    );
 
     // Local order index
-    const [
-        localOrderIndex,
-        updateLocalOrderIndex
-    ] = React.useState(
+    const [localOrderIndex, updateLocalOrderIndex] = React.useState(
         cachedOrderIndex === undefined || Number.isNaN(cachedOrderIndex)
-            ? orderIndex : cachedOrderIndex
+            ? orderIndex
+            : cachedOrderIndex
     );
 
     // Ref to the list
     const listRef = React.useRef<InfinitListMethods>(null);
 
     // Cached column style
-    let columnClass: { display: string, gridTemplateColumns: string } | undefined;
+    let columnClass:
+        | { display: string; gridTemplateColumns: string }
+        | undefined;
 
     // Select all handler
     // event: React.ChangeEvent<HTMLInputElement>
-    const onSelectAll = () => {
-
-    };
+    const onSelectAll = () => {};
 
     // Public methods through ref
     React.useImperativeHandle(ref, () => ({
@@ -306,31 +319,44 @@ InfiniteTableProps>((props, ref) => {
     };
 
     // Item click handler
-    const itemClickHandler = onItemClick ? (event:React.MouseEvent<HTMLDivElement>) => {
-        // Avoid input & button click
-        if (event.target instanceof HTMLButtonElement || event.target instanceof HTMLInputElement) {
-            return;
-        }
+    const itemClickHandler = onItemClick
+        ? (event: React.MouseEvent<HTMLDivElement>) => {
+              // Avoid input & button click
+              if (
+                  event.target instanceof HTMLButtonElement ||
+                  event.target instanceof HTMLInputElement
+              ) {
+                  return;
+              }
 
-        // Index
-        const index = Utils.parseNumber(event.currentTarget.dataset.index);
+              // Index
+              const index = Utils.parseNumber(
+                  event.currentTarget.dataset.index
+              );
 
-        // Index item
-        const item = listRef.current ? listRef.current.getItem(index) : undefined;
+              // Index item
+              const item = listRef.current
+                  ? listRef.current.getItem(index)
+                  : undefined;
 
-        // Item click callback
-        onItemClick(event, item);
-    } : undefined;
+              // Item click callback
+              onItemClick(event, item);
+          }
+        : undefined;
 
     // Field sort
     // event: React.MouseEvent<any>
-    const createSortHandler = (field: string, type: DataType, index: number) => () => {
+    const createSortHandler = (
+        field: string,
+        type: DataType,
+        index: number
+    ) => () => {
         // Calucate real order index
         let cIndex: number;
         if (
-            localOrderIndex == null
-            || index !== Math.abs(localOrderIndex)
-            || index === -localOrderIndex
+            localOrderIndex == null ||
+            index !== Math.abs(localOrderIndex) ||
+            index === -localOrderIndex
         ) {
             cIndex = index;
         } else {
@@ -350,7 +376,8 @@ InfiniteTableProps>((props, ref) => {
     // Create field sort
     const createSort = (index: number) => {
         // Is the sort field active
-        const active = localOrderIndex != null && index === Math.abs(localOrderIndex);
+        const active =
+            localOrderIndex != null && index === Math.abs(localOrderIndex);
 
         // Direction
         let direction: 'asc' | 'desc' | undefined;
@@ -374,10 +401,7 @@ InfiniteTableProps>((props, ref) => {
             let rows: React.ReactElement;
             if (p.data.loading) {
                 rows = (
-                    <TableCell
-                        component="div"
-                        className={classes.tableCell}
-                    >
+                    <TableCell component="div" className={classes.tableCell}>
                         <CircularProgress size={20} />
                     </TableCell>
                 );
@@ -389,7 +413,10 @@ InfiniteTableProps>((props, ref) => {
 
                 // Cache column style
                 if (columnClass == null && p.layouts) {
-                    columnClass = InfiniteTableGetRowClass(p.layouts, selectable);
+                    columnClass = InfiniteTableGetRowClass(
+                        p.layouts,
+                        selectable
+                    );
                 }
 
                 // Rows
@@ -411,9 +438,7 @@ InfiniteTableProps>((props, ref) => {
                                             classes.tableCheckbox
                                         )}
                                     >
-                                        <Checkbox
-                                            onChange={onSelectAll}
-                                        />
+                                        <Checkbox onChange={onSelectAll} />
                                     </TableCell>
                                 )}
                                 {p.layouts.map((c) => (
@@ -423,11 +448,17 @@ InfiniteTableProps>((props, ref) => {
                                         className={classes.tableCell}
                                         align={searchLayoutAlign(c.align)}
                                     >
-                                        { sortable && c.sort != null ? (
+                                        {sortable && c.sort != null ? (
                                             <TableSortLabel
                                                 {...createSort(c.sort)}
-                                                className={classes.tableRowClick}
-                                                onClick={createSortHandler(c.field, c.type, c.sort)}
+                                                className={
+                                                    classes.tableRowClick
+                                                }
+                                                onClick={createSortHandler(
+                                                    c.field,
+                                                    c.type,
+                                                    c.sort
+                                                )}
                                             >
                                                 {c.label || c.field}
                                             </TableSortLabel>
@@ -517,9 +548,7 @@ InfiniteTableProps>((props, ref) => {
         }
 
         // Blank
-        return (
-            <></>
-        );
+        return <></>;
     };
 
     return (
@@ -537,3 +566,4 @@ InfiniteTableProps>((props, ref) => {
         />
     );
 });
+InfiniteTable.displayName = 'InfiniteTable';

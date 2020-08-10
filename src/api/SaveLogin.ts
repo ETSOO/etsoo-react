@@ -8,7 +8,7 @@ const getSaveLoginKey = (): string => {
     const settings = ApiSettings.get();
 
     // Act
-    return `etsoo-savelogin-${settings.role}`;
+    return `etsoo-savelogin-${settings?.role}`;
 };
 
 /**

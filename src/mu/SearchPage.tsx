@@ -1,6 +1,10 @@
 import React from 'react';
 import {
-    Card, CardContent, TableCell, makeStyles, CircularProgress
+    Card,
+    CardContent,
+    TableCell,
+    makeStyles,
+    CircularProgress
 } from '@material-ui/core';
 import { SearchPageFabs, SearchPageFabsMethods } from './SearchPageFabs';
 import { InfiniteTable, InfiniteTableMethods } from './InfiniteTable';
@@ -19,17 +23,17 @@ export interface SearchPageProps {
     /**
      * Style class name
      */
-    className?: string
+    className?: string;
 
     /**
      * Has footer
      */
-    hasFooter?: boolean
+    hasFooter?: boolean;
 
     /**
      * Height
      */
-    height: number
+    height: number;
 
     /**
      * Item renderer
@@ -41,12 +45,12 @@ export interface SearchPageProps {
         props: ListItemRendererProps,
         className: string,
         parentClasses: string[]
-    ): React.ReactElement
+    ): React.ReactElement;
 
     /**
      * Labels
      */
-    labels?: LanguageLabel
+    labels?: LanguageLabel;
 
     /**
      * Load items callback
@@ -58,54 +62,54 @@ export interface SearchPageProps {
         page: number,
         records: number,
         orderIndex?: number
-    ): Promise<ISearchResult<ISearchItem>>
+    ): Promise<ISearchResult<ISearchItem>>;
 
     /**
      * More actions
      */
-    moreActions?: IClickAction[]
+    moreActions?: IClickAction[];
 
     /**
      * Add click handler
      */
-    onAddClick: React.MouseEventHandler
+    onAddClick: React.MouseEventHandler;
 
     /**
      * Item click handler
      * @param event Click event
      * @param item Current item
      */
-    onItemClick?(event: React.MouseEvent, item: ISearchItem | undefined): void
+    onItemClick?(event: React.MouseEvent, item: ISearchItem | undefined): void;
 
     /**
      * Padding (spacing)
      */
-    padding: number
+    padding: number;
 
     /**
      * Row height
      */
-    rowHeight?: number
+    rowHeight?: number;
 
     /**
      * Search properties
      */
-    searchProps: IDynamicData
+    searchProps: IDynamicData;
 
     /**
      * Sortable
      */
-    sortable?: boolean
+    sortable?: boolean;
 
     /**
      * Try cache
      */
-    tryCache?: boolean
+    tryCache?: boolean;
 
     /**
      * Width
      */
-    width: number
+    width: number;
 }
 
 // Styles
@@ -167,10 +171,10 @@ export function SearchPage(props: SearchPageProps) {
     const classes = useStyles();
 
     // small than medium size
-    const md = (width <= 960);
+    const md = width <= 960;
 
     // Row height
-    const defaultRowHeight = (md ? 224 : 53);
+    const defaultRowHeight = md ? 224 : 53;
     const localRowHeight = rowHeight == null ? defaultRowHeight : rowHeight;
 
     // Hide header
@@ -191,7 +195,11 @@ export function SearchPage(props: SearchPageProps) {
     let scroller: HTMLElement | undefined;
 
     // Scroll change handler
-    const onScrollChange = (scrollerDiv: HTMLElement, vertical: boolean, zero: boolean) => {
+    const onScrollChange = (
+        scrollerDiv: HTMLElement,
+        vertical: boolean,
+        zero: boolean
+    ) => {
         scroller = scrollerDiv;
         fabsRef.current?.scollChange(!zero);
     };
@@ -214,66 +222,74 @@ export function SearchPage(props: SearchPageProps) {
     };
 
     // Footer renderer
-    const footerRenderer = (hasFooter !== false && !md) ? (
-        { records }: ListItemRendererProps,
-        footerClassName: string,
-        parentClasses: string[]
-    ) => {
-        if (md) {
-            parentClasses.splice(0);
-            parentClasses.push(classes.tableRow);
+    const footerRenderer =
+        hasFooter !== false && !md
+            ? (
+                  { records }: ListItemRendererProps,
+                  footerClassName: string,
+                  parentClasses: string[]
+              ) => {
+                  if (md) {
+                      parentClasses.splice(0);
+                      parentClasses.push(classes.tableRow);
 
-            if (records === 0) {
-                return (
-                    <Card className={classes.card}>
-                        <CardContent>
-                            { getNoMatchLabel() }
-                        </CardContent>
-                    </Card>
-                );
-            }
-            return (
-                <Card className={classes.card}>
-                    <CardContent className={Utils.mergeClasses(classes.total, classes.totalCell)}>
-                        <div>{ getTotalLabel() }</div>
-                        <div style={{ textAlign: 'right' }}>{records}</div>
-                    </CardContent>
-                </Card>
-            );
-        }
+                      if (records === 0) {
+                          return (
+                              <Card className={classes.card}>
+                                  <CardContent>{getNoMatchLabel()}</CardContent>
+                              </Card>
+                          );
+                      }
+                      return (
+                          <Card className={classes.card}>
+                              <CardContent
+                                  className={Utils.mergeClasses(
+                                      classes.total,
+                                      classes.totalCell
+                                  )}
+                              >
+                                  <div>{getTotalLabel()}</div>
+                                  <div style={{ textAlign: 'right' }}>
+                                      {records}
+                                  </div>
+                              </CardContent>
+                          </Card>
+                      );
+                  }
 
-        if (records === 0) {
-            return (
-                <TableCell
-                    component="div"
-                    className={footerClassName}
-                    style={{ textAlign: 'center' }}
-                >
-                    { getNoMatchLabel() }
-                </TableCell>
-            );
-        }
+                  if (records === 0) {
+                      return (
+                          <TableCell
+                              component="div"
+                              className={footerClassName}
+                              style={{ textAlign: 'center' }}
+                          >
+                              {getNoMatchLabel()}
+                          </TableCell>
+                      );
+                  }
 
-        parentClasses.push(classes.total);
-        const cellClassName = Utils.mergeClasses(footerClassName, classes.totalCell);
-        return (
-            <>
-                <TableCell
-                    component="div"
-                    className={cellClassName}
-                >
-                    { getTotalLabel() }
-                </TableCell>
-                <TableCell
-                    component="div"
-                    className={cellClassName}
-                    style={{ textAlign: 'right' }}
-                >
-                    {records}
-                </TableCell>
-            </>
-        );
-    } : undefined;
+                  parentClasses.push(classes.total);
+                  const cellClassName = Utils.mergeClasses(
+                      footerClassName,
+                      classes.totalCell
+                  );
+                  return (
+                      <>
+                          <TableCell component="div" className={cellClassName}>
+                              {getTotalLabel()}
+                          </TableCell>
+                          <TableCell
+                              component="div"
+                              className={cellClassName}
+                              style={{ textAlign: 'right' }}
+                          >
+                              {records}
+                          </TableCell>
+                      </>
+                  );
+              }
+            : undefined;
 
     // Search seed
     let searchSeed: number;
@@ -285,7 +301,10 @@ export function SearchPage(props: SearchPageProps) {
         // Avoid unnecessary API calls
         searchSeed = window.setTimeout(() => {
             // Cache the keywords
-            Utils.cacheSessionString(searchProps.sc, Utils.getLocationKey('keyword'));
+            Utils.cacheSessionString(
+                searchProps.sc,
+                Utils.getLocationKey('keyword')
+            );
 
             // Reset and search
             tableCurrent?.reset();
@@ -305,7 +324,10 @@ export function SearchPage(props: SearchPageProps) {
 
         if (input) {
             // Get the cached keywords
-            input.value = tryCache ? (Utils.cacheSessionDataGet(Utils.getLocationKey('keyword')) || '') : '';
+            input.value = tryCache
+                ? Utils.cacheSessionDataGet(Utils.getLocationKey('keyword')) ||
+                  ''
+                : '';
 
             // Add the event handler
             input.addEventListener('input', onInput);

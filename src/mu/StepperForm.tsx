@@ -1,6 +1,15 @@
 import React from 'react';
 import {
-    makeStyles, Stepper, Step, StepButton, Hidden, MobileStepper, Button, useTheme, Container, Theme
+    makeStyles,
+    Stepper,
+    Step,
+    StepButton,
+    Hidden,
+    MobileStepper,
+    Button,
+    useTheme,
+    Container,
+    Theme
 } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Prompt, useHistory } from 'react-router-dom';
@@ -16,13 +25,13 @@ export interface StepperFormItemProps {
     /**
      * Current form data
      */
-    formData: IDynamicData
+    formData: IDynamicData;
 
     /**
      * Child form ready callback
      * @param methods Methods
      */
-    formReady?(methods: StepperFormItemMethods): void
+    formReady?(methods: StepperFormItemMethods): void;
 }
 
 /**
@@ -32,7 +41,7 @@ export interface StepperFormItemMethods {
     /**
      * Collect form data
      */
-    collectData(): Promise<IDynamicData | null>
+    collectData(): Promise<IDynamicData | null>;
 }
 
 /**
@@ -48,7 +57,7 @@ export enum StepperFormAction {
  * Stepper form action callback
  */
 export interface StepperFormActionCallback {
-    (action: StepperFormAction): void
+    (action: StepperFormAction): void;
 }
 
 /**
@@ -58,12 +67,12 @@ export interface StepperFormItem {
     /**
      * Step form
      */
-    form: React.ComponentType<StepperFormItemProps>
+    form: React.ComponentType<StepperFormItemProps>;
 
     /**
      * Label for the step
      */
-    label: string
+    label: string;
 }
 
 /**
@@ -75,37 +84,40 @@ export interface StepperFormProps {
      * @param callback Action callback
      * @param last 'true' for the last item, 'false' for the first item
      */
-    buttons(callback: StepperFormActionCallback, last?: boolean): React.ReactElement
+    buttons(
+        callback: StepperFormActionCallback,
+        last?: boolean
+    ): React.ReactElement;
 
     /**
      * Max width
      */
-    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false
+    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
 
     /**
      * Padding
      */
-    padding?: number
+    padding?: number;
 
     /**
      * Prompt for exit
      */
-    promptForExit?: string
+    promptForExit?: string;
 
     /**
      * Steps
      */
-    steps: StepperFormItem[]
+    steps: StepperFormItem[];
 
     /**
      * Submit handler
      * @param data Form data
      */
-    submitHandler(data: IDynamicData): void
+    submitHandler(data: IDynamicData): void;
 }
 
 // Styles
-const useStyles = makeStyles<Theme, {padding?: number}>((theme) => ({
+const useStyles = makeStyles<Theme, { padding?: number }>((theme) => ({
     root: {
         width: '100%'
     },
@@ -114,7 +126,8 @@ const useStyles = makeStyles<Theme, {padding?: number}>((theme) => ({
         width: '100%'
     },
     paper: {
-        padding: props => theme.spacing(props.padding == null ? 3 : props.padding)
+        padding: (props) =>
+            theme.spacing(props.padding == null ? 3 : props.padding)
     }
 }));
 
@@ -185,7 +198,9 @@ export function StepperForm(props: StepperFormProps) {
 
                             // Delayed push
                             window.setTimeout(() => {
-                                history.push(location.pathname + location.search);
+                                history.push(
+                                    location.pathname + location.search
+                                );
                             }, 50);
                         }
                     }
@@ -230,46 +245,46 @@ export function StepperForm(props: StepperFormProps) {
     /**
      * Create button elements
      */
-    const firstCase = (activeStep === 0 ? false : undefined);
-    const last = (activeStep + 1 === stepCount) ? true : firstCase;
+    const firstCase = activeStep === 0 ? false : undefined;
+    const last = activeStep + 1 === stepCount ? true : firstCase;
     const buttonElements = React.useMemo(() => {
         const callback = (action: StepperFormAction) => {
             switch (action) {
-            case StepperFormAction.Next:
-                if (currentMethods) {
-                    currentMethods.collectData().then(data => {
-                        // Update step data
-                        if (updateStep(data)) {
-                            // Next page
-                            updateActiveStep(activeStep + 1);
-                        }
-                    });
-                }
-                break;
-            case StepperFormAction.Previous:
-                updateActiveStep(activeStep - 1);
-                break;
-            default:
-                if (currentMethods) {
-                    currentMethods.collectData().then(data => {
-                        // Update step data
-                        if (updateStep(data)) {
-                            // Check completion
-                            const activeIndex = steps.findIndex(
-                                (_step, index) => !completedSteps.has(index)
-                            );
-
-                            // Active index found
-                            if (activeIndex !== -1) {
-                                updateActiveStep(activeIndex);
+                case StepperFormAction.Next:
+                    if (currentMethods) {
+                        currentMethods.collectData().then((data) => {
+                            // Update step data
+                            if (updateStep(data)) {
+                                // Next page
+                                updateActiveStep(activeStep + 1);
                             }
+                        });
+                    }
+                    break;
+                case StepperFormAction.Previous:
+                    updateActiveStep(activeStep - 1);
+                    break;
+                default:
+                    if (currentMethods) {
+                        currentMethods.collectData().then((data) => {
+                            // Update step data
+                            if (updateStep(data)) {
+                                // Check completion
+                                const activeIndex = steps.findIndex(
+                                    (_step, index) => !completedSteps.has(index)
+                                );
 
-                            // Submit data
-                            submitHandler(formData);
-                        }
-                    });
-                }
-                break;
+                                // Active index found
+                                if (activeIndex !== -1) {
+                                    updateActiveStep(activeIndex);
+                                }
+
+                                // Submit data
+                                submitHandler(formData);
+                            }
+                        });
+                    }
+                    break;
             }
         };
         return buttons(callback, last);
@@ -277,24 +292,19 @@ export function StepperForm(props: StepperFormProps) {
 
     return (
         <div className={classes.root}>
-            <Prompt
-                when={prompt}
-                message={promptHandler}
-            />
+            <Prompt when={prompt} message={promptHandler} />
             <Hidden xsDown>
                 <Stepper activeStep={activeStep} alternativeLabel nonLinear>
-                    {
-                        steps.map((step, index) => (
-                            <Step key={step.label} completed={false}>
-                                <StepButton
-                                    onClick={handleStepClick(index)}
-                                    completed={isStepCompleted(index)}
-                                >
-                                    {step.label}
-                                </StepButton>
-                            </Step>
-                        ))
-                    }
+                    {steps.map((step, index) => (
+                        <Step key={step.label} completed={false}>
+                            <StepButton
+                                onClick={handleStepClick(index)}
+                                completed={isStepCompleted(index)}
+                            >
+                                {step.label}
+                            </StepButton>
+                        </Step>
+                    ))}
                 </Stepper>
             </Hidden>
             <Hidden smUp>
@@ -304,35 +314,57 @@ export function StepperForm(props: StepperFormProps) {
                     position="static"
                     activeStep={activeStep}
                     className={classes.root}
-                    nextButton={(
-                        <Button size="small" onClick={handleStepClick(activeStep + 1)} disabled={activeStep === (steps.length - 1)}>
+                    nextButton={
+                        <Button
+                            size="small"
+                            onClick={handleStepClick(activeStep + 1)}
+                            disabled={activeStep === steps.length - 1}
+                        >
                             Next
-                            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                            {theme.direction === 'rtl' ? (
+                                <KeyboardArrowLeft />
+                            ) : (
+                                <KeyboardArrowRight />
+                            )}
                         </Button>
-                    )}
-                    backButton={(
-                        <Button size="small" onClick={handleStepClick(activeStep - 1)} disabled={activeStep === 0}>
-                            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                    }
+                    backButton={
+                        <Button
+                            size="small"
+                            onClick={handleStepClick(activeStep - 1)}
+                            disabled={activeStep === 0}
+                        >
+                            {theme.direction === 'rtl' ? (
+                                <KeyboardArrowRight />
+                            ) : (
+                                <KeyboardArrowLeft />
+                            )}
                             Back
                         </Button>
-                    )}
+                    }
                 />
             </Hidden>
-            <Container component="main" className={classes.paper} maxWidth={maxWidth == null ? false : maxWidth}>
-                {
-                    steps.map((step, index) => {
-                        const active = (index === activeStep);
-                        return (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <div key={index} hidden={!active} className={classes.formContainer}>
-                                {React.createElement(
-                                    step.form,
-                                    { formData, formReady: (active ? formReady : undefined) }
-                                )}
-                            </div>
-                        );
-                    })
-                }
+            <Container
+                component="main"
+                className={classes.paper}
+                maxWidth={maxWidth == null ? false : maxWidth}
+            >
+                {steps.map((step, index) => {
+                    const active = index === activeStep;
+                    return (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <div
+                            key={index}
+                            hidden={!active}
+                            className={classes.formContainer}
+                        >
+                            {React.createElement(step.form, {
+                                formData,
+                                formReady: active ? formReady : undefined
+                            })}
+                        </div>
+                    );
+                })}
                 {buttonElements}
             </Container>
         </div>

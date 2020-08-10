@@ -5,15 +5,18 @@ import { IDynamicData } from '../api/IDynamicData';
 /**
  * Country list properties
  */
-export type ModuleCountryListProps = Omit<CountryListProps, 'loadItems' | 'sort'> & {
-
-}
+export type ModuleCountryListProps = Omit<
+    CountryListProps,
+    'loadItems' | 'sort'
+> & {};
 
 /**
  * Module country list
  */
-export const ModuleCountryList = React.forwardRef<CountryListRef,
-ModuleCountryListProps>((props, ref) => {
+export const ModuleCountryList = React.forwardRef<
+    CountryListRef,
+    ModuleCountryListProps
+>((props, ref) => {
     // Label format
     const getOptionLabel = (item: IDynamicData) => item.short_name || item.name;
 
@@ -30,3 +33,4 @@ ModuleCountryListProps>((props, ref) => {
         />
     );
 });
+ModuleCountryList.displayName = 'ModuleCountryList';

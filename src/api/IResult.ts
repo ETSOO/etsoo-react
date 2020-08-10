@@ -1,4 +1,4 @@
-import { ApiError } from './ApiError';
+import { ApiError } from '@etsoo/restclient';
 
 /**
  * Result data

@@ -11,36 +11,33 @@ import {
     makeStyles,
     Typography
 } from '@material-ui/core';
-import {
-    Error,
-    Info,
-    Help
-} from '@material-ui/icons';
+import { Error, Info, Help } from '@material-ui/icons';
 import { CreateState } from '../states/CreateState';
 import {
-    NotifierReducer, INotifierState, NotifierActionType, NotifierAction
+    NotifierReducer,
+    INotifierState,
+    NotifierActionType,
+    NotifierAction
 } from '../states/NotifierState';
 import { ApiSettings } from '../api/IApiSettings';
 import { LanguageLabel } from '../states/LanguageState';
 
 // Style
-const useStyles = makeStyles((theme) => (
-    {
-        backdrop: {
-            zIndex: theme.zIndex.modal + 1,
-            color: '#fff'
-        },
-        errorTitle: {
-            display: 'flex',
-            flexWrap: 'nowrap',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            '& h2': {
-                paddingLeft: theme.spacing(1)
-            }
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+        zIndex: theme.zIndex.modal + 1,
+        color: '#fff'
+    },
+    errorTitle: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        '& h2': {
+            paddingLeft: theme.spacing(1)
         }
     }
-));
+}));
 
 /**
  * Notifier context and provider
@@ -96,9 +93,7 @@ export const {
 
     if (state == null || state.type === NotifierActionType.None) {
         // Empty
-        return (
-            <></>
-        );
+        return <></>;
     }
 
     if (state.type === NotifierActionType.Loading) {
@@ -129,30 +124,52 @@ export const {
         }
 
         return (
-            <Dialog open aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-                <DialogTitle id="alert-dialog-title" disableTypography className={classes.errorTitle}>
+            <Dialog
+                open
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle
+                    id="alert-dialog-title"
+                    disableTypography
+                    className={classes.errorTitle}
+                >
                     {icon}
                     <Typography component="h2">{title}</Typography>
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">{state.message}</DialogContentText>
+                    <DialogContentText id="alert-dialog-description">
+                        {state.message}
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    {isConfirm
-                        ? (
-                            <>
-                                <Button color="secondary" onClick={handleNo} autoFocus>{labels.no || 'No'}</Button>
-                                <Button color="primary" onClick={handleYes} autoFocus>{labels.yes || 'Yes'}</Button>
-                            </>
-                        )
-                        : <Button color="primary" onClick={handleOK} autoFocus>{labels.ok || 'OK'}</Button>}
+                    {isConfirm ? (
+                        <>
+                            <Button
+                                color="secondary"
+                                onClick={handleNo}
+                                autoFocus
+                            >
+                                {labels.no || 'No'}
+                            </Button>
+                            <Button
+                                color="primary"
+                                onClick={handleYes}
+                                autoFocus
+                            >
+                                {labels.yes || 'Yes'}
+                            </Button>
+                        </>
+                    ) : (
+                        <Button color="primary" onClick={handleOK} autoFocus>
+                            {labels.ok || 'OK'}
+                        </Button>
+                    )}
                 </DialogActions>
             </Dialog>
         );
     }
 
     // Other
-    return (
-        <></>
-    );
+    return <></>;
 });

@@ -1,11 +1,11 @@
-import { createClient, IApiErrorHandler } from '@etsoo/restclient';
+import { createClient, IApiErrorHandler, ApiResult } from '@etsoo/restclient';
 import { IApiUser } from '../api/IApiUser';
 import { IApiEntity } from '../api/IApiEntity';
 import {
     IResult,
     IResultData,
-    ResultError,
-    IdResultData
+    IdResultData,
+    ResultError
 } from '../api/IResult';
 import { TiplistModel } from '../models/TiplistModel';
 import { IListItem } from '../views/IListItem';
@@ -24,6 +24,7 @@ import { isRawResult, IRawResult } from '../views/RawResult';
 export abstract class EntityController implements IEntityController {
     /**
      * Format raw result data
+     * For SmartERP API compatible
      * @param data Raw result data
      */
     protected static formatRawResult<D extends IResultData = IResultData>(
@@ -42,7 +43,7 @@ export abstract class EntityController implements IEntityController {
      */
     protected static resultParser = <D extends IResultData = IResultData>() => (
         data: any
-    ): IResult<D> => {
+    ): ApiResult<IResult<D>> => {
         if (isRawResult(data)) {
             return [undefined, EntityController.formatRawResult<D>(data)];
         }

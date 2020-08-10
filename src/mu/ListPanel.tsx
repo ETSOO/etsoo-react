@@ -1,6 +1,10 @@
 import React from 'react';
 import {
-    makeStyles, Typography, Divider, List, ListItem
+    makeStyles,
+    Typography,
+    Divider,
+    List,
+    ListItem
 } from '@material-ui/core';
 import { Utils } from '../api/Utils';
 
@@ -11,32 +15,32 @@ export interface ListPanelProps {
     /**
      * Style class name
      */
-    className?: string
+    className?: string;
 
     /**
      * Top right more element
      */
-    moreElement?: React.ReactElement
+    moreElement?: React.ReactElement;
 
     /**
      * Footer element
      */
-    footerElement?: React.ReactElement
+    footerElement?: React.ReactElement;
 
     /**
      * List items
      */
-    items: any[]
+    items: any[];
 
     /**
      * List item renderer
      */
-    itemRenderer(item: any, index: number): React.ReactElement
+    itemRenderer(item: any, index: number): React.ReactElement;
 
     /**
      * Title
      */
-    title: string
+    title: string;
 }
 
 // Table styles
@@ -82,7 +86,7 @@ export function ListPanel(props: ListPanelProps) {
 
             <Divider />
 
-            { items.map((item, index) => itemRenderer(item, index)) }
+            {items.map((item, index) => itemRenderer(item, index))}
 
             <Divider />
 

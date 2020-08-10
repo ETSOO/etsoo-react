@@ -1,9 +1,16 @@
 import React from 'react';
 import {
-    ListChildComponentProps, Layout, ListOnScrollProps, ListItemKeySelector
+    ListChildComponentProps,
+    Layout,
+    ListOnScrollProps,
+    ListItemKeySelector
 } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { ISearchItem, ISearchResult, ISearchLayoutItem } from '../views/ISearchResult';
+import {
+    ISearchItem,
+    ISearchResult,
+    ISearchLayoutItem
+} from '../views/ISearchResult';
 import { Utils } from '../api/Utils';
 import { InfiniteListBase, InfiniteListItemProps } from './InfiniteListBase';
 import { InfiniteListSharedProps } from './InfiniteListSharedProps';
@@ -16,27 +23,27 @@ export interface ListItemRendererProps extends InfiniteListItemProps {
     /**
      * Data
      */
-    data: ISearchItem | undefined
+    data: ISearchItem | undefined;
 
     /**
      * Layout
      */
-    layouts?: ISearchLayoutItem[]
+    layouts?: ISearchLayoutItem[];
 
     /**
      * Is end of the list
      */
-    end: boolean
+    end: boolean;
 
     /**
      * Other custom data
      */
-    other?: any
+    other?: any;
 
     /**
      * Total records
      */
-    records?: number
+    records?: number;
 }
 
 /**
@@ -46,22 +53,22 @@ export interface InfiniteListScrollProps {
     /**
      * Is vertical
      */
-    vertical: boolean
+    vertical: boolean;
 
     /**
      * Direction
      */
-    direction: 'forward' | 'backward'
+    direction: 'forward' | 'backward';
 
     /**
      * Offset
      */
-    offset: number
+    offset: number;
 
     /**
      * Scroller
      */
-    scroller: HTMLElement
+    scroller: HTMLElement;
 }
 
 /**
@@ -71,43 +78,43 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
     /**
      * Has header item
      */
-    hasHeader?: boolean
+    hasHeader?: boolean;
 
     /**
      * Has footer item
      */
-    hasFooter?: boolean
+    hasFooter?: boolean;
 
     /**
      * Is horizontal layout
      */
-    horizontal?: boolean
+    horizontal?: boolean;
 
     /**
      * Id of the component
      */
-    id?: string
+    id?: string;
 
     /**
      * Inner container class name
      */
-    innerClassName?: string
+    innerClassName?: string;
 
     /**
      * Item unit property name, default is id
      */
-    itemKey?: string
+    itemKey?: string;
 
     /**
      * Item renderer
      * @param props Properties
      */
-    itemRenderer(props: ListItemRendererProps): React.ReactElement
+    itemRenderer(props: ListItemRendererProps): React.ReactElement;
 
     /**
      * Item size (height)
      */
-    itemSize: number
+    itemSize: number;
 
     /**
      * Load items callback
@@ -119,18 +126,18 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
         page: number,
         records: number,
         orderIndex?: number
-    ): Promise<ISearchResult<ISearchItem>>
+    ): Promise<ISearchResult<ISearchItem>>;
 
     /**
      * Name of the component
      */
-    name?: string
+    name?: string;
 
     /**
      * On scroll callback
      * @param props Scroll properties
      */
-    onScroll?(props: InfiniteListScrollProps): void
+    onScroll?(props: InfiniteListScrollProps): void;
 
     /**
      * On scroll change callback
@@ -138,27 +145,31 @@ export interface InfiniteListProps extends InfiniteListSharedProps {
      * @param vertical Vertical scroll
      * @param zero Is zero scroll offset
      */
-    onScrollChange?(scroller: HTMLElement, vertical: boolean, zero: boolean): void
+    onScrollChange?(
+        scroller: HTMLElement,
+        vertical: boolean,
+        zero: boolean
+    ): void;
 
     /**
      * Order field index
      */
-    orderIndex?: number
+    orderIndex?: number;
 
     /**
      * Padding px
      */
-    padding?: number
+    padding?: number;
 
     /**
      * Records to read onetime
      */
-    records?: number
+    records?: number;
 
     /**
      * Try cache
      */
-    tryCache?: boolean
+    tryCache?: boolean;
 }
 
 /**
@@ -168,52 +179,52 @@ class InfiniteListState {
     /**
      * Data
      */
-    data?: any
+    data?: any;
 
     /**
      * Items
      */
-    items: (ISearchItem | undefined)[]
+    items: (ISearchItem | undefined)[];
 
     /**
      * Columns layout
      */
-    layouts?: ISearchLayoutItem[]
+    layouts?: ISearchLayoutItem[];
 
     /**
      * Loading or not
      */
-    loading: boolean
+    loading: boolean;
 
     /**
      * All data is loaded
      */
-    loaded: boolean
+    loaded: boolean;
 
     /**
      * Current page
      */
-    page: number
+    page: number;
 
     /**
      * Total records
      */
-    records?: number
+    records?: number;
 
     /**
      * Last scroll offsets
      */
-    scrollLast?: number[]
+    scrollLast?: number[];
 
     /**
      * Current scroll left
      */
-    scrollLeft?: number
+    scrollLeft?: number;
 
     /**
      * Current scroll top
      */
-    scrollTop?: number
+    scrollTop?: number;
 
     /**
      * Constrcutor
@@ -246,30 +257,30 @@ export interface InfinitListMethods {
     /**
      * Clear the list cache
      */
-    clearCache(): void
+    clearCache(): void;
 
     /**
      * Get the index item
      * @param index Item index
      */
-    getItem(index: number): ISearchItem | undefined
+    getItem(index: number): ISearchItem | undefined;
 
     /**
      * Reset all data and rerenderer
      */
-    reset():void
+    reset(): void;
 
     /**
      * Select all items
      * @param selected Selected
      */
-    selectAll(selected: boolean): void
+    selectAll(selected: boolean): void;
 
     /**
      * Select the index item
      * @param index Target index
      */
-    selectItem(index: number): ISearchItem | undefined
+    selectItem(index: number): ISearchItem | undefined;
 
     /**
      * Sort data
@@ -277,7 +288,7 @@ export interface InfinitListMethods {
      * @param type Data type
      * @param index Sort field index
      */
-    sort(field: string, type: DataType, index: number): void
+    sort(field: string, type: DataType, index: number): void;
 }
 
 // Format items
@@ -312,342 +323,380 @@ const formatItems = (
  * Infinite list component
  * @param pros Properties
  */
-export const InfiniteList = React.forwardRef<InfinitListMethods, InfiniteListProps>(
-    (props, ref) => {
-        // Avoid unnecessary load
-        if ((props.height == null || props.height === 0) && props.records == null) {
-            return <></>;
+export const InfiniteList = React.forwardRef<
+    InfinitListMethods,
+    InfiniteListProps
+>((props, ref) => {
+    // Destruct
+    const {
+        height: defaultHeight,
+        horizontal,
+        itemSize,
+        records: defaultRecords
+    } = props;
+
+    // Avoid unnecessary load
+    if (
+        (defaultHeight == null || defaultHeight === 0) &&
+        defaultRecords == null
+    ) {
+        return <></>;
+    }
+
+    // Default records calcuated with height
+    const records = Math.ceil(
+        defaultRecords || (1.5 * defaultHeight!) / itemSize
+    );
+
+    // Default calcuated height
+    const height = defaultHeight || records * itemSize;
+
+    // Default 100% width
+    const width = props.width || '100%';
+
+    // Layout
+    const layout: Layout = horizontal ? 'horizontal' : 'vertical';
+
+    // Item key
+    const itemKey: ListItemKeySelector = (index, data) =>
+        InfiniteListKey(index, data, props.itemKey || 'id');
+
+    // Loader reference
+    const loaderRef = React.useRef<InfiniteLoader>(null);
+
+    // Dom reference
+    const domRef = React.useRef<HTMLDivElement>(null);
+
+    // Unique key for cache
+    const uniqueName = props.id || props.name || '';
+    const uniqueKey = `infinitelist${uniqueName}`;
+
+    // State without update
+    let defaultState = props.tryCache
+        ? Utils.cacheSessionDataParse<InfiniteListState>(
+              Utils.getLocationKey(uniqueKey)
+          )
+        : undefined;
+
+    if (!defaultState) {
+        defaultState = new InfiniteListState();
+    }
+    const [state] = React.useState(defaultState);
+
+    // Header
+    formatItems(state.items, props.hasHeader, props.hasFooter);
+
+    // Item count with update, start with 1 for lazy loading later
+    const localItemCount = state.items.length + (state.loaded ? 0 : 1);
+    const [itemCount, updateItemCount] = React.useState(localItemCount);
+
+    // Reset state
+    // Hold layouts, data and records
+    const reset = () => {
+        state.items = [];
+        state.loading = false;
+        state.loaded = false;
+        state.page = 0;
+        state.scrollLast = undefined;
+        state.scrollLeft = undefined;
+        state.scrollTop = undefined;
+
+        // Format items
+        formatItems(state.items, props.hasHeader);
+
+        // Reset session storage cache
+        Utils.cacheSessionData(state, Utils.getLocationKey(uniqueKey));
+
+        // Restore the scroll bar
+        const scrollBar = domRef.current?.parentElement;
+        if (scrollBar) {
+            scrollBar.scrollTo({ left: 0, top: 0 });
         }
 
-        // Default records calcuated with height
-        const records = Math.ceil(props.records || ((1.5 * props.height!) / props.itemSize));
+        // Clear the cached items
+        loaderRef.current?.resetloadMoreItemsCache(true);
+    };
 
-        // Default calcuated height
-        const height = (props.height || records * props.itemSize);
+    // Public methods through ref
+    React.useImperativeHandle(ref, () => ({
+        clearCache() {
+            loaderRef.current?.resetloadMoreItemsCache(false);
+        },
 
-        // Default 100% width
-        const width = props.width || '100%';
+        getItem(index: number) {
+            if (index < state.items.length) {
+                return state.items[index];
+            }
+            return undefined;
+        },
 
-        // Layout
-        const layout: Layout = props.horizontal ? 'horizontal' : 'vertical';
+        reset,
 
-        // Item key
-        const itemKey: ListItemKeySelector = (index, data) => InfiniteListKey(index, data, props.itemKey || 'id');
+        selectAll(selected: boolean) {
+            if (domRef.current) {
+                const cbItems = domRef.current.querySelectorAll<
+                    HTMLInputElement
+                >('input[type="checkbox"][data-selectable]');
+                cbItems.forEach((cb) => {
+                    if (cb.checked !== selected) {
+                        cb.click();
+                    }
+                });
+            }
+        },
 
-        // Loader reference
-        const loaderRef = React.useRef<InfiniteLoader>(null);
+        selectItem(index: number) {
+            if (index < state.items.length) {
+                return state.items[index];
+            }
+            return undefined;
+        },
 
-        // Dom reference
-        const domRef = React.useRef<HTMLDivElement>(null);
+        sort(field: string, type: DataType, index: number) {
+            // Two cases
+            if (state.loaded) {
+                // First all data is loaded
+                Utils.sortItems(state.items, field, type, index > 0);
 
-        // Unique key for cache
-        const uniqueName = props.id || props.name || '';
-        const uniqueKey = `infinitelist${uniqueName}`;
+                // Cache
+                Utils.cacheSessionData(state, Utils.getLocationKey(uniqueKey));
+            } else {
+                // Loaded from database
+                reset();
+            }
+        }
+    }));
 
-        // State without update
-        let defaultState = props.tryCache
-            ? Utils.cacheSessionDataParse<InfiniteListState>(Utils.getLocationKey(uniqueKey))
+    // On scroll handler
+    const onScroll =
+        props.onScroll || props.onScrollChange
+            ? (p: ListOnScrollProps) => {
+                  if (domRef.current == null) {
+                      return;
+                  }
+
+                  if (props.onScrollChange) {
+                      if (p.scrollOffset === 0 && state.scrollTop !== 0) {
+                          state.scrollTop = 0;
+                          props.onScrollChange(
+                              domRef.current.parentElement!,
+                              true,
+                              true
+                          );
+                      } else if (
+                          state.scrollTop == null ||
+                          state.scrollTop === 0
+                      ) {
+                          state.scrollTop = p.scrollOffset;
+                          props.onScrollChange(
+                              domRef.current.parentElement!,
+                              true,
+                              false
+                          );
+                      }
+                  } else {
+                      const sp: InfiniteListScrollProps = {
+                          vertical: true,
+                          direction: p.scrollDirection,
+                          offset: p.scrollOffset,
+                          scroller: domRef.current.parentElement!
+                      };
+                      props.onScroll!(sp);
+                  }
+              }
             : undefined;
 
-        if (!defaultState) {
-            defaultState = new InfiniteListState();
+    // Is current item loaded
+    const isItemLoaded = (index: number) =>
+        state.loaded || index < state.items.length;
+
+    // Load more items callback
+    const loadMoreItems = () => {
+        // Check
+        if (state.loaded || state.loading) {
+            return null;
         }
-        const [state] = React.useState(defaultState);
 
-        // Header
-        formatItems(state.items, props.hasHeader, props.hasFooter);
+        // Update loading status
+        state.loading = true;
 
-        // Item count with update, start with 1 for lazy loading later
-        const localItemCount = state.items.length + (state.loaded ? 0 : 1);
-        const [itemCount, updateItemCount] = React.useState(localItemCount);
+        // Current items
+        const { items } = state;
 
-        // Reset state
-        // Hold layouts, data and records
-        const reset = () => {
-            state.items = [];
-            state.loading = false;
-            state.loaded = false;
-            state.page = 0;
-            state.scrollLast = undefined;
-            state.scrollLeft = undefined;
-            state.scrollTop = undefined;
+        // Insert a loading item
+        // Make sure the current item is not a loading item
+        if (items.length === 0 || !items[items.length - 1]?.loading) {
+            items.push({ loading: true, viewFlag: -1 });
+        }
 
-            // Format items
-            formatItems(state.items, props.hasHeader);
+        // Update item count
+        // updateItemCount(items.length + 1)
 
-            // Reset session storage cache
-            Utils.cacheSessionData(state, Utils.getLocationKey(uniqueKey));
+        return new Promise((resolve) => {
+            // Read next page
+            const page = state.page + 1;
 
-            // Restore the scroll bar
-            const scrollBar = domRef.current?.parentElement;
-            if (scrollBar) {
-                scrollBar.scrollTo({ left: 0, top: 0 });
-            }
+            // Update rightnow to avoid delay below
+            state.page = page;
 
-            // Clear the cached items
-            loaderRef.current?.resetloadMoreItemsCache(true);
-        };
+            props.loadItems(page, records, props.orderIndex).then((results) => {
+                // Remove the loading item
+                items.pop();
 
-        // Public methods through ref
-        React.useImperativeHandle(ref, () => ({
-            clearCache() {
-                loaderRef.current?.resetloadMoreItemsCache(false);
-            },
-
-            getItem(index: number) {
-                if (index < state.items.length) {
-                    return state.items[index];
-                }
-                return undefined;
-            },
-
-            reset,
-
-            selectAll(selected: boolean) {
-                if (domRef.current) {
-                    const cbItems = domRef.current.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-selectable]');
-                    cbItems.forEach(cb => {
-                        if (cb.checked !== selected) {
-                            cb.click();
-                        }
-                    });
-                }
-            },
-
-            selectItem(index: number) {
-                if (index < state.items.length) {
-                    return state.items[index];
-                }
-                return undefined;
-            },
-
-            sort(field: string, type: DataType, index: number) {
-                // Two cases
-                if (state.loaded) {
-                    // First all data is loaded
-                    Utils.sortItems(state.items, field, type, index > 0);
-
-                    // Cache
-                    Utils.cacheSessionData(state, Utils.getLocationKey(uniqueKey));
-                } else {
-                    // Loaded from database
-                    reset();
-                }
-            }
-        }));
-
-        // On scroll handler
-        const onScroll = (props.onScroll || props.onScrollChange) ? (p: ListOnScrollProps) => {
-            if (domRef.current == null) {
-                return;
-            }
-
-            if (props.onScrollChange) {
-                if (p.scrollOffset === 0 && state.scrollTop !== 0) {
-                    state.scrollTop = 0;
-                    props.onScrollChange(domRef.current.parentElement!, true, true);
-                } else if (state.scrollTop == null || state.scrollTop === 0) {
-                    state.scrollTop = p.scrollOffset;
-                    props.onScrollChange(domRef.current.parentElement!, true, false);
-                }
-            } else {
-                const sp: InfiniteListScrollProps = {
-                    vertical: true,
-                    direction: p.scrollDirection,
-                    offset: p.scrollOffset,
-                    scroller: domRef.current.parentElement!
-                };
-                props.onScroll!(sp);
-            }
-        } : undefined;
-
-        // Is current item loaded
-        const isItemLoaded = (index: number) => state.loaded || index < state.items.length;
-
-        // Load more items callback
-        const loadMoreItems = () => {
-            // Check
-            if (state.loaded || state.loading) {
-                return null;
-            }
-
-            // Update loading status
-            state.loading = true;
-
-            // Current items
-            const { items } = state;
-
-            // Insert a loading item
-            // Make sure the current item is not a loading item
-            if (items.length === 0 || !items[items.length - 1]?.loading) {
-                items.push({ loading: true, viewFlag: -1 });
-            }
-
-            // Update item count
-            // updateItemCount(items.length + 1)
-
-            return new Promise(resolve => {
-                // Read next page
-                const page = state.page + 1;
-
-                // Update rightnow to avoid delay below
-                state.page = page;
-
-                props.loadItems(page, records, props.orderIndex).then((results) => {
-                    // Remove the loading item
-                    items.pop();
-
-                    // Start index
-                    if (page === 1) {
-                        // Update other data
-                        if (results.data) {
-                            state.data = results.data;
-                        }
-
-                        if (results.layouts) {
-                            state.layouts = results.layouts;
-                        }
-
-                        if (results.records != null) {
-                            state.records = results.records;
-                        }
+                // Start index
+                if (page === 1) {
+                    // Update other data
+                    if (results.data) {
+                        state.data = results.data;
                     }
 
-                    // Loaded items
-                    const loadedItems = results.items || [];
-                    const loadedLen = loadedItems.length;
-
-                    // Is the end
-                    const loaded: boolean = loadedLen < records;
-                    state.loaded = loaded;
-                    state.loading = false;
-
-                    // Insert items
-                    if (loadedLen > 0) {
-                        items.push(...loadedItems);
+                    if (results.layouts) {
+                        state.layouts = results.layouts;
                     }
 
-                    // Add footer
-                    if (loaded) {
-                        // Update total records
-                        state.records = items.length - (props.hasHeader ? 1 : 0);
-                        if (props.hasFooter) {
-                            items.push({ loading: false, viewFlag: -2 });
-                        }
+                    if (results.records != null) {
+                        state.records = results.records;
                     }
+                }
 
-                    // Update item count
-                    updateItemCount(items.length + (loaded ? 0 : 1));
+                // Loaded items
+                const loadedItems = results.items || [];
+                const loadedLen = loadedItems.length;
 
-                    // Resolve to complete
-                    resolve();
-                });
+                // Is the end
+                const loaded: boolean = loadedLen < records;
+                state.loaded = loaded;
+                state.loading = false;
+
+                // Insert items
+                if (loadedLen > 0) {
+                    items.push(...loadedItems);
+                }
+
+                // Add footer
+                if (loaded) {
+                    // Update total records
+                    state.records = items.length - (props.hasHeader ? 1 : 0);
+                    if (props.hasFooter) {
+                        items.push({ loading: false, viewFlag: -2 });
+                    }
+                }
+
+                // Update item count
+                updateItemCount(items.length + (loaded ? 0 : 1));
+
+                // Resolve to complete
+                resolve();
             });
-        };
+        });
+    };
 
-        // Render an item or a loading indicator
-        const itemRenderer = (lp: InfiniteListItemProps) => {
-            // Implement padding
-            const { style } = lp;
-            let customStyle = {};
-            if (props.padding != null && props.padding !== 0) {
-                customStyle = {
-                    left: `${props.padding + Utils.parseNumber(style.left)}px`,
-                    top: `${props.padding + Utils.parseNumber(style.top)}px`,
-                    width: `calc(100% - ${2 * props.padding}px)`
-                };
-            }
-
-            // Current data
-            const data = state.items[lp.index];
-
-            // Renderer properties
-            const newProps: ListItemRendererProps = {
-                data,
-                end: (lp.index + 1 === state.items.length),
-                index: lp.index,
-                isScrolling: lp.isScrolling,
-                layouts: state.layouts,
-                other: state.data,
-                records: state.records,
-                style: {
-                    ...style,
-                    ...customStyle
-                }
+    // Render an item or a loading indicator
+    const itemRenderer = (lp: InfiniteListItemProps) => {
+        // Implement padding
+        const { style } = lp;
+        let customStyle = {};
+        if (props.padding != null && props.padding !== 0) {
+            customStyle = {
+                left: `${props.padding + Utils.parseNumber(style.left)}px`,
+                top: `${props.padding + Utils.parseNumber(style.top)}px`,
+                width: `calc(100% - ${2 * props.padding}px)`
             };
+        }
 
-            // Call renderer callback
-            return props.itemRenderer(newProps);
+        // Current data
+        const data = state.items[lp.index];
+
+        // Renderer properties
+        const newProps: ListItemRendererProps = {
+            data,
+            end: lp.index + 1 === state.items.length,
+            index: lp.index,
+            isScrolling: lp.isScrolling,
+            layouts: state.layouts,
+            other: state.data,
+            records: state.records,
+            style: {
+                ...style,
+                ...customStyle
+            }
         };
 
-        // Inner element callback
-        const innerElementType = (p: ListChildComponentProps) => {
-            const { style, ...rest } = p;
-            const { innerClassName, padding } = props;
-            if (padding) {
-                style.height = Utils.parseNumber(style.height) + 2 * padding;
-            }
+        // Call renderer callback
+        return props.itemRenderer(newProps);
+    };
 
-            return (
-                <div
-                    ref={domRef}
-                    className={innerClassName}
-                    style={style}
-                    {...rest}
-                />
-            );
-        };
+    // Inner element callback
+    const innerElementType = (p: ListChildComponentProps) => {
+        const { style, ...rest } = p;
+        const { innerClassName, padding } = props;
+        if (padding) {
+            style.height = Utils.parseNumber(style.height) + 2 * padding;
+        }
 
-        // Outer element callback
-        // outerElementType, set padding will cause the browser to reset when items loaded
-        // Changed to adding padding to height
-
-        React.useEffect(() => {
-            // Scroll container element
-            const scrollContainer = domRef.current?.parentElement;
-            if (scrollContainer && state.scrollLast) {
-                scrollContainer.scrollTo({
-                    left: state.scrollLast[0] || 0,
-                    top: state.scrollLast[1] || 0,
-                    behavior: 'smooth'
-                });
-            }
-
-            // Cache url
-            const url = window.location.href;
-
-            return () => {
-                if (scrollContainer) {
-                    // Update scroll offset
-                    state.scrollLast = [scrollContainer.scrollLeft, scrollContainer.scrollTop];
-
-                    // Cache data
-                    // window.location.href here is the navigated URL, use the cached url
-                    const cacheKey = [url, uniqueKey].join(':');
-                    Utils.cacheSessionData(state, cacheKey);
-                }
-            };
-        }, [domRef.current]);
-
-        // Return component
         return (
-            <InfiniteListBase
-                className={props.className}
-                height={height}
-                innerElementType={innerElementType}
-                isItemLoaded={isItemLoaded}
-                itemCount={itemCount}
-                itemKey={itemKey}
-                itemRenderer={itemRenderer}
-                itemSize={props.itemSize}
-                layout={layout}
-                loadMoreItems={loadMoreItems}
-                minimumBatchSize={records}
-                onScroll={onScroll}
-                ref={loaderRef}
-                threshold={props.threshold}
-                width={width}
+            <div
+                ref={domRef}
+                className={innerClassName}
+                style={style}
+                {...rest}
             />
         );
-    }
-);
+    };
+
+    // Outer element callback
+    // outerElementType, set padding will cause the browser to reset when items loaded
+    // Changed to adding padding to height
+
+    React.useEffect(() => {
+        // Scroll container element
+        const scrollContainer = domRef.current?.parentElement;
+        if (scrollContainer && state.scrollLast) {
+            scrollContainer.scrollTo({
+                left: state.scrollLast[0] || 0,
+                top: state.scrollLast[1] || 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Cache url
+        const url = window.location.href;
+
+        return () => {
+            if (scrollContainer) {
+                // Update scroll offset
+                state.scrollLast = [
+                    scrollContainer.scrollLeft,
+                    scrollContainer.scrollTop
+                ];
+
+                // Cache data
+                // window.location.href here is the navigated URL, use the cached url
+                const cacheKey = [url, uniqueKey].join(':');
+                Utils.cacheSessionData(state, cacheKey);
+            }
+        };
+    }, [domRef.current]);
+
+    // Return component
+    return (
+        <InfiniteListBase
+            className={props.className}
+            height={height}
+            innerElementType={innerElementType}
+            isItemLoaded={isItemLoaded}
+            itemCount={itemCount}
+            itemKey={itemKey}
+            itemRenderer={itemRenderer}
+            itemSize={itemSize}
+            layout={layout}
+            loadMoreItems={loadMoreItems}
+            minimumBatchSize={records}
+            onScroll={onScroll}
+            ref={loaderRef}
+            threshold={props.threshold}
+            width={width}
+        />
+    );
+});
+InfiniteList.displayName = 'InfiniteList';
