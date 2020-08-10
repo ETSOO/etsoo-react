@@ -35,9 +35,6 @@ jobs:
       # Format files with prettier
       # - run: npm run format
 
-      # Permission
-      - run : chmod 777 ./node_modules/.bin/jest
-
       # Make sure pass the test without any exception
       - run: npm test
 
