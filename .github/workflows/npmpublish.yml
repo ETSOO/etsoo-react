@@ -34,6 +34,10 @@ jobs:
 
       # Format files with prettier
       # - run: npm run format
+      
+      # Permission fix
+      - run: npm config set user 0
+      - run: npm config set unsafe-perm true
 
       # Make sure pass the test without any exception
       - run: npm test
