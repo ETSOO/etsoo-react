@@ -11,7 +11,7 @@ export interface AuthorizationResultData extends IResultData {
 }
 
 /**
- * Login result data result
+ * Login result data
  */
 /* eslint-disable camelcase */
 export interface LoginResultData extends AuthorizationResultData {

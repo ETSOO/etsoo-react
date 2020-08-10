@@ -1,7 +1,7 @@
 import { IViewModel } from './IView';
 
 /**
- * View factory callback
+ * View data transform factory
  */
 export interface IViewFactory<T> {
     /**

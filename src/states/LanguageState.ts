@@ -3,7 +3,7 @@ import { CreateState } from './CreateState';
 import { ILanguageItem } from '../api/IApiSettings';
 
 /**
- * Language label, simple i18n solution
+ * Language labels, simple i18n solution
  * For premium solution: https://www.i18next.com/
  * Indexable type
  */

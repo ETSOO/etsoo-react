@@ -36,6 +36,9 @@ jobs:
       # - run: npm run format
 
       # Make sure pass the test without any exception
+      # 2020/8/10, error: sh: 1: jest: Permission denied
+      # Found folder 'node_modules' in git
+      # Remove help: https://stackoverflow.com/questions/50675829/remove-node-modules-from-git-in-vscode
       - run: npm test
 
       # Build the package
