@@ -18,7 +18,7 @@
         "testMatch": [
             "<rootDir>/__tests__/**/*.{ts,tsx}"
         ],
-        "testEnvironment": "node",
+        "testEnvironment": "jsdom",
         "transform": {
             ".+\\.tsx?$": "ts-jest"
         }
