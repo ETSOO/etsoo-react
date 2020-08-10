@@ -17,7 +17,7 @@ jobs:
     
     # Operation system
     runs-on: ubuntu-latest
-    
+
     steps:
       # https://github.com/actions/checkout, This action checks-out your repository under $GITHUB_WORKSPACE
       # so your workflow can access it.
@@ -34,10 +34,6 @@ jobs:
 
       # Format files with prettier
       # - run: npm run format
-      
-      # Permission fix
-      - run: npm config set user 0
-      - run: npm config set unsafe-perm true
 
       # Make sure pass the test without any exception
       - run: npm test

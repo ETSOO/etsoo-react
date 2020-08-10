@@ -18,6 +18,7 @@
         "testMatch": [
             "<rootDir>/__tests__/**/*.{ts,tsx}"
         ],
+        "testEnvironment": "node",
         "transform": {
             ".+\\.tsx?$": "ts-jest"
         }
