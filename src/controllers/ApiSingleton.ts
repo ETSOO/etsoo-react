@@ -1,4 +1,4 @@
-import { IApi } from '@etsoo/restclient';
+import { IApi, ApiDataError } from '@etsoo/restclient';
 import { INotifier, INotifierCallback } from '../api/INotifier';
 import { IApiSettings, ApiSettings } from '../api/IApiSettings';
 
@@ -56,7 +56,8 @@ export class ApiSingleton {
         this.api.baseUrl = this.settings.endpoint;
 
         // Global API error handler
-        this.api.onError = (error: Error) => {
+        this.api.onError = (error: ApiDataError<any>) => {
+            console.log(error);
             this.reportError(error.toString());
         };
     }

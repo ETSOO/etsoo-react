@@ -41,5 +41,8 @@ export interface IRawResult {
  * @param data Raw data
  */
 export function isRawResult(data: any): data is IRawResult {
-    return data && data.error_code && typeof data.error_code === 'number';
+    return (
+        // Should be careful, data.error_code will not pass with 0, changed to data.error_code != null
+        data && data.error_code != null && typeof data.error_code === 'number'
+    );
 }
