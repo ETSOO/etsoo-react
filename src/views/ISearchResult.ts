@@ -1,7 +1,4 @@
-import { Align } from '../api/Align';
-import { DataType } from '../api/DataType';
-import { Utils } from '../api/Utils';
-
+import { DataTypes, Utils } from '@etsoo/shared';
 /**
  * Common search layout item
  */
@@ -9,7 +6,7 @@ export interface ISearchLayoutItem {
     /**
      * Text align
      */
-    align?: Align;
+    align?: DataTypes.HAlignEnum;
 
     /**
      * Data field
@@ -27,9 +24,9 @@ export interface ISearchLayoutItem {
     sort?: number;
 
     /**
-     * Data type
+     * Data display type
      */
-    type: DataType;
+    type: DataTypes.DisplayType;
 
     /**
      * Width
@@ -105,24 +102,6 @@ interface SearchLayoutFormatCallback {
 }
 
 /**
- * From enum to string
- * @param align Align
- */
-export const searchLayoutAlign = (align?: Align) => {
-    if (align) {
-        if (align === Align.Left) {
-            return 'left';
-        }
-        if (align === Align.Center) {
-            return 'center';
-        }
-        return 'right';
-    }
-
-    return undefined;
-};
-
-/**
  * Format layouts
  * @param layouts Layouts
  * @param callback Callback
@@ -144,5 +123,66 @@ export const searchLayoutFormat = (
 
         // Update
         Object.assign(c, { label });
+    });
+};
+
+/**
+ * Sort items
+ * @param items Items
+ * @param field Field
+ * @param type Data display type
+ * @param ascending Is ascending
+ */
+export const sortItems = (
+    items: (ISearchItem | undefined)[],
+    field: string,
+    type: DataTypes.DisplayType,
+    ascending: boolean
+) => {
+    items.sort((item1, item2) => {
+        // Null item
+        if (
+            item1 == null ||
+            item2 == null ||
+            item1.viewFlag === -1 ||
+            item1.viewFlag === -2 ||
+            item2.viewFlag === -1 ||
+            item2.viewFlag === -2
+        ) {
+            return 0;
+        }
+
+        const v1 = item1[field];
+        const v2 = item2[field];
+
+        // Null value
+        if (v1 == null) {
+            return ascending ? -1 : 1;
+        }
+        if (v2 == null) {
+            return ascending ? 1 : -1;
+        }
+
+        if (
+            type === DataTypes.DisplayType.Date ||
+            type === DataTypes.DisplayType.Money ||
+            type === DataTypes.DisplayType.Number
+        ) {
+            const n1: number =
+                type === DataTypes.DisplayType.Date ? Date.parse(v1) : v1;
+            const n2: number =
+                type === DataTypes.DisplayType.Date ? Date.parse(v2) : v2;
+            if (n1 > n2) {
+                return ascending ? 1 : -1;
+            }
+            if (n1 < n2) {
+                return ascending ? -1 : 1;
+            }
+            return 0;
+        }
+
+        return ascending
+            ? (v1 as string).localeCompare(v2 as string)
+            : (v2 as string).localeCompare(v1 as string);
     });
 };

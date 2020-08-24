@@ -5,8 +5,7 @@ import {
     AutocompleteProps
 } from '@material-ui/lab';
 import { TextField, InputLabelProps } from '@material-ui/core';
-import { Utils } from '../api/Utils';
-import { IDynamicData } from '../api/IDynamicData';
+import { DataTypes, DomUtils, StorageUtils } from '@etsoo/shared';
 
 /**
  * Country list ref
@@ -20,7 +19,12 @@ export interface CountryListRef {}
  */
 export type CountryListProps = Partial<
     Omit<
-        AutocompleteProps<IDynamicData, undefined, undefined, undefined>,
+        AutocompleteProps<
+            DataTypes.DynamicData,
+            undefined,
+            undefined,
+            undefined
+        >,
         'options' | 'ref'
     >
 > & {
@@ -32,7 +36,7 @@ export type CountryListProps = Partial<
     /**
      * Callback to load country list items
      */
-    loadItems(): Promise<IDynamicData[]>;
+    loadItems(): Promise<DataTypes.DynamicData[]>;
 
     /**
      * Name
@@ -49,7 +53,7 @@ export type CountryListProps = Partial<
      * Avoid any copy actions to keep good performance
      * @param items List items
      */
-    sort?(items: IDynamicData[]): void;
+    sort?(items: DataTypes.DynamicData[]): void;
 };
 
 /**
@@ -70,13 +74,15 @@ export const CountryList = React.forwardRef<CountryListRef, CountryListProps>(
         } = props;
 
         // Cache key
-        const cacheKey = Utils.getLocationKey(`countryList${name || ''}`);
+        const cacheKey = DomUtils.getLocationKey(`countryList${name || ''}`);
 
         // Cache data
-        const cacheData = Utils.cacheSessionDataParse<IDynamicData[]>(cacheKey);
+        const cacheData = StorageUtils.getSessionDataTyped<
+            DataTypes.DynamicData[]
+        >(cacheKey);
 
         // State
-        const [items, updateItems] = React.useState<IDynamicData[]>(
+        const [items, updateItems] = React.useState<DataTypes.DynamicData[]>(
             cacheData || []
         );
 
@@ -97,7 +103,7 @@ export const CountryList = React.forwardRef<CountryListRef, CountryListProps>(
                     }
 
                     // Cache data
-                    Utils.cacheSessionData(loadedItems, cacheKey);
+                    StorageUtils.cacheSessionData(cacheKey, loadedItems);
                 });
             }
         }, [cacheData]);

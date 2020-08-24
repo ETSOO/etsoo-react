@@ -9,7 +9,7 @@ import {
     Tooltip
 } from '@material-ui/core';
 import { Language } from '@material-ui/icons';
-import { ILanguageItem } from '../api/IApiSettings';
+import { DataTypes } from '@etsoo/shared';
 
 /**
  * Language chooser properties
@@ -23,7 +23,7 @@ export interface LanguageChooserProps {
     /**
      * Close event
      */
-    onClose?(item?: ILanguageItem): void;
+    onClose?(item?: DataTypes.LanguageDefinition): void;
 
     /**
      * Current selected language
@@ -38,7 +38,7 @@ export interface LanguageChooserProps {
     /**
      * Items
      */
-    items: ILanguageItem[];
+    items: DataTypes.LanguageDefinition[];
 }
 
 /**
@@ -88,7 +88,7 @@ export function LanguageChooser(props: LanguageChooserProps) {
     };
 
     // Close item handler
-    const closeItemHandler = (item: ILanguageItem) => {
+    const closeItemHandler = (item: DataTypes.LanguageDefinition) => {
         // Update the current item
         setLanguageItem(item);
 

@@ -1,17 +1,11 @@
-/**
- * Dynamic data
- * Indexable type
- */
-export interface IDynamicData {
-    [key: string]: any;
-}
+import { DataTypes } from '@etsoo/shared';
 
 /**
  * Add model data
  */
-export interface IAddData extends IDynamicData {}
+export interface IAddData extends DataTypes.DynamicData {}
 
 /**
  * Edit model data
  */
-export interface IEditData extends IDynamicData {}
+export interface IEditData extends DataTypes.DynamicData {}

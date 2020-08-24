@@ -1,8 +1,6 @@
 import { IApiErrorHandler, ApiResult } from '@etsoo/restclient';
 import { EntityController } from './EntityController';
 import { UserAction, UserActionType, IUserUpdate } from '../states/UserState';
-import { IApiUser } from '../api/IApiUser';
-import { IApiEntity } from '../api/IApiEntity';
 import { ChangePasswordModel } from '../models/ChangePasswordModel';
 import {
     LoginResultData,
@@ -39,11 +37,6 @@ export interface ILoginDataFactory {
  */
 export abstract class LoginController extends EntityController {
     /**
-     * User state dispatch
-     */
-    protected dispatch: React.Dispatch<UserAction>;
-
-    /**
      * Login result format callback
      */
     public loginFormat?: ILoginDataFactory;
@@ -52,21 +45,6 @@ export abstract class LoginController extends EntityController {
      * Login with token format callback
      */
     public loginTokenFormat?: ILoginDataFactory;
-
-    /**
-     * Constructor
-     * @param user Current user
-     * @param entity Service entity
-     * @param dispatch User state dispatch
-     */
-    protected constructor(
-        user: IApiUser,
-        entity: IApiEntity,
-        dispatch: React.Dispatch<UserAction>
-    ) {
-        super(user, entity);
-        this.dispatch = dispatch;
-    }
 
     /**
      * Change password
@@ -87,6 +65,7 @@ export abstract class LoginController extends EntityController {
 
     // Login result process
     async loginResult(
+        dispatch: React.Dispatch<UserAction>,
         result: IResult<LoginResultData>,
         dataCallback?: UserLoginSuccess,
         model?: LoginModel
@@ -131,13 +110,10 @@ export abstract class LoginController extends EntityController {
                 if (cbResult) {
                     action.update = cbResult;
                 }
-
-                // Update user
-                this.dispatch(action);
-            } else {
-                // Update user
-                this.dispatch(action);
             }
+
+            // Update user
+            dispatch(action);
         } else {
             // Clear token
             SaveLogin.update(undefined);
@@ -146,11 +122,13 @@ export abstract class LoginController extends EntityController {
 
     /**
      * Login
+     * @param dispatch User state dispatch
      * @param model Login model
      * @param dataCallback Login success callback
      * @param onError Error handler
      */
     async login(
+        dispatch: React.Dispatch<UserAction>,
         model: LoginModel,
         dataCallback?: UserLoginSuccess,
         onError?: IApiErrorHandler
@@ -176,7 +154,7 @@ export abstract class LoginController extends EntityController {
         );
 
         if (result) {
-            await this.loginResult(result, dataCallback, model);
+            await this.loginResult(dispatch, result, dataCallback, model);
         }
 
         return result;
@@ -184,11 +162,13 @@ export abstract class LoginController extends EntityController {
 
     /**
      * Login token
+     * @param dispatch User state dispatch
      * @param model Login token model
      * @param dataCallback Login success callback
      * @param onError Error handler
      */
     async loginToken(
+        dispatch: React.Dispatch<UserAction>,
         model: LoginTokenModel,
         dataCallback?: UserLoginSuccess,
         onError?: IApiErrorHandler
@@ -214,7 +194,7 @@ export abstract class LoginController extends EntityController {
         );
 
         if (result) {
-            await this.loginResult(result, dataCallback, undefined);
+            await this.loginResult(dispatch, result, dataCallback, undefined);
         }
 
         return result;
@@ -253,10 +233,15 @@ export abstract class LoginController extends EntityController {
 
     /**
      * Signout
+     * @param dispatch User state dispatch
      * @param clearToken Clear saved login token
      * @param onError Error handler
      */
-    async signout(clearToken: boolean, onError?: IApiErrorHandler) {
+    async signout(
+        dispatch: React.Dispatch<UserAction>,
+        clearToken: boolean,
+        onError?: IApiErrorHandler
+    ) {
         const { method } = this.singleton.settings;
         const api = this.buildEntityApi(
             `Signout?method=${method}&clear=${clearToken}`
@@ -274,11 +259,11 @@ export abstract class LoginController extends EntityController {
                 SaveLogin.update(undefined);
             }
 
-            // Logout action, last step to avoid any router change issues
+            // Logout action, last step rsfaczcxcqqqq   bto avoid any router change issues
             const action: UserAction = {
                 type: UserActionType.Logout
             };
-            this.dispatch(action);
+            dispatch(action);
         }
         return result;
     }

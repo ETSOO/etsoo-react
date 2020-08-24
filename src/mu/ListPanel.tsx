@@ -6,7 +6,7 @@ import {
     List,
     ListItem
 } from '@material-ui/core';
-import { Utils } from '../api/Utils';
+import { DomUtils } from '@etsoo/shared';
 
 /**
  * List panel properties
@@ -78,7 +78,10 @@ export function ListPanel(props: ListPanelProps) {
     const classes = useStyles();
 
     return (
-        <List className={Utils.mergeClasses(classes.root, className)} {...rest}>
+        <List
+            className={DomUtils.mergeClasses(classes.root, className)}
+            {...rest}
+        >
             <ListItem className={classes.header}>
                 <Typography className={classes.title}>{title}</Typography>
                 {moreElement}

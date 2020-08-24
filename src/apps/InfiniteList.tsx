@@ -6,15 +6,15 @@ import {
     ListItemKeySelector
 } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
+import { DataTypes, StorageUtils, DomUtils, NumberUtils } from '@etsoo/shared';
 import {
     ISearchItem,
     ISearchResult,
-    ISearchLayoutItem
+    ISearchLayoutItem,
+    sortItems
 } from '../views/ISearchResult';
-import { Utils } from '../api/Utils';
 import { InfiniteListBase, InfiniteListItemProps } from './InfiniteListBase';
 import { InfiniteListSharedProps } from './InfiniteListSharedProps';
-import { DataType } from '../api/DataType';
 
 /**
  * List item renderer properties
@@ -285,10 +285,10 @@ export interface InfinitListMethods {
     /**
      * Sort data
      * @param field Field name
-     * @param type Data type
+     * @param type Data display type
      * @param index Sort field index
      */
-    sort(field: string, type: DataType, index: number): void;
+    sort(field: string, type: DataTypes.DisplayType, index: number): void;
 }
 
 // Format items
@@ -373,8 +373,8 @@ export const InfiniteList = React.forwardRef<
 
     // State without update
     let defaultState = props.tryCache
-        ? Utils.cacheSessionDataParse<InfiniteListState>(
-              Utils.getLocationKey(uniqueKey)
+        ? StorageUtils.getSessionDataTyped<InfiniteListState>(
+              DomUtils.getLocationKey(uniqueKey)
           )
         : undefined;
 
@@ -405,7 +405,10 @@ export const InfiniteList = React.forwardRef<
         formatItems(state.items, props.hasHeader);
 
         // Reset session storage cache
-        Utils.cacheSessionData(state, Utils.getLocationKey(uniqueKey));
+        StorageUtils.cacheSessionData(
+            DomUtils.getLocationKey(uniqueKey),
+            state
+        );
 
         // Restore the scroll bar
         const scrollBar = domRef.current?.parentElement;
@@ -452,14 +455,17 @@ export const InfiniteList = React.forwardRef<
             return undefined;
         },
 
-        sort(field: string, type: DataType, index: number) {
+        sort(field: string, type: DataTypes.DisplayType, index: number) {
             // Two cases
             if (state.loaded) {
                 // First all data is loaded
-                Utils.sortItems(state.items, field, type, index > 0);
+                sortItems(state.items, field, type, index > 0);
 
                 // Cache
-                Utils.cacheSessionData(state, Utils.getLocationKey(uniqueKey));
+                StorageUtils.cacheSessionData(
+                    DomUtils.getLocationKey(uniqueKey),
+                    state
+                );
             } else {
                 // Loaded from database
                 reset();
@@ -598,8 +604,8 @@ export const InfiniteList = React.forwardRef<
         let customStyle = {};
         if (props.padding != null && props.padding !== 0) {
             customStyle = {
-                left: `${props.padding + Utils.parseNumber(style.left)}px`,
-                top: `${props.padding + Utils.parseNumber(style.top)}px`,
+                left: `${props.padding + NumberUtils.parse(style.left)}px`,
+                top: `${props.padding + NumberUtils.parse(style.top)}px`,
                 width: `calc(100% - ${2 * props.padding}px)`
             };
         }
@@ -631,7 +637,7 @@ export const InfiniteList = React.forwardRef<
         const { style, ...rest } = p;
         const { innerClassName, padding } = props;
         if (padding) {
-            style.height = Utils.parseNumber(style.height) + 2 * padding;
+            style.height = NumberUtils.parse(style.height) + 2 * padding;
         }
 
         return (
@@ -673,7 +679,7 @@ export const InfiniteList = React.forwardRef<
                 // Cache data
                 // window.location.href here is the navigated URL, use the cached url
                 const cacheKey = [url, uniqueKey].join(':');
-                Utils.cacheSessionData(state, cacheKey);
+                StorageUtils.cacheSessionData(cacheKey, state);
             }
         };
     }, [domRef.current]);

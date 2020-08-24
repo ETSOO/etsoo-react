@@ -1,7 +1,7 @@
 import React from 'react';
+import { DataTypes } from '@etsoo/shared';
 import { StyledForm } from './StyledForm';
 import { StepperFormItemMethods } from './StepperForm';
-import { IDynamicData } from '../api/IDynamicData';
 
 /**
  * Stepper form child properties
@@ -17,7 +17,7 @@ export interface StepperFormChildProps {
      * Validate form
      * @param formData Form data
      */
-    validateForm(formData: FormData): Promise<IDynamicData | null>;
+    validateForm(formData: FormData): Promise<DataTypes.DynamicData | null>;
 }
 
 /**

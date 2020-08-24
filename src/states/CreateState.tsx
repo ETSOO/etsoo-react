@@ -26,18 +26,13 @@ export function CreateState<S extends IState, A extends IAction>(
         // Context default value
         const contextValue = { state, dispatch };
 
-        // With or without uiCreator
-        if (uiCreator) {
-            return (
+        return (
+            <>
+                {uiCreator && uiCreator(state, dispatch)}
                 <context.Provider value={contextValue}>
                     {children}
-                    {uiCreator(state, dispatch)}
                 </context.Provider>
-            );
-        }
-
-        return (
-            <context.Provider value={contextValue}>{children}</context.Provider>
+            </>
         );
     };
 

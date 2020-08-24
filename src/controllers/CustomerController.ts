@@ -1,5 +1,4 @@
 import { EntityController } from './EntityController';
-import { IApiUser } from '../api/IApiUser';
 import { ApiModule } from '../api/IApiEntity';
 import { CustomerSearchModel } from '../models/CustomerSearchModel';
 import {
@@ -17,10 +16,9 @@ import { ExtendAddress } from './ExtendAddress';
 class CustomerControllerBase extends EntityController {
     /**
      * Constructor
-     * @param user Current user
      */
-    constructor(user: IApiUser) {
-        super(user, {
+    constructor() {
+        super({
             identity: 'customer',
             module: ApiModule.Customer
         });

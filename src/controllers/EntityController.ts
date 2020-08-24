@@ -1,5 +1,4 @@
 import { createClient, IApiErrorHandler, ApiResult } from '@etsoo/restclient';
-import { IApiUser } from '../api/IApiUser';
 import { IApiEntity } from '../api/IApiEntity';
 import {
     IResult,
@@ -12,7 +11,6 @@ import { IListItem } from '../views/IListItem';
 import { IViewModel } from '../views/IView';
 import { IViewFactory } from '../views/IViewFactory';
 import { ApiSingleton } from './ApiSingleton';
-import { Notifier } from '../mu/Notifier';
 import { IEntityController } from './IEntityController';
 import { IAddData, IEditData } from '../api/IDynamicData';
 import { SearchModel } from '../models/SearchModel';
@@ -103,15 +101,6 @@ export abstract class EntityController implements IEntityController {
         return this.#singleton;
     }
 
-    #user: IApiUser;
-
-    /**
-     * Current user
-     */
-    public get user() {
-        return this.#user;
-    }
-
     /**
      * API
      */
@@ -121,20 +110,14 @@ export abstract class EntityController implements IEntityController {
 
     /**
      * Constructor
-     * @param user Current user
      * @param entity Entity settings
-     * @param configs Additional API configs
      */
-    protected constructor(user: IApiUser, entity: IApiEntity) {
+    protected constructor(entity: IApiEntity) {
         // Init
-        this.#user = user;
         this.#entity = entity;
 
         // API Singleton
-        this.#singleton = ApiSingleton.getInstance(
-            () => createClient(),
-            new Notifier()
-        );
+        this.#singleton = ApiSingleton.getInstance(() => createClient());
     }
 
     /**

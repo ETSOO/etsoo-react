@@ -1,8 +1,7 @@
 import React from 'react';
+import { DomUtils, DataTypes } from '@etsoo/shared';
 import * as Yup from 'yup';
 import { IResult } from '../api/IResult';
-import { Utils } from '../api/Utils';
-import { IDynamicData } from '../api/IDynamicData';
 
 /**
  * Form validator state field
@@ -131,7 +130,7 @@ export const useFormValidator = (
             const formData = new FormData(form);
             if (refs.length === 0) {
                 // Without fields included, all parsed
-                Object.assign(obj, Utils.formDataToObject(formData));
+                Object.assign(obj, DomUtils.formDataToObject(formData));
             } else {
                 refs.forEach((field) => {
                     const fieldValue = formData.get(field) as string;
@@ -256,7 +255,7 @@ export const useFormValidator = (
                 strict: false,
                 abortEarly: false,
                 stripUnknown: false
-            })) as IDynamicData;
+            })) as DataTypes.DynamicData;
             return result;
         } catch (e) {
             // Reset
@@ -291,7 +290,7 @@ export const useFormValidator = (
      * @param formData Form data
      */
     const validateForm = async (formData: FormData) => {
-        const result = await validate(Utils.formDataToObject(formData));
+        const result = await validate(DomUtils.formDataToObject(formData));
         return result;
     };
 

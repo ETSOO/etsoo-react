@@ -1,6 +1,6 @@
 import React from 'react';
+import { DataTypes } from '@etsoo/shared';
 import { CountryListRef, CountryListProps, CountryList } from './CountryList';
-import { IDynamicData } from '../api/IDynamicData';
 
 /**
  * Country list properties
@@ -18,10 +18,11 @@ export const ModuleCountryList = React.forwardRef<
     ModuleCountryListProps
 >((props, ref) => {
     // Label format
-    const getOptionLabel = (item: IDynamicData) => item.short_name || item.name;
+    const getOptionLabel = (item: DataTypes.DynamicData) =>
+        item.short_name || item.name;
 
     // Load data
-    const loadItems = () => Promise.resolve([] as IDynamicData[]);
+    const loadItems = () => Promise.resolve([] as DataTypes.DynamicData[]);
 
     // Return
     return (

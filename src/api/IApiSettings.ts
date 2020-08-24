@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import { LoginMethod } from './LoginMethod';
 import {
     LanguageStateCreator,
@@ -5,26 +6,6 @@ import {
     LanguageAction
 } from '../states/LanguageState';
 import { IUpdate } from '../states/IState';
-
-/**
- * Language definiton item
- */
-export interface ILanguageItem {
-    /**
-     * Name, like zh-CN
-     */
-    readonly name: string;
-
-    /**
-     * Label for description, like Simplifined Chinese
-     */
-    readonly label: string;
-
-    /**
-     * Labels
-     */
-    readonly labels: any;
-}
 
 /**
  * Application role
@@ -109,17 +90,12 @@ export interface IApiSettings extends IApiConfigurable {
     /**
      * Supported languages
      */
-    readonly supportedLanguages: ILanguageItem[];
+    readonly supportedLanguages: DataTypes.LanguageDefinition[];
 
     /**
      * Search input element
      */
     searchInput?: HTMLInputElement;
-
-    /**
-     * User token
-     */
-    token?: string;
 }
 
 // Settings

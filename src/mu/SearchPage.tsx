@@ -4,15 +4,15 @@ import {
     CardContent,
     TableCell,
     makeStyles,
-    CircularProgress
+    CircularProgress,
+    Box
 } from '@material-ui/core';
+import { DomUtils, DataTypes, StorageUtils } from '@etsoo/shared';
 import { SearchPageFabs, SearchPageFabsMethods } from './SearchPageFabs';
 import { InfiniteTable, InfiniteTableMethods } from './InfiniteTable';
 import { ListItemRendererProps } from '../apps/InfiniteList';
 import { LanguageLabel } from '../states/LanguageState';
 import { ISearchResult, ISearchItem } from '../views/ISearchResult';
-import { Utils } from '../api/Utils';
-import { IDynamicData } from '../api/IDynamicData';
 import { ApiSettings } from '../api/IApiSettings';
 import { IClickAction } from '../api/IClickAction';
 
@@ -94,7 +94,7 @@ export interface SearchPageProps {
     /**
      * Search properties
      */
-    searchProps: IDynamicData;
+    searchProps: DataTypes.DynamicData;
 
     /**
      * Sortable
@@ -164,7 +164,11 @@ export function SearchPage(props: SearchPageProps) {
 
     // Size check
     if (height < 1 || width < 1) {
-        return <CircularProgress size={20} />;
+        return (
+            <Box p={2}>
+                <CircularProgress size={20} />
+            </Box>
+        );
     }
 
     // Style
@@ -243,7 +247,7 @@ export function SearchPage(props: SearchPageProps) {
                       return (
                           <Card className={classes.card}>
                               <CardContent
-                                  className={Utils.mergeClasses(
+                                  className={DomUtils.mergeClasses(
                                       classes.total,
                                       classes.totalCell
                                   )}
@@ -270,7 +274,7 @@ export function SearchPage(props: SearchPageProps) {
                   }
 
                   parentClasses.push(classes.total);
-                  const cellClassName = Utils.mergeClasses(
+                  const cellClassName = DomUtils.mergeClasses(
                       footerClassName,
                       classes.totalCell
                   );
@@ -301,9 +305,9 @@ export function SearchPage(props: SearchPageProps) {
         // Avoid unnecessary API calls
         searchSeed = window.setTimeout(() => {
             // Cache the keywords
-            Utils.cacheSessionString(
-                searchProps.sc,
-                Utils.getLocationKey('keyword')
+            StorageUtils.cacheSessionData(
+                DomUtils.getLocationKey('keyword'),
+                searchProps.sc
             );
 
             // Reset and search
@@ -325,8 +329,9 @@ export function SearchPage(props: SearchPageProps) {
         if (input) {
             // Get the cached keywords
             input.value = tryCache
-                ? Utils.cacheSessionDataGet(Utils.getLocationKey('keyword')) ||
-                  ''
+                ? StorageUtils.getSessionData(
+                      DomUtils.getLocationKey('keyword')
+                  ) || ''
                 : '';
 
             // Add the event handler

@@ -1,5 +1,4 @@
 import { EntityController } from './EntityController';
-import { IApiUser } from '../api/IApiUser';
 import { ApiModule } from '../api/IApiEntity';
 
 /**
@@ -8,10 +7,9 @@ import { ApiModule } from '../api/IApiEntity';
 export class UserController extends EntityController {
     /**
      * Constructor
-     * @param user Current user
      */
-    constructor(user: IApiUser) {
-        super(user, {
+    constructor() {
+        super({
             identity: 'user',
             module: ApiModule.User
         });

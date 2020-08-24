@@ -14,9 +14,13 @@ import {
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Prompt, useHistory } from 'react-router-dom';
 import * as H from 'history';
-import { NotifierContext } from './NotifierUI';
-import { NotifierAction, NotifierActionType } from '../states/NotifierState';
-import { IDynamicData } from '../api/IDynamicData';
+import { DataTypes } from '@etsoo/shared';
+import {
+    NotificationReturn,
+    NotificationMU,
+    NotificationType,
+    NotificationContainer
+} from '@etsoo/notificationmu';
 
 /**
  * Stepper form item properties
@@ -25,7 +29,7 @@ export interface StepperFormItemProps {
     /**
      * Current form data
      */
-    formData: IDynamicData;
+    formData: DataTypes.DynamicData;
 
     /**
      * Child form ready callback
@@ -41,7 +45,7 @@ export interface StepperFormItemMethods {
     /**
      * Collect form data
      */
-    collectData(): Promise<IDynamicData | null>;
+    collectData(): Promise<DataTypes.DynamicData | null>;
 }
 
 /**
@@ -113,11 +117,11 @@ export interface StepperFormProps {
      * Submit handler
      * @param data Form data
      */
-    submitHandler(data: IDynamicData): void;
+    submitHandler(data: DataTypes.DynamicData): void;
 }
 
 // Styles
-const useStyles = makeStyles<Theme, { padding?: number }>((theme) => ({
+const useStyles = makeStyles<Theme, { padding: number }>((theme) => ({
     root: {
         width: '100%'
     },
@@ -126,8 +130,7 @@ const useStyles = makeStyles<Theme, { padding?: number }>((theme) => ({
         width: '100%'
     },
     paper: {
-        padding: (props) =>
-            theme.spacing(props.padding == null ? 3 : props.padding)
+        padding: (props) => theme.spacing(props.padding)
     }
 }));
 
@@ -140,7 +143,7 @@ export function StepperForm(props: StepperFormProps) {
     const {
         buttons,
         maxWidth,
-        padding,
+        padding = 3,
         promptForExit,
         steps,
         submitHandler
@@ -167,9 +170,6 @@ export function StepperForm(props: StepperFormProps) {
     // Check specific step is completed
     const isStepCompleted = (step: number) => completedSteps.has(step);
 
-    // Notifier
-    const notifierUpdate = React.useContext(NotifierContext);
-
     // history
     const history = useHistory();
 
@@ -177,7 +177,7 @@ export function StepperForm(props: StepperFormProps) {
     const [prompt, updatePrompt] = React.useState(true);
 
     // Form data
-    const [formData] = React.useState<IDynamicData>({});
+    const [formData] = React.useState<DataTypes.DynamicData>({});
 
     // Prompt for leave
     // return true for navigating
@@ -186,26 +186,24 @@ export function StepperForm(props: StepperFormProps) {
     const promptHandler = (location: H.Location) => {
         if (promptForExit) {
             // Notifier UI defined
-            if (history && notifierUpdate) {
-                const action: NotifierAction = {
-                    type: NotifierActionType.Confirm,
-                    title: undefined,
-                    message: promptForExit,
-                    callback: (ok) => {
-                        if (ok) {
-                            // Update the prompt status
-                            updatePrompt(false);
+            if (history) {
+                const onReturn: NotificationReturn<boolean> = (ok) => {
+                    if (ok) {
+                        // Update the prompt status
+                        updatePrompt(false);
 
-                            // Delayed push
-                            window.setTimeout(() => {
-                                history.push(
-                                    location.pathname + location.search
-                                );
-                            }, 50);
-                        }
+                        // Delayed push
+                        window.setTimeout(() => {
+                            history.push(location.pathname + location.search);
+                        }, 50);
                     }
                 };
-                notifierUpdate.dispatch(action);
+                const action = new NotificationMU(
+                    NotificationType.Confirm,
+                    promptForExit
+                );
+                action.onReturn = onReturn;
+                NotificationContainer.add(action);
                 return false;
             }
             return promptForExit;
@@ -223,7 +221,7 @@ export function StepperForm(props: StepperFormProps) {
     };
 
     // Update step data
-    const updateStep = (data: IDynamicData | null) => {
+    const updateStep = (data: DataTypes.DynamicData | null) => {
         if (data) {
             // Passed validataion and get the form data
             Object.assign(formData, data);

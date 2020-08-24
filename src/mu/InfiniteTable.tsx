@@ -7,6 +7,7 @@ import {
     Checkbox,
     TableSortLabel
 } from '@material-ui/core';
+import { DomUtils, StorageUtils, NumberUtils, DataTypes } from '@etsoo/shared';
 import {
     InfiniteList,
     ListItemRendererProps,
@@ -16,12 +17,9 @@ import {
 import {
     ISearchItem,
     ISearchLayoutItem,
-    ISearchResult,
-    searchLayoutAlign
+    ISearchResult
 } from '../views/ISearchResult';
-import { Utils } from '../api/Utils';
 import { InfiniteListSharedProps } from '../apps/InfiniteListSharedProps';
-import { DataType } from '../api/DataType';
 
 /**
  * Infinite table props
@@ -284,8 +282,8 @@ export const InfiniteTable = React.forwardRef<
     const classes = useStyles();
 
     // Cached order index
-    const cacheOrderIndexKey = Utils.getLocationKey('orderIndex');
-    const cachedOrderIndex = Utils.cacheSessionDataParse<number>(
+    const cacheOrderIndexKey = DomUtils.getLocationKey('orderIndex');
+    const cachedOrderIndex = StorageUtils.getSessionDataTyped<number>(
         cacheOrderIndexKey
     );
 
@@ -330,7 +328,7 @@ export const InfiniteTable = React.forwardRef<
               }
 
               // Index
-              const index = Utils.parseNumber(
+              const index = NumberUtils.parse(
                   event.currentTarget.dataset.index
               );
 
@@ -348,7 +346,7 @@ export const InfiniteTable = React.forwardRef<
     // event: React.MouseEvent<any>
     const createSortHandler = (
         field: string,
-        type: DataType,
+        type: DataTypes.DisplayType,
         index: number
     ) => () => {
         // Calucate real order index
@@ -367,7 +365,7 @@ export const InfiniteTable = React.forwardRef<
         listRef.current?.sort(field, type, cIndex);
 
         // Cache order index
-        Utils.cacheSessionString(cIndex.toString(), cacheOrderIndexKey);
+        StorageUtils.cacheSessionData(cacheOrderIndexKey, cIndex.toString());
 
         // Rerenderer
         updateLocalOrderIndex(cIndex);
@@ -433,7 +431,7 @@ export const InfiniteTable = React.forwardRef<
                                 {selectable && (
                                     <TableCell
                                         component="div"
-                                        className={Utils.mergeClasses(
+                                        className={DomUtils.mergeClasses(
                                             classes.tableCell,
                                             classes.tableCheckbox
                                         )}
@@ -446,7 +444,9 @@ export const InfiniteTable = React.forwardRef<
                                         component="div"
                                         key={`head${c.field}`}
                                         className={classes.tableCell}
-                                        align={searchLayoutAlign(c.align)}
+                                        align={DataTypes.hAlignFromEnum(
+                                            c.align
+                                        )}
                                     >
                                         {sortable && c.sort != null ? (
                                             <TableSortLabel
@@ -496,7 +496,7 @@ export const InfiniteTable = React.forwardRef<
                             {selectable && (
                                 <TableCell
                                     component="div"
-                                    className={Utils.mergeClasses(
+                                    className={DomUtils.mergeClasses(
                                         classes.tableCell,
                                         classes.tableCheckbox
                                     )}
@@ -517,7 +517,7 @@ export const InfiniteTable = React.forwardRef<
                                     component="div"
                                     key={c.field}
                                     className={classes.tableCell}
-                                    align={searchLayoutAlign(c.align)}
+                                    align={DataTypes.hAlignFromEnum(c.align)}
                                 >
                                     {p.data![c.field]}
                                 </TableCell>
@@ -536,7 +536,7 @@ export const InfiniteTable = React.forwardRef<
             return (
                 <div
                     style={p.style}
-                    className={Utils.mergeClasses(...classNames)}
+                    className={DomUtils.mergeClasses(...classNames)}
                     data-index={p.index}
                     role="button"
                     onClick={itemClickHandler}
@@ -555,7 +555,10 @@ export const InfiniteTable = React.forwardRef<
         <InfiniteList
             ref={listRef}
             height={height}
-            innerClassName={Utils.mergeClasses(classes.table, innerClassName)}
+            innerClassName={DomUtils.mergeClasses(
+                classes.table,
+                innerClassName
+            )}
             itemRenderer={tableItemRenderer}
             hasFooter={hasFooter}
             hasHeader={hasHeader}

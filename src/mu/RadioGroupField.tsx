@@ -9,7 +9,7 @@ import {
     Radio,
     makeStyles
 } from '@material-ui/core';
-import { Utils } from '../api/Utils';
+import { DomUtils } from '@etsoo/shared';
 
 /**
  * Radio group item interface
@@ -112,18 +112,18 @@ export function RadioGroupField(props: RadioGroupFieldProps) {
 
     return (
         <FormControl
-            className={Utils.mergeClasses(classes.root, className)}
+            className={DomUtils.mergeClasses(classes.root, className)}
             required={required}
         >
             <FormLabel
-                className={Utils.mergeClasses(classes.title, titleClassName)}
+                className={DomUtils.mergeClasses(classes.title, titleClassName)}
                 error={error}
                 required
             >
                 {label}
             </FormLabel>
             <RadioGroup
-                className={Utils.mergeClasses(
+                className={DomUtils.mergeClasses(
                     classes.listContainer,
                     listClassName
                 )}
@@ -145,7 +145,7 @@ export function RadioGroupField(props: RadioGroupFieldProps) {
                 ))}
             </RadioGroup>
             <FormHelperText
-                className={Utils.mergeClasses(classes.error, errorClassName)}
+                className={DomUtils.mergeClasses(classes.error, errorClassName)}
                 error={error}
             >
                 {helperText}

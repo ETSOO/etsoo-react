@@ -46,15 +46,13 @@ export interface SearchPageFabsProps {
 }
 
 // Styles
-const useStyles = makeStyles<Theme, { bottom?: number; right?: number }>(
+const useStyles = makeStyles<Theme, { bottom: number; right: number }>(
     (theme) => ({
         fabs: {
             position: 'absolute',
             justifyItems: 'center',
-            bottom: (style) =>
-                style.bottom == null ? theme.spacing(4) : style.bottom,
-            right: (style) =>
-                style.right == null ? theme.spacing(4) : style.right,
+            bottom: (style) => theme.spacing(style.bottom),
+            right: (style) => theme.spacing(style.right),
             display: 'flex',
             alignItems: 'center',
             alignContent: 'center',
@@ -86,7 +84,13 @@ export const SearchPageFabs = React.forwardRef<
     SearchPageFabsProps
 >((props, ref) => {
     // Destruct
-    const { bottom, moreActions, onAddClick, onGoTopClick, right } = props;
+    const {
+        bottom = 4,
+        moreActions,
+        onAddClick,
+        onGoTopClick,
+        right = 4
+    } = props;
 
     // Style
     const classes = useStyles({ bottom, right });

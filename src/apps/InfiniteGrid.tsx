@@ -7,8 +7,8 @@ import {
     GridItemKeySelector,
     GridChildComponentProps
 } from 'react-window';
+import { DataTypes } from '@etsoo/shared';
 import { ISearchItem } from '../views/ISearchResult';
-import { IDynamicData } from '../api/IDynamicData';
 
 /**
  * List item renderer properties
@@ -17,7 +17,7 @@ export interface GridItemRendererProps extends GridChildComponentProps {
     /**
      * Data
      */
-    data: IDynamicData;
+    data: DataTypes.DynamicData;
 
     /**
      * Is end of the list

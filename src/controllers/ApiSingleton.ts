@@ -1,5 +1,12 @@
-import { IApi, ApiDataError } from '@etsoo/restclient';
-import { INotifier, INotifierCallback } from '../api/INotifier';
+import { IApi, ApiDataError, ApiAuthorizationScheme } from '@etsoo/restclient';
+import {
+    NotificationReturn,
+    NotificationType,
+    NotificationContainer,
+    NotificationMessageType,
+    NotificationAlign,
+    NotificationMU
+} from '@etsoo/notificationmu';
 import { IApiSettings, ApiSettings } from '../api/IApiSettings';
 
 /**
@@ -7,6 +14,36 @@ import { IApiSettings, ApiSettings } from '../api/IApiSettings';
  */
 export interface IApiCreator {
     (settings: IApiSettings): IApi;
+}
+
+/**
+ * Notification message type
+ */
+export { NotificationMessageType, NotificationAlign };
+
+/**
+ * Notification report more parameters
+ */
+export interface NotificationReportMore {
+    /**
+     * Display align
+     */
+    align?: NotificationAlign;
+
+    /**
+     * Callback
+     */
+    callback?: NotificationReturn<void>;
+
+    /**
+     * Time span to dismiss
+     */
+    timespan?: number;
+
+    /**
+     * Add to the top
+     */
+    top?: boolean;
 }
 
 /**
@@ -21,20 +58,12 @@ export class ApiSingleton {
      * @param apiCreator API creator
      * @param notifier Notifier
      */
-    public static getInstance(
-        apiCreator: IApiCreator,
-        notifier: INotifier
-    ): ApiSingleton {
+    public static getInstance(apiCreator: IApiCreator): ApiSingleton {
         if (!ApiSingleton.instance) {
-            ApiSingleton.instance = new ApiSingleton(apiCreator, notifier);
+            ApiSingleton.instance = new ApiSingleton(apiCreator);
         }
         return ApiSingleton.instance;
     }
-
-    /**
-     * Notifier, be sure to update to the current context
-     */
-    private notifier?: INotifier;
 
     /**
      * Api
@@ -46,19 +75,32 @@ export class ApiSingleton {
      */
     public readonly settings: IApiSettings;
 
+    // Loading id
+    private loadingNotification?: NotificationMU;
+
     // Constructor
-    private constructor(apiCreator: IApiCreator, notifier: INotifier) {
+    private constructor(apiCreator: IApiCreator) {
         this.settings = ApiSettings.get();
         this.api = apiCreator(this.settings);
-        this.notifier = notifier;
 
         // Base url of the API
         this.api.baseUrl = this.settings.endpoint;
 
         // Global API error handler
         this.api.onError = (error: ApiDataError<any>) => {
-            console.log(error);
-            this.reportError(error.toString());
+            // Error code
+            const status = error.response
+                ? this.api.transformResponse(error.response).status
+                : undefined;
+
+            // Report the error
+            // When status is equal to 401, redirect to login page
+            this.reportError(error.toString(), () => {
+                if (status === 401) {
+                    // Redirect to login page
+                    window.location.href = '/login';
+                }
+            });
         };
     }
 
@@ -71,23 +113,122 @@ export class ApiSingleton {
     public confirm(
         message: string,
         title?: string,
-        callback?: INotifierCallback
+        callback?: NotificationReturn<boolean>
     ) {
-        this.notifier?.confirm(message, title, callback);
+        // Notification object
+        const notification = new NotificationMU(
+            NotificationType.Confirm,
+            message,
+            title
+        );
+
+        // On return callback
+        notification.onReturn = callback;
+
+        // Add to display
+        this.notify(notification);
+    }
+
+    /**
+     * Hide loading
+     * @param title Title
+     */
+    public hideLoading() {
+        if (this.loadingNotification) {
+            // Remove it
+            NotificationContainer.remove(this.loadingNotification);
+
+            // Reset the id
+            this.loadingNotification = undefined;
+        }
+    }
+
+    /**
+     * Notify message
+     * @param notification Notification
+     * @param top Add to the top?
+     */
+    public notify(notification: NotificationMU, top?: boolean) {
+        // Add to display
+        NotificationContainer.add(notification, top);
+    }
+
+    /**
+     * Prompt action
+     * @param message Message
+     * @param title Title
+     * @param props More properties
+     * @param callback Callback
+     */
+    public prompt(
+        message: string,
+        title?: string,
+        props?: any,
+        callback?: NotificationReturn<string>
+    ) {
+        // Notification object
+        const notification = new NotificationMU(
+            NotificationType.Prompt,
+            message,
+            title
+        );
+
+        // More properties attached
+        notification.inputProps = props;
+
+        // On return callback
+        notification.onReturn = callback;
+
+        // Add to display
+        this.notify(notification);
     }
 
     /**
      * Report message
      * @param message Message
-     * @param title Title
      * @param callback Callback
      */
-    public report(
+    public report(message: string, callback?: NotificationReturn<void>) {
+        // Notification object
+        const notification = new NotificationMU(
+            NotificationMessageType.Default,
+            message
+        );
+
+        // On return callback
+        notification.onReturn = callback;
+
+        // Add to display
+        NotificationContainer.add(notification);
+    }
+
+    /**
+     * Report more message
+     * @param type Type
+     * @param message Message
+     * @param title Title
+     * @param params Parameters
+     */
+    public reportMore(
+        type: NotificationMessageType,
         message: string,
         title?: string,
-        callback?: INotifierCallback
+        params?: NotificationReportMore
     ) {
-        this.notifier?.report(message, title, callback);
+        // Destruct parameters
+        const { align, callback, timespan, top } = params || {};
+
+        // Notification object
+        const notification = new NotificationMU(type, message, title, align);
+
+        // On return callback
+        notification.onReturn = callback;
+
+        // Timespan to dismiss
+        if (timespan != null && timespan >= 0) notification.timespan = timespan;
+
+        // Add to display
+        NotificationContainer.add(notification, top);
     }
 
     /**
@@ -95,16 +236,36 @@ export class ApiSingleton {
      * @param error Error message
      * @param callback Callback
      */
-    public reportError(error: string, callback?: INotifierCallback) {
-        this.notifier?.reportError(error, callback);
+    public reportError(error: string, callback?: NotificationReturn<void>) {
+        // Notification object
+        const notification = new NotificationMU(NotificationType.Error, error);
+
+        // On return callback
+        notification.onReturn = callback;
+
+        // Add to display
+        this.notify(notification);
     }
 
     /**
      * Show loading
-     * @param show Show it or hide
+     * @param title Title
      */
-    public showLoading(show: boolean = true) {
-        this.notifier?.showLoading(show);
+    public showLoading(title?: string) {
+        // If exists, hide it first
+        if (this.loadingNotification) this.hideLoading();
+
+        // Notification object
+        const notification = new NotificationMU(
+            NotificationType.Loading,
+            title || ''
+        );
+
+        // Hold the id
+        this.loadingNotification = notification;
+
+        // Add to display
+        this.notify(notification);
     }
 
     /**
@@ -112,6 +273,6 @@ export class ApiSingleton {
      * @param token API token
      */
     public UpdateToken(token?: string) {
-        this.settings.token = token;
+        this.api.authorize(ApiAuthorizationScheme.Bearer, token);
     }
 }

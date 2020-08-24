@@ -1,6 +1,6 @@
+import { DataTypes } from '@etsoo/shared';
 import { IAction } from './IState';
 import { CreateState } from './CreateState';
-import { ILanguageItem } from '../api/IApiSettings';
 
 /**
  * Language labels, simple i18n solution
@@ -66,7 +66,9 @@ export function LanguageReducer(
  * Cannot update a component (`provider`) while rendering a different component (`Login`)
  * @param language Current language
  */
-export const LanguageStateCreator = (languageItem?: ILanguageItem) => {
+export const LanguageStateCreator = (
+    languageItem?: DataTypes.LanguageDefinition
+) => {
     // Default
     const defaultLanguageItem: ILanguage =
         languageItem == null
