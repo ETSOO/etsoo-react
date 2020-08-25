@@ -83,29 +83,29 @@ export abstract class EntityController implements IEntityController {
         return model;
     }
 
-    #entity: IApiEntity;
+    private entityLocal: IApiEntity;
 
     /**
      * Current entity description
      */
     public get entity() {
-        return this.#entity;
+        return this.entityLocal;
     }
 
-    #singleton: ApiSingleton;
+    private singletonLocal: ApiSingleton;
 
     /**
      * API Singleton
      */
     public get singleton() {
-        return this.#singleton;
+        return this.singletonLocal;
     }
 
     /**
      * API
      */
     public get api() {
-        return this.#singleton.api;
+        return this.singletonLocal.api;
     }
 
     /**
@@ -114,10 +114,10 @@ export abstract class EntityController implements IEntityController {
      */
     protected constructor(entity: IApiEntity) {
         // Init
-        this.#entity = entity;
+        this.entityLocal = entity;
 
         // API Singleton
-        this.#singleton = ApiSingleton.getInstance(() => createClient());
+        this.singletonLocal = ApiSingleton.getInstance(() => createClient());
     }
 
     /**
