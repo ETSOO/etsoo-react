@@ -11,6 +11,9 @@ export * from './api/IResult';
 export * from './api/LoginMethod';
 export * from './api/SaveLogin';
 
+// RESTClient
+export * from '@etsoo/restclient';
+
 // apps
 export * from './apps/FormSubmitHandler';
 export * from './apps/InfiniteGrid';
