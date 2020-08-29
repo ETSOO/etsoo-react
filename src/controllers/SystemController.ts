@@ -2,13 +2,13 @@ import { EntityController, createModuleEntity } from './EntityController';
 import { ApiModule } from '../api/IApiEntity';
 
 /**
- * User API controller
+ * System API controller
  */
-export class UserController extends EntityController {
+export class SystemController extends EntityController {
     /**
      * Constructor
      */
     constructor() {
-        super(createModuleEntity(ApiModule.User));
+        super(createModuleEntity(ApiModule.System));
     }
 }

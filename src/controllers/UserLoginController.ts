@@ -1,5 +1,6 @@
 import { ApiModule } from '../api/IApiEntity';
 import { LoginController } from './LoginController';
+import { createModuleEntity } from './EntityController';
 
 /**
  * User login API controller
@@ -10,9 +11,6 @@ export class UserLoginController extends LoginController {
      * @param dispatch User state dispatch
      */
     constructor() {
-        super({
-            identity: 'user',
-            module: ApiModule.User
-        });
+        super(createModuleEntity(ApiModule.User));
     }
 }

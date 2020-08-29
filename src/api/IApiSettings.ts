@@ -1,11 +1,5 @@
 import { DataTypes } from '@etsoo/shared';
 import { LoginMethod } from './LoginMethod';
-import {
-    LanguageStateCreator,
-    ILanguage,
-    LanguageAction
-} from '../states/LanguageState';
-import { IUpdate } from '../states/IState';
 
 /**
  * Application role
@@ -97,57 +91,3 @@ export interface IApiSettings extends IApiConfigurable {
      */
     searchInput?: HTMLInputElement;
 }
-
-// Settings
-let apiSettings: IApiSettings;
-
-// Context
-let languageContext: React.Context<IUpdate<ILanguage, LanguageAction>>;
-
-// Provider
-let lanugageProvider: React.FunctionComponent<{}>;
-
-/**
- * Setup
- * @param settings Settings
- */
-const setup = (settings: IApiSettings) => {
-    // Set
-    apiSettings = settings;
-
-    // Default language item
-    const languageItem = settings.supportedLanguages.find(
-        (l) => l.name === settings.currentLanguage
-    );
-
-    // Language state
-    const state = LanguageStateCreator(languageItem);
-    languageContext = state.context;
-    lanugageProvider = state.provider;
-
-    // Return
-    return state;
-};
-
-/**
- * Set search input element
- * @param input Search input
- */
-const setSearchInput = (input: HTMLInputElement): void => {
-    apiSettings.searchInput = input;
-};
-
-/**
- * API settings utils
- */
-export const ApiSettings = {
-    get: () => apiSettings,
-
-    languageContext: () => languageContext,
-
-    lanugageProvider: () => lanugageProvider,
-
-    setSearchInput,
-
-    setup
-};

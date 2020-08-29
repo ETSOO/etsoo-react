@@ -1,146 +1,76 @@
 import React from 'react';
+import { ReactSVG } from 'react-svg';
+import { makeStyles, Typography } from '@material-ui/core';
+import { CountryListItem } from '../controllers/ExtendAddress';
 import {
-    Autocomplete,
-    AutocompleteRenderInputParams,
-    AutocompleteProps
-} from '@material-ui/lab';
-import { TextField, InputLabelProps } from '@material-ui/core';
-import { DataTypes, DomUtils, StorageUtils } from '@etsoo/shared';
-
-/**
- * Country list ref
- */
-export interface CountryListRef {}
+    VirtualizedAutocompleteProps,
+    VirtualizedAutocomplete
+} from './VirtualizedAutocomplete';
+import { HBox } from './HBox';
+import { LoadingAutocompleteCache } from './LoadingAutocomplete';
 
 /**
  * Country list properties
  * property 'options' is not necessary
  * property 'ref' is incorrect here confused by the Autocomplete's ref
  */
-export type CountryListProps = Partial<
-    Omit<
-        AutocompleteProps<
-            DataTypes.DynamicData,
-            undefined,
-            undefined,
-            undefined
-        >,
-        'options' | 'ref'
-    >
-> & {
-    /**
-     * Label
-     */
-    label?: string;
+export type CountryListProps = Omit<
+    VirtualizedAutocompleteProps<CountryListItem>,
+    'getOptionLabel' | 'ref'
+>;
 
-    /**
-     * Callback to load country list items
-     */
-    loadItems(): Promise<DataTypes.DynamicData[]>;
+const useStyles = makeStyles({
+    icon: {
+        width: '30px',
+        height: '20px'
+    }
+});
 
-    /**
-     * Name
-     */
-    name?: string;
+// Display label
+const getOptionLabel = (option: CountryListItem) =>
+    option.shortName || option.name;
 
-    /**
-     * Input label properties
-     */
-    InputLabelProps?: Partial<InputLabelProps>;
-
-    /**
-     * Sort callback
-     * Avoid any copy actions to keep good performance
-     * @param items List items
-     */
-    sort?(items: DataTypes.DynamicData[]): void;
+// Filter options
+const filterOptions = (
+    options: CountryListItem[],
+    { inputValue }: { inputValue: string }
+) => {
+    return options.filter(
+        (option) =>
+            option.id === inputValue.toUpperCase() ||
+            option.code === inputValue ||
+            (option.shortName &&
+                new RegExp(`^${inputValue}`, 'gi').test(option.shortName)) ||
+            new RegExp(`^${inputValue}`, 'gi').test(option.name)
+    );
 };
 
 /**
  * Country list
  */
-export const CountryList = React.forwardRef<CountryListRef, CountryListProps>(
-    (props, ref) => {
-        // Destruct
-        const {
-            // eslint-disable-next-line no-shadow
-            InputLabelProps,
-            label,
-            loadItems,
-            name,
-            renderInput,
-            sort,
-            ...rest
-        } = props;
+export function CountryList(props: CountryListProps) {
+    // Style classes
+    const classes = useStyles();
 
-        // Cache key
-        const cacheKey = DomUtils.getLocationKey(`countryList${name || ''}`);
-
-        // Cache data
-        const cacheData = StorageUtils.getSessionDataTyped<
-            DataTypes.DynamicData[]
-        >(cacheKey);
-
-        // State
-        const [items, updateItems] = React.useState<DataTypes.DynamicData[]>(
-            cacheData || []
-        );
-
-        // Public methods through ref
-        React.useImperativeHandle(ref, () => ({}));
-
-        // Layout ready
-        React.useEffect(() => {
-            if (!cacheData) {
-                // Load items
-                loadItems().then((loadedItems) => {
-                    // Update state
-                    updateItems(loadedItems);
-
-                    // Sort the list items
-                    if (sort) {
-                        sort(loadedItems);
-                    }
-
-                    // Cache data
-                    StorageUtils.cacheSessionData(cacheKey, loadedItems);
-                });
-            }
-        }, [cacheData]);
-
-        // Merge the input's properties
-        // renderInput is a callback function with well prepared 'params'
-        // need to be destructured to the TextField component
-        const mergeProperties = (params: AutocompleteRenderInputParams) => {
-            // Merge well prepared properties, rest properties, shallow copy
-            const merged = {
-                label,
-                name,
-                ...params
-            };
-
-            // Support to merge the 'InputLabelProps' sub property collection
-            if (InputLabelProps) {
-                Object.assign(merged.InputLabelProps, InputLabelProps);
-            }
-
-            // Return
-            return merged;
-        };
-
-        // Default render of the input component
-        const renderInputLocal =
-            renderInput ||
-            ((params) => <TextField {...mergeProperties(params)} />);
-
-        // Return
-        return (
-            <Autocomplete
-                options={items}
-                renderInput={renderInputLocal}
-                {...rest}
-            />
-        );
-    }
-);
-CountryList.displayName = 'CountryList';
+    // Return
+    return (
+        <VirtualizedAutocomplete<CountryListItem>
+            {...props}
+            cache={LoadingAutocompleteCache.Local}
+            getOptionLabel={getOptionLabel}
+            filterOptions={filterOptions}
+            renderOption={(option) => (
+                <HBox alignItems="center">
+                    <ReactSVG
+                        src={`${
+                            process.env.PUBLIC_URL
+                        }/assets/flags/${option.id.toLowerCase()}.svg`}
+                        className={classes.icon}
+                        fallback={() => <>{option.id}</>}
+                    />
+                    <Typography>{getOptionLabel(option)}</Typography>
+                </HBox>
+            )}
+        />
+    );
+}

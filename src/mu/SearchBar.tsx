@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { InputBase, makeStyles, fade, Theme } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
-import { ApiSettings } from '../api/IApiSettings';
+import { ApiSettings } from '../api/ApiSettings';
 
 interface ICustomStyle {
     /**

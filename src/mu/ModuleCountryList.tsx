@@ -1,37 +1,45 @@
 import React from 'react';
-import { DataTypes } from '@etsoo/shared';
-import { CountryListRef, CountryListProps, CountryList } from './CountryList';
+import { CountryListProps, CountryList } from './CountryList';
+import { ApiModule } from '../api/IApiEntity';
+import { CoreController } from '../controllers/CoreController';
+import { ExtendAddress } from '../controllers/ExtendAddress';
 
 /**
  * Country list properties
  */
 export type ModuleCountryListProps = Omit<
     CountryListProps,
-    'loadItems' | 'sort'
-> & {};
+    'loadOptions' | 'sort'
+> & {
+    /**
+     * Module name
+     */
+    module: ApiModule;
+
+    /**
+     * Limited organization id
+     */
+    organizationId?: number;
+};
 
 /**
  * Module country list
  */
-export const ModuleCountryList = React.forwardRef<
-    CountryListRef,
-    ModuleCountryListProps
->((props, ref) => {
-    // Label format
-    const getOptionLabel = (item: DataTypes.DynamicData) =>
-        item.short_name || item.name;
+export function ModuleCountryList(props: ModuleCountryListProps) {
+    // Destruct
+    const { module, organizationId, ...rest } = props;
 
-    // Load data
-    const loadItems = () => Promise.resolve([] as DataTypes.DynamicData[]);
+    // API controller
+    const controller = React.useMemo(() => {
+        const Address = ExtendAddress(CoreController.create(module));
+        return new Address();
+    }, [module]);
+
+    // Load options
+    const loadOptions = () => {
+        return controller.countryList(organizationId);
+    };
 
     // Return
-    return (
-        <CountryList
-            getOptionLabel={getOptionLabel}
-            loadItems={loadItems}
-            ref={ref}
-            {...props}
-        />
-    );
-});
-ModuleCountryList.displayName = 'ModuleCountryList';
+    return <CountryList loadOptions={loadOptions} {...rest} />;
+}

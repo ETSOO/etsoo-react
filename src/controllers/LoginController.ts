@@ -7,7 +7,7 @@ import {
     AuthorizationResultData
 } from '../views/LoginResultData';
 import { IResult } from '../api/IResult';
-import { SaveLoginData, SaveLogin } from '../api/SaveLogin';
+import { SaveLogin } from '../api/SaveLogin';
 import { LoginModel } from '../models/LoginModel';
 import { LoginTokenModel } from '../models/LoginTokenModel';
 
@@ -77,7 +77,7 @@ export abstract class LoginController extends EntityController {
             // Save login
             if (model) {
                 // Add or update totally
-                const loginData: SaveLoginData = {
+                const loginData: SaveLogin.Data = {
                     rawId: model.id,
                     id: data.token_user_id,
                     token: data.token

@@ -13,8 +13,8 @@ import { InfiniteTable, InfiniteTableMethods } from './InfiniteTable';
 import { ListItemRendererProps } from '../apps/InfiniteList';
 import { LanguageLabel } from '../states/LanguageState';
 import { ISearchResult, ISearchItem } from '../views/ISearchResult';
-import { ApiSettings } from '../api/IApiSettings';
 import { IClickAction } from '../api/IClickAction';
+import { ApiSettings } from '../api/ApiSettings';
 
 /**
  * Search page properties

@@ -1,6 +1,6 @@
 {
     "name": "etsoo-react",
-    "version": "1.0.35",
+    "version": "1.0.36",
     "description": "ETSOO TypeScript React components NPM package",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -19,6 +19,7 @@
         ],
         "testEnvironment": "jsdom",
         "transform": {
+            ".+\\.jsx?$": "babel-jest",
             ".+\\.tsx?$": "ts-jest"
         },
         "transformIgnorePatterns": [
@@ -42,6 +43,7 @@
     "homepage": "https://github.com/ETSOO/etsoo-react#readme",
     "devDependencies": {
         "@babel/core": "^7.11.1",
+        "@babel/preset-env": "^7.11.0",
         "@types/enzyme": "^3.10.5",
         "@types/enzyme-adapter-react-16": "^1.0.6",
         "@types/jest": "^26.0.9",
@@ -72,8 +74,8 @@
     },
     "dependencies": {
         "@etsoo/notificationmu": "^1.0.5",
-        "@etsoo/restclient": "^1.0.21",
-        "@etsoo/shared": "^1.0.4",
+        "@etsoo/restclient": "^1.0.23",
+        "@etsoo/shared": "^1.0.5",
         "@material-ui/core": "^4.11.0",
         "@material-ui/icons": "^4.9.1",
         "@material-ui/lab": "^4.0.0-alpha.56",
@@ -84,6 +86,7 @@
         "react-draggable": "^4.4.3",
         "react-input-mask": "^2.0.4",
         "react-router-dom": "^5.2.0",
+        "react-svg": "^11.0.36",
         "react-window": "^1.8.5",
         "react-window-infinite-loader": "^1.0.5",
         "typescript": "^3.9.7",

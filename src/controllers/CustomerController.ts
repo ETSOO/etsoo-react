@@ -1,4 +1,4 @@
-import { EntityController } from './EntityController';
+import { EntityController, createModuleEntity } from './EntityController';
 import { ApiModule } from '../api/IApiEntity';
 import { CustomerSearchModel } from '../models/CustomerSearchModel';
 import {
@@ -8,20 +8,16 @@ import {
     CustomerSearchPersonLogoItem
 } from '../views/CustomerSearchItem';
 import { ISearchResult } from '../views/ISearchResult';
-import { ExtendAddress } from './ExtendAddress';
 
 /**
  * Customer API controller
  */
-class CustomerControllerBase extends EntityController {
+export class CustomerController extends EntityController {
     /**
      * Constructor
      */
     constructor() {
-        super({
-            identity: 'customer',
-            module: ApiModule.Customer
-        });
+        super(createModuleEntity(ApiModule.Customer));
     }
 
     /**
@@ -66,5 +62,3 @@ class CustomerControllerBase extends EntityController {
         );
     }
 }
-
-export const CustomerController = ExtendAddress(CustomerControllerBase);

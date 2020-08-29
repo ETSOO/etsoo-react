@@ -1,3 +1,5 @@
+import { IEntityController } from './IEntityController';
+
 /**
  * Api modules
  */
@@ -14,6 +16,13 @@ export enum ApiModule {
     Order = 9,
     PO = 10
 }
+
+/**
+ * Type for controller extension
+ */
+export type ControllerExtension<T = IEntityController> = new (
+    ...args: any[]
+) => T;
 
 /**
  * Api entity interface

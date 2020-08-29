@@ -1,74 +1,71 @@
-import { ApiSettings } from './IApiSettings';
+import { StorageUtils } from '@etsoo/shared';
+import { ApiSettings } from './ApiSettings';
 
 /**
- * Get save login key
+ * Save login utilities
  */
-const getSaveLoginKey = (): string => {
-    // API settings
-    const settings = ApiSettings.get();
-
-    // Act
-    return `etsoo-savelogin-${settings?.role}`;
-};
-
-/**
- * Save login data interface
- */
-export interface SaveLoginData {
+export namespace SaveLogin {
     /**
-     * User id
+     * Get save login key
      */
-    readonly id: number;
+    const getSaveLoginKey = (): string => {
+        // API settings
+        const settings = ApiSettings.get();
+
+        // Act
+        return `etsoo-savelogin-${settings?.role}`;
+    };
 
     /**
-     * Raw user id for login
+     * Save login data interface
      */
-    readonly rawId: string;
+    export interface Data {
+        /**
+         * User id
+         */
+        readonly id: number;
+
+        /**
+         * Raw user id for login
+         */
+        readonly rawId: string;
+
+        /**
+         * Token
+         */
+        token?: string;
+    }
 
     /**
-     * Token
+     * Get data
      */
-    token?: string;
+    export const get = (): Data | undefined => {
+        const data = localStorage.getItem(getSaveLoginKey());
+        if (data) {
+            return JSON.parse(data) as Data;
+        }
+
+        return undefined;
+    };
+
+    /**
+     * Save
+     * @param data Save login data
+     */
+    export const save = (data: Data): void => {
+        // Add or update
+        StorageUtils.cacheLocalData(getSaveLoginKey(), data);
+    };
+
+    /**
+     * Update token
+     * @param token Save login token
+     */
+    export const update = (token?: string): void => {
+        const data = get();
+        if (data) {
+            data.token = token;
+            save(data);
+        }
+    };
 }
-
-/**
- * Get data
- */
-const get = (): SaveLoginData | undefined => {
-    const data = localStorage.getItem(getSaveLoginKey());
-    if (data) {
-        return JSON.parse(data) as SaveLoginData;
-    }
-
-    return undefined;
-};
-
-/**
- * Save
- * @param data Save login data
- */
-const save = (data: SaveLoginData): void => {
-    // Add or update
-    localStorage.setItem(getSaveLoginKey(), JSON.stringify(data));
-};
-
-/**
- * Update token
- * @param token Save login token
- */
-const update = (token?: string): void => {
-    const data = get();
-    if (data) {
-        data.token = token;
-        save(data);
-    }
-};
-
-/**
- * Save login utils
- */
-export const SaveLogin = {
-    get,
-    save,
-    update
-};

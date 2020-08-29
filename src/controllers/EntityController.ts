@@ -1,5 +1,5 @@
-import { createClient, IApiErrorHandler, ApiResult } from '@etsoo/restclient';
-import { IApiEntity } from '../api/IApiEntity';
+import { IApiErrorHandler, ApiResult } from '@etsoo/restclient';
+import { IApiEntity, ApiModule } from '../api/IApiEntity';
 import {
     IResult,
     IResultData,
@@ -10,11 +10,24 @@ import { TiplistModel } from '../models/TiplistModel';
 import { IListItem } from '../views/IListItem';
 import { IViewModel } from '../views/IView';
 import { IViewFactory } from '../views/IViewFactory';
-import { ApiSingleton } from './ApiSingleton';
-import { IEntityController } from './IEntityController';
+import { ApiSingleton } from '../api/ApiSingleton';
+import { IEntityController } from '../api/IEntityController';
 import { IAddData, IEditData } from '../api/IDynamicData';
 import { SearchModel } from '../models/SearchModel';
 import { isRawResult, IRawResult } from '../views/RawResult';
+import { ApiSettings } from '../api/ApiSettings';
+
+/**
+ * Create module entity
+ * @param module Api module
+ */
+export function createModuleEntity(module: ApiModule): IApiEntity {
+    const identity = ApiModule[module].toLowerCase();
+    return {
+        identity,
+        module
+    };
+}
 
 /**
  * Entity API controller
@@ -117,14 +130,14 @@ export abstract class EntityController implements IEntityController {
         this.entityLocal = entity;
 
         // API Singleton
-        this.singletonLocal = ApiSingleton.getInstance(() => createClient());
+        this.singletonLocal = ApiSettings.singleton();
     }
 
     /**
      * Build entity API URL
      * @param url Short URL
      */
-    protected buildEntityApi(url: string = '') {
+    buildEntityApi(url: string = '') {
         return `/${this.entity.identity}/${url}`;
     }
 

@@ -1,4 +1,4 @@
-import { IApi, ApiDataError, ApiAuthorizationScheme } from '@etsoo/restclient';
+import { IApi, ApiAuthorizationScheme } from '@etsoo/restclient';
 import {
     NotificationReturn,
     NotificationType,
@@ -7,7 +7,8 @@ import {
     NotificationAlign,
     NotificationMU
 } from '@etsoo/notificationmu';
-import { IApiSettings, ApiSettings } from '../api/IApiSettings';
+import { IApiSettings } from './IApiSettings';
+import { ApiSettings } from './ApiSettings';
 
 /**
  * API creator
@@ -56,7 +57,6 @@ export class ApiSingleton {
     /**
      * Get the singleton instance
      * @param apiCreator API creator
-     * @param notifier Notifier
      */
     public static getInstance(apiCreator: IApiCreator): ApiSingleton {
         if (!ApiSingleton.instance) {
@@ -85,23 +85,6 @@ export class ApiSingleton {
 
         // Base url of the API
         this.api.baseUrl = this.settings.endpoint;
-
-        // Global API error handler
-        this.api.onError = (error: ApiDataError<any>) => {
-            // Error code
-            const status = error.response
-                ? this.api.transformResponse(error.response).status
-                : undefined;
-
-            // Report the error
-            // When status is equal to 401, redirect to login page
-            this.reportError(error.toString(), () => {
-                if (status === 401) {
-                    // Redirect to login page
-                    window.location.href = '/login';
-                }
-            });
-        };
     }
 
     /**
