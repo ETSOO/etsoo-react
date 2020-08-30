@@ -10,6 +10,7 @@ import { IResult } from '../api/IResult';
 import { SaveLogin } from '../api/SaveLogin';
 import { LoginModel } from '../models/LoginModel';
 import { LoginTokenModel } from '../models/LoginTokenModel';
+import { ApiSettings } from '../api/ApiSettings';
 
 /**
  * User login success callback
@@ -133,10 +134,7 @@ export abstract class LoginController extends EntityController {
         dataCallback?: UserLoginSuccess,
         onError?: IApiErrorHandler
     ) {
-        const {
-            method,
-            currentLanguage: languageCid
-        } = this.singleton.settings;
+        const { method, currentLanguage: languageCid } = ApiSettings.get();
         const post = Object.assign(model, { method, languageCid });
         const url = this.buildEntityApi('Login');
         const parser = this.loginFormat
@@ -173,10 +171,7 @@ export abstract class LoginController extends EntityController {
         dataCallback?: UserLoginSuccess,
         onError?: IApiErrorHandler
     ) {
-        const {
-            method,
-            currentLanguage: languageCid
-        } = this.singleton.settings;
+        const { method, currentLanguage: languageCid } = ApiSettings.get();
         const post = Object.assign(model, { method, languageCid });
         const url = this.buildEntityApi('LoginToken');
         const parser = this.loginTokenFormat
@@ -242,7 +237,7 @@ export abstract class LoginController extends EntityController {
         clearToken: boolean,
         onError?: IApiErrorHandler
     ) {
-        const { method } = this.singleton.settings;
+        const { method } = ApiSettings.get();
         const api = this.buildEntityApi(
             `Signout?method=${method}&clear=${clearToken}`
         );

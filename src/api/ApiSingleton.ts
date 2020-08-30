@@ -7,15 +7,6 @@ import {
     NotificationAlign,
     NotificationMU
 } from '@etsoo/notificationmu';
-import { IApiSettings } from './IApiSettings';
-import { ApiSettings } from './ApiSettings';
-
-/**
- * API creator
- */
-export interface IApiCreator {
-    (settings: IApiSettings): IApi;
-}
 
 /**
  * Notification message type
@@ -56,11 +47,11 @@ export class ApiSingleton {
 
     /**
      * Get the singleton instance
-     * @param apiCreator API creator
+     * @param api Rest client
      */
-    public static getInstance(apiCreator: IApiCreator): ApiSingleton {
+    public static getInstance(api: IApi): ApiSingleton {
         if (!ApiSingleton.instance) {
-            ApiSingleton.instance = new ApiSingleton(apiCreator);
+            ApiSingleton.instance = new ApiSingleton(api);
         }
         return ApiSingleton.instance;
     }
@@ -70,21 +61,12 @@ export class ApiSingleton {
      */
     public readonly api: IApi;
 
-    /**
-     * Settings
-     */
-    public readonly settings: IApiSettings;
-
     // Loading id
     private loadingNotification?: NotificationMU;
 
     // Constructor
-    private constructor(apiCreator: IApiCreator) {
-        this.settings = ApiSettings.get();
-        this.api = apiCreator(this.settings);
-
-        // Base url of the API
-        this.api.baseUrl = this.settings.endpoint;
+    private constructor(api: IApi) {
+        this.api = api;
     }
 
     /**
@@ -218,13 +200,23 @@ export class ApiSingleton {
      * Report error
      * @param error Error message
      * @param callback Callback
+     * @param buttonLabel Confirm button label
      */
-    public reportError(error: string, callback?: NotificationReturn<void>) {
+    public reportError(
+        error: string,
+        callback?: NotificationReturn<void>,
+        buttonLabel?: string
+    ) {
         // Notification object
         const notification = new NotificationMU(NotificationType.Error, error);
 
         // On return callback
         notification.onReturn = callback;
+
+        // Additional parameters
+        if (buttonLabel) {
+            notification.inputProps = { buttonLabel };
+        }
 
         // Add to display
         this.notify(notification);
