@@ -7,6 +7,7 @@ import {
     NotificationAlign,
     NotificationMU
 } from '@etsoo/notificationmu';
+import { IResult, ResultError } from './IResult';
 
 /**
  * Notification message type
@@ -101,7 +102,7 @@ export class ApiSingleton {
     public hideLoading() {
         if (this.loadingNotification) {
             // Remove it
-            NotificationContainer.remove(this.loadingNotification);
+            this.loadingNotification.dismiss();
 
             // Reset the id
             this.loadingNotification = undefined;
@@ -146,6 +147,9 @@ export class ApiSingleton {
 
         // Add to display
         this.notify(notification);
+
+        // Return the notification
+        return notification;
     }
 
     /**
@@ -165,6 +169,9 @@ export class ApiSingleton {
 
         // Add to display
         NotificationContainer.add(notification);
+
+        // Return the notification
+        return notification;
     }
 
     /**
@@ -194,21 +201,31 @@ export class ApiSingleton {
 
         // Add to display
         NotificationContainer.add(notification, top);
+
+        // Return the notification
+        return notification;
     }
 
     /**
      * Report error
-     * @param error Error message
+     * @param error Error message or result
      * @param callback Callback
      * @param buttonLabel Confirm button label
      */
     public reportError(
-        error: string,
+        error: string | IResult,
         callback?: NotificationReturn<void>,
         buttonLabel?: string
     ) {
+        // Error message
+        const message =
+            typeof error === 'string' ? error : ResultError.format(error);
+
         // Notification object
-        const notification = new NotificationMU(NotificationType.Error, error);
+        const notification = new NotificationMU(
+            NotificationType.Error,
+            message
+        );
 
         // On return callback
         notification.onReturn = callback;
@@ -220,6 +237,9 @@ export class ApiSingleton {
 
         // Add to display
         this.notify(notification);
+
+        // Return the notification
+        return notification;
     }
 
     /**
@@ -241,6 +261,9 @@ export class ApiSingleton {
 
         // Add to display
         this.notify(notification);
+
+        // Return the notification
+        return notification;
     }
 
     /**

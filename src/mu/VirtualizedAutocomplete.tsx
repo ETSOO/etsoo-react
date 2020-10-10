@@ -50,7 +50,7 @@ const ListboxComponent = React.forwardRef<
     let itemSize = itemHeight;
     if (itemSize == null || itemSize < 1) {
         const theme = useTheme();
-        const smUp = useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true });
+        const smUp = useMediaQuery(theme.breakpoints.up('lg'), { noSsr: true });
         itemSize = smUp ? 36 : 48;
     }
 

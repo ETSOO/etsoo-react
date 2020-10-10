@@ -1,3 +1,4 @@
+import { DataTypes } from '@etsoo/shared';
 import { IApiErrorHandler, ApiResult } from '@etsoo/restclient';
 import { IApiEntity, ApiModule } from '../api/IApiEntity';
 import {
@@ -172,7 +173,7 @@ export abstract class EntityController implements IEntityController {
      * @param ids Ids to delete
      * @param onError Error handler
      */
-    async delete(ids: (number | string)[], onError?: IApiErrorHandler) {
+    async delete(ids: DataTypes.IdType[], onError?: IApiErrorHandler) {
         // Single id passed with path, otherwise as query parameters as 'ids=1&ids=2'
         const url = this.buildEntityApi(
             ids.length === 1
@@ -193,7 +194,7 @@ export abstract class EntityController implements IEntityController {
      * @param onError Error handler
      */
     async edit(
-        id: number | string,
+        id: DataTypes.IdType,
         data: IEditData,
         onError?: IApiErrorHandler
     ) {
@@ -207,7 +208,7 @@ export abstract class EntityController implements IEntityController {
      * @param onError Error handler
      */
     async editExtended<D extends IResultData>(
-        id: number | string,
+        id: DataTypes.IdType,
         data: IEditData,
         onError?: IApiErrorHandler
     ) {
@@ -224,17 +225,23 @@ export abstract class EntityController implements IEntityController {
      * @param id Field of data
      * @param parameters Parameters
      * @param onError Error handler
+     * @param isArray Array results
      */
     async report<D>(
         id: string,
         parameters?: string,
-        onError?: IApiErrorHandler
+        onError?: IApiErrorHandler,
+        isArray: boolean = true
     ) {
         const url = this.buildEntityApi(`report/${id}`);
         const result = await this.api.get<D>(
             url,
             { p: parameters },
-            { onError, parser: EntityController.searchResultParser<D>() }
+            {
+                onError,
+                defaultValue: (isArray ? [] : {}) as D,
+                parser: EntityController.searchResultParser<D>()
+            }
         );
         return result;
     }
@@ -261,14 +268,15 @@ export abstract class EntityController implements IEntityController {
      * @param model Data model
      * @param onError Error handler
      */
-    async tiplist<M extends TiplistModel>(
+    async tiplist<M extends TiplistModel, T = IListItem>(
         model?: M,
         onError?: IApiErrorHandler
     ) {
         const url = this.buildEntityApi('tiplist');
-        const result = await this.api.get<IListItem>(url, model, {
+        const result = await this.api.get<T[]>(url, model, {
             onError,
-            parser: EntityController.searchResultParser<IListItem>()
+            defaultValue: [],
+            parser: EntityController.searchResultParser<T[]>()
         });
         return result;
     }
@@ -280,7 +288,7 @@ export abstract class EntityController implements IEntityController {
      * @param onError Error handler
      */
     async view<D extends IViewModel>(
-        id: number | string,
+        id: DataTypes.IdType,
         field?: string,
         onError?: IApiErrorHandler
     ) {
@@ -300,7 +308,7 @@ export abstract class EntityController implements IEntityController {
      */
     async viewF<V>(
         factory: IViewFactory<V>,
-        id: number,
+        id: DataTypes.IdType,
         field?: string,
         onError?: IApiErrorHandler
     ) {

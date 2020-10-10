@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     AutocompleteCloseReason,
-    AutocompleteRenderInputParams
+    AutocompleteRenderInputParams,
+    AutocompleteInputChangeReason
 } from '@material-ui/lab';
 import { CircularProgress } from '@material-ui/core';
 import { DomUtils, StorageUtils } from '@etsoo/shared';
@@ -39,14 +40,26 @@ export type LoadingAutocompleteProps<T> = Omit<
     'loading' | 'options' | 'renderInput'
 > & {
     /**
+     * Cache policy
+     */
+    cache?: LoadingAutocompleteCache;
+
+    /**
+     * Cache key
+     */
+    cacheKey?: string;
+
+    /**
      * Load options callback
      */
     loadOptions(): Promise<T[] | undefined>;
 
     /**
-     * Cache policy
+     * Input data load callback
+     * @param value Input value
+     * @param reason Change reason
      */
-    cache?: LoadingAutocompleteCache;
+    onInputLoad?(value: string): Promise<T[] | undefined>;
 };
 
 /**
@@ -55,16 +68,39 @@ export type LoadingAutocompleteProps<T> = Omit<
  */
 export function LoadingAutocomplete<T>(props: LoadingAutocompleteProps<T>) {
     // Destruct
-    const { cache, loadOptions, onClose, onOpen, ...rest } = props;
+    const {
+        cache,
+        cacheKey = '',
+        idValue,
+        loadOptions,
+        onClose,
+        onInputChange,
+        onInputLoad,
+        onOpen,
+        ...rest
+    } = props;
 
     // Open state
     const [open, setOpen] = React.useState(false);
 
     // Options
-    const [options, setOptions] = React.useState<T[]>([]);
+    const [options, setOptions] = React.useState<T[] | undefined>();
+
+    // Timeout seed
+    const [data] = React.useState<{ seed: number; cacheKey: string }>({
+        seed: 0,
+        cacheKey: ''
+    });
+
+    // Cache key change will reforce to update
+    if (cacheKey !== data.cacheKey) {
+        setOptions(undefined);
+        data.cacheKey = cacheKey;
+    }
 
     // Loading status
-    const loading = open && options.length === 0;
+    // If id value exists, auto load options
+    const loading = (!!idValue || open) && options == null;
 
     // Onopen callback
     const onOpenLocal = (event: React.ChangeEvent<{}>) => {
@@ -92,49 +128,80 @@ export function LoadingAutocomplete<T>(props: LoadingAutocompleteProps<T>) {
         );
     };
 
-    // Onload
-    React.useEffect(() => {
-        let active = true;
+    // Input field change callback
+    const onInputChangeLocal = (
+        event: React.ChangeEvent<{}>,
+        value: string,
+        reason: AutocompleteInputChangeReason
+    ) => {
+        // When set a new item, reason is 'reset'
+        if (onInputLoad && reason !== 'reset') {
+            if (data.seed > 0) window.clearTimeout(data.seed);
+            data.seed = window.setTimeout(
+                (inputValue: string) => {
+                    onInputLoad(inputValue).then((items) => {
+                        // Undefined means failure
+                        if (items == null) return;
 
-        if (!loading) {
-            return undefined;
+                        // Update
+                        setOptions(items);
+                    });
+                },
+                360,
+                value
+            );
         }
 
-        // Cache key
-        const cacheKey = DomUtils.getLocationKey(
-            `loadingautocomplete${props.id || props.name || ''}`
-        );
+        // Custom onInputChange callback
+        if (onInputChange) onInputChange(event, value, reason);
+    };
 
-        // Cache data
-        let cacheData: T[] | undefined;
-        if (cache == null || cache === LoadingAutocompleteCache.Session)
-            cacheData = StorageUtils.getSessionDataTyped<T[]>(cacheKey);
-        else if (cache === LoadingAutocompleteCache.Local)
-            cacheData = StorageUtils.getLocalDataTyped<T[]>(cacheKey);
+    // Onload
+    React.useEffect(() => {
+        if (loading) {
+            // Local cache key
+            const localCacheKey = DomUtils.getLocationKey(
+                `loadingautocomplete:${cacheKey}:${
+                    props.id || props.name || ''
+                }`
+            );
 
-        if (cacheData == null) {
-            (async () => {
-                // Load options
-                const items = await loadOptions();
+            // Cache data
+            let cacheData: T[] | undefined;
+            if (cache == null || cache === LoadingAutocompleteCache.Session)
+                cacheData = StorageUtils.getSessionDataTyped<T[]>(
+                    localCacheKey
+                );
+            else if (cache === LoadingAutocompleteCache.Local)
+                cacheData = StorageUtils.getLocalDataTyped<T[]>(localCacheKey);
 
-                // Undefined means failure
-                if (items == null) return;
+            if (cacheData == null) {
+                (async () => {
+                    // Load options
+                    const items = await loadOptions();
 
-                // Cache the result
-                if (cache == null || cache === LoadingAutocompleteCache.Session)
-                    StorageUtils.cacheSessionData(cacheKey, items);
-                else if (cache === LoadingAutocompleteCache.Local)
-                    StorageUtils.cacheLocalData(cacheKey, items);
+                    // Undefined means failure
+                    if (items == null) return;
 
-                // If the component is still active, update
-                if (active) setOptions(items);
-            })();
-        } else {
-            setOptions(cacheData);
+                    // Cache the result
+                    if (
+                        cache == null ||
+                        cache === LoadingAutocompleteCache.Session
+                    )
+                        StorageUtils.cacheSessionData(localCacheKey, items);
+                    else if (cache === LoadingAutocompleteCache.Local)
+                        StorageUtils.cacheLocalData(localCacheKey, items);
+
+                    // Update
+                    setOptions(items);
+                })();
+            } else {
+                setOptions(cacheData);
+            }
         }
 
         return () => {
-            active = false;
+            if (data.seed > 0) window.clearTimeout(data.seed);
         };
     }, [loading]);
 
@@ -142,10 +209,12 @@ export function LoadingAutocomplete<T>(props: LoadingAutocompleteProps<T>) {
     return (
         <ExtendedAutocomplete<T>
             loading={loading}
+            idValue={idValue}
             onClose={onCloseLocal}
+            onInputChange={onInputChangeLocal}
             onOpen={onOpenLocal}
             open={open}
-            options={options}
+            options={options || []}
             renderInput={renderInput}
             {...rest}
         />

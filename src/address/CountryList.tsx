@@ -1,17 +1,16 @@
 import React from 'react';
 import { ReactSVG } from 'react-svg';
-import { makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { CountryListItem } from '../controllers/ExtendAddress';
 import {
     VirtualizedAutocompleteProps,
     VirtualizedAutocomplete
-} from './VirtualizedAutocomplete';
-import { HBox } from './HBox';
-import { LoadingAutocompleteCache } from './LoadingAutocomplete';
+} from '../mu/VirtualizedAutocomplete';
+import { HBox } from '../mu/HBox';
+import { LoadingAutocompleteCache } from '../mu/LoadingAutocomplete';
 
 /**
  * Country list properties
- * property 'options' is not necessary
  * property 'ref' is incorrect here confused by the Autocomplete's ref
  */
 export type CountryListProps = Omit<
@@ -19,16 +18,9 @@ export type CountryListProps = Omit<
     'getOptionLabel' | 'ref'
 >;
 
-const useStyles = makeStyles({
-    icon: {
-        width: '30px',
-        height: '20px'
-    }
-});
-
 // Display label
 const getOptionLabel = (option: CountryListItem) =>
-    option.shortName || option.name;
+    option.shortName || option.name || '';
 
 // Filter options
 const filterOptions = (
@@ -49,9 +41,6 @@ const filterOptions = (
  * Country list
  */
 export function CountryList(props: CountryListProps) {
-    // Style classes
-    const classes = useStyles();
-
     // Return
     return (
         <VirtualizedAutocomplete<CountryListItem>
@@ -60,12 +49,17 @@ export function CountryList(props: CountryListProps) {
             getOptionLabel={getOptionLabel}
             filterOptions={filterOptions}
             renderOption={(option) => (
-                <HBox alignItems="center">
+                <HBox>
                     <ReactSVG
                         src={`${
                             process.env.PUBLIC_URL
                         }/assets/flags/${option.id.toLowerCase()}.svg`}
-                        className={classes.icon}
+                        beforeInjection={(svg) => {
+                            svg.setAttribute(
+                                'style',
+                                'width: 30px; height: 20px;'
+                            );
+                        }}
                         fallback={() => <>{option.id}</>}
                     />
                     <Typography>{getOptionLabel(option)}</Typography>

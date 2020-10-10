@@ -22,5 +22,5 @@ export interface IClickAction {
     /**
      * Icon
      */
-    icon?: React.ReactElement;
+    icon?: React.ReactNode;
 }

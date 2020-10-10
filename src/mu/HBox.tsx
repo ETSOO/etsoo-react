@@ -28,7 +28,7 @@ const useStyles = makeStyles<Theme, { gap: number }>((theme) => ({
  */
 export function HBox(props: HBoxProps) {
     // Destruct
-    const { className, gap = 1, ...rest } = props;
+    const { alignItems = 'center', className, gap = 1, ...rest } = props;
 
     // Styles
     const classes = useStyles({ gap });
@@ -36,6 +36,7 @@ export function HBox(props: HBoxProps) {
     // HOC
     return (
         <Box
+            alignItems={alignItems}
             className={DomUtils.mergeClasses(classes.root, className)}
             display="flex"
             flexDirection="row"

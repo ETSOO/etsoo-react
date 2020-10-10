@@ -5,22 +5,22 @@ export interface TiplistModel {
     /**
      * Id
      */
-    id?: number;
+    id?: number | string;
 
     /**
      * Id array
      */
-    ids?: number[];
+    ids?: (number | string)[];
 
     /**
      * Hide id
      */
-    hideId?: number;
+    hideId?: number | string;
 
     /**
      * Hide ids array
      */
-    hideIds?: number[];
+    hideIds?: (number | string)[];
 
     /**
      * Records to read

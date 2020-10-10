@@ -21,6 +21,7 @@ export function MaskedInput(props: MaskedInputProps) {
         label,
         name,
         required,
+        variant,
         ...rest
     } = props;
 
@@ -35,6 +36,7 @@ export function MaskedInput(props: MaskedInputProps) {
                     name={name}
                     required={required}
                     label={label}
+                    variant={variant}
                 />
             )}
         </InputMask>

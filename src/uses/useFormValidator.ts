@@ -2,6 +2,7 @@ import React from 'react';
 import { DomUtils, DataTypes } from '@etsoo/shared';
 import * as Yup from 'yup';
 import { IResult } from '../api/IResult';
+import { FormCustomChangeEvent } from './FormCustomChangeEvent';
 
 /**
  * Form validator state field
@@ -165,8 +166,8 @@ export const useFormValidator = (
         event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
         refs?: string[]
     ) => {
-        const { name, value } = event.currentTarget;
-        doHandler(name, value, event.currentTarget.form, refs);
+        const { name, value, form } = event.currentTarget;
+        doHandler(name, value, form, refs);
     };
 
     /**
@@ -185,11 +186,13 @@ export const useFormValidator = (
      * @param refs Reference fields
      */
     const changeHandler = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        event:
+            | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+            | FormCustomChangeEvent,
         refs?: string[]
     ) => {
-        const { name, value } = event.currentTarget;
-        doHandler(name, value, event.currentTarget.form, refs);
+        const { name, value, form } = event.currentTarget;
+        doHandler(name, value, form, refs);
     };
 
     /**
@@ -197,7 +200,9 @@ export const useFormValidator = (
      * @param event Focus event
      */
     const changeFormHandler = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        event:
+            | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+            | FormCustomChangeEvent
     ) => {
         changeHandler(event, []);
     };

@@ -16,14 +16,14 @@ import { DomUtils } from '@etsoo/shared';
  */
 export interface RadioGroupFieldItem {
     /**
-     * Label of the item
+     * Label
      */
-    label: string;
+    label: React.ReactNode;
 
     /**
-     * Value of the item
+     * Value
      */
-    value: unknown;
+    value: string | number;
 }
 
 // Styles
@@ -132,7 +132,7 @@ export function RadioGroupField(props: RadioGroupFieldProps) {
             >
                 {items.map((item) => (
                     <FormControlLabel
-                        key={item.label}
+                        key={item.value}
                         value={item.value}
                         control={
                             <Radio

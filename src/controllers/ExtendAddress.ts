@@ -99,6 +99,107 @@ interface CountryListRawItem {
 }
 
 /**
+ * Region list item
+ */
+export interface RegionListItem {
+    /**
+     * Number id
+     */
+    id: number;
+
+    /**
+     * Allocated id
+     */
+    cid?: string;
+
+    /**
+     * National belong id
+     */
+    nid?: string;
+
+    /**
+     * Abbreviation
+     */
+    abbr?: string;
+
+    /**
+     * Name
+     */
+    name: string;
+}
+
+/**
+ * City list item
+ */
+export interface CityListItem {
+    /**
+     * Number id
+     */
+    id: number;
+
+    /**
+     * Allocated id
+     */
+    cid?: string;
+
+    /**
+     * National belong id
+     */
+    nid?: string;
+
+    /**
+     * Rank
+     */
+    rank?: number;
+
+    /**
+     * Phone code
+     */
+    phoneCode?: string;
+
+    /**
+     * Merge id
+     */
+    mergeId?: number;
+
+    /**
+     * Name
+     */
+    name: string;
+}
+
+// City list item raw format
+interface CityListRawItem {
+    phone_code?: string;
+    merge_id?: number;
+}
+
+/**
+ * District list item
+ */
+export interface DistrictListItem {
+    /**
+     * Number id
+     */
+    id: number;
+
+    /**
+     * National belong id
+     */
+    nid?: string;
+
+    /**
+     * Post code
+     */
+    postcode?: string;
+
+    /**
+     * Name
+     */
+    name: string;
+}
+
+/**
  * Extend class to support address APIs
  * @param controller Applied class
  */
@@ -114,6 +215,7 @@ export function ExtendAddress<C extends ControllerExtension>(controller: C) {
                 `CountryList/${organizationId || ''}`
             );
             return this.api.get<CountryListItem[]>(url, undefined, {
+                defaultValue: [],
                 parser: (data: CountryListRawItem[]) => {
                     return [
                         undefined,
@@ -134,6 +236,68 @@ export function ExtendAddress<C extends ControllerExtension>(controller: C) {
                         })
                     ];
                 }
+            });
+        }
+
+        /**
+         * Get region list
+         * @param country Country id or name
+         * @param organizationId Current organization id
+         */
+        async regionList(country: string, organizationId?: number) {
+            const url = this.buildEntityApi(
+                `RegionList/${country}/${organizationId || ''}`
+            );
+
+            return this.api.get<RegionListItem[]>(url, undefined, {
+                defaultValue: []
+            });
+        }
+
+        /**
+         * Get city list
+         * @param region Region id or name
+         * @param organizationId Current organization id
+         */
+        async cityList(region: string, organizationId?: number) {
+            const url = this.buildEntityApi(
+                `CityList/${region}/${organizationId || ''}`
+            );
+
+            return this.api.get<CityListItem[]>(url, undefined, {
+                defaultValue: [],
+                parser: (data: CityListRawItem[]) => {
+                    return [
+                        undefined,
+                        data.map((item) => {
+                            const {
+                                phone_code: phoneCode,
+                                merge_id: mergeId,
+                                ...rest
+                            } = item;
+                            return {
+                                phoneCode,
+                                mergeId,
+                                ...rest
+                            } as CityListItem;
+                        })
+                    ];
+                }
+            });
+        }
+
+        /**
+         * Get district list
+         * @param city City id or name
+         * @param organizationId Current organization id
+         */
+        async districtList(city: string, organizationId?: number) {
+            const url = this.buildEntityApi(
+                `DistrictList/${city}/${organizationId || ''}`
+            );
+
+            return this.api.get<DistrictListItem[]>(url, undefined, {
+                defaultValue: []
             });
         }
     };
