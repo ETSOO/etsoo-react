@@ -16,7 +16,7 @@ export interface ViewNavigatorAction extends Partial<IClickAction> {
     /**
      * Popup menu items
      */
-    menuItems?: JSX.Element[];
+    menuItems?: React.ReactNode[];
 
     /**
      * Show the label
@@ -174,7 +174,9 @@ export function ViewNavigator(props: ViewNavigatorProps) {
             );
         }
 
-        return <></>;
+        // "key" is necessary for list renderer even for blank output
+        // https://reactjs.org/docs/lists-and-keys.html#keys
+        return <React.Fragment key={index}></React.Fragment>;
     });
 
     // No actions, return empty
@@ -189,9 +191,9 @@ export function ViewNavigator(props: ViewNavigatorProps) {
                 value={value}
                 onChange={onChangeLocal}
             >
-                {actions.map((action, index) => (
+                {actions.map((action) => (
                     <BottomNavigationAction
-                        key={index}
+                        key={action.label}
                         showLabel={action.showLabel}
                         label={action.label}
                         icon={action.icon}
