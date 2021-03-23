@@ -283,7 +283,7 @@ export const InfiniteTable = React.forwardRef<
 
     // Cached order index
     const cacheOrderIndexKey = DomUtils.getLocationKey('orderIndex');
-    const cachedOrderIndex = StorageUtils.getSessionDataTyped<number>(
+    const cachedOrderIndex = StorageUtils.getSessionDataAs<number>(
         cacheOrderIndexKey
     );
 

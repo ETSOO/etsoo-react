@@ -373,7 +373,7 @@ export const InfiniteList = React.forwardRef<
 
     // State without update
     let defaultState = props.tryCache
-        ? StorageUtils.getSessionDataTyped<InfiniteListState>(
+        ? StorageUtils.getSessionDataAs<InfiniteListState>(
               DomUtils.getLocationKey(uniqueKey)
           )
         : undefined;
@@ -538,7 +538,7 @@ export const InfiniteList = React.forwardRef<
         // Update item count
         // updateItemCount(items.length + 1)
 
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             // Read next page
             const page = state.page + 1;
 

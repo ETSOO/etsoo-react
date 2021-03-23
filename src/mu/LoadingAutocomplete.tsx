@@ -169,11 +169,11 @@ export function LoadingAutocomplete<T>(props: LoadingAutocompleteProps<T>) {
             // Cache data
             let cacheData: T[] | undefined;
             if (cache == null || cache === LoadingAutocompleteCache.Session)
-                cacheData = StorageUtils.getSessionDataTyped<T[]>(
+                cacheData = StorageUtils.getSessionDataAs<T[]>(
                     localCacheKey
                 );
             else if (cache === LoadingAutocompleteCache.Local)
-                cacheData = StorageUtils.getLocalDataTyped<T[]>(localCacheKey);
+                cacheData = StorageUtils.getLocalDataAs<T[]>(localCacheKey);
 
             if (cacheData == null) {
                 (async () => {

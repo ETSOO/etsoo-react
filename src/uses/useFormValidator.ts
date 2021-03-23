@@ -269,6 +269,9 @@ export const useFormValidator = (
             // Iterate the error items
             if (e instanceof Yup.ValidationError) {
                 e.inner.forEach((error) => {
+                    if(error.path == null)
+                        return;
+                        
                     // Only show the first error of the field
                     const field = getField(error.path);
                     if (newState[field] == null) {
