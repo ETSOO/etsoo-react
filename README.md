@@ -1,5 +1,7 @@
 # etsoo-react
 
+**The project was achieved and replaced with @etsoo/appscript (UI framework unrelated) and @etsoo/react (ReactJs related).**
+
 **ETSOO TypeScript React components NPM package for SmartERP SaaS integration developed by GarryXiao (https://dev.to/garryxiao)**
 
 ESLint + AirbnbBase + Prettier, Jest(ts-jest) applied. About how to build a NPM package and CI/CD with Github action: https://dev.to/garryxiao/build-a-react-components-npm-package-and-ci-cd-with-github-action-1jm6
